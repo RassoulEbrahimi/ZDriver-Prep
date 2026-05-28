@@ -1,0 +1,383 @@
+/* ──────────────────────────────────────────────────────────────
+   ZDriver — design tokens
+   A calm "Tehran dusk" palette: deep indigo → violet, with a
+   warm sunset coral accent. RTL-first, Persian display.
+   ────────────────────────────────────────────────────────────── */
+
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+:root {
+  /* Dusk (default) ----------------------------------------- */
+  --grad-from:   #2A2154;
+  --grad-via:    #4B3A8C;
+  --grad-to:     #7B5FB8;
+
+  --accent:      #F39867;       /* sunset coral */
+  --accent-warm: #F6B894;
+  --accent-deep: #D17048;
+
+  --primary:     #4B3A8C;
+  --primary-soft:#EFEAFB;
+  --primary-ink: #2A2154;
+
+  --success:     #4F9F73;
+  --success-soft:#E3F1E8;
+  --danger:      #C76B6B;
+  --danger-soft: #FBE7E5;
+  --warn:        #D6A24A;
+
+  /* Neutral ----------------------------------------------- */
+  --bg:           #F6F3EE;      /* warm cream */
+  --bg-deeper:    #EFEBE3;
+  --card:         #FFFFFF;
+  --card-2:       #FBF9F5;
+  --ink:          #1F1A36;
+  --ink-2:        #4A4566;
+  --ink-3:        #7E7896;
+  --ink-4:        #B5B0C4;
+  --line:         #E8E3D9;
+  --line-2:       #D9D3C5;
+
+  /* Effects ----------------------------------------------- */
+  --shadow-sm:  0 1px 2px rgba(31,26,54,0.04), 0 2px 6px rgba(31,26,54,0.04);
+  --shadow-md:  0 2px 4px rgba(31,26,54,0.04), 0 10px 24px rgba(31,26,54,0.06);
+  --shadow-lg:  0 8px 18px rgba(31,26,54,0.10), 0 24px 48px rgba(75,58,140,0.12);
+  --shadow-press: 0 1px 2px rgba(31,26,54,0.10);
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius:    18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Type --------------------------------------------------- */
+  --font: 'Vazirmatn', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Vazirmatn', -apple-system, system-ui, sans-serif;
+  --font-num: 'Vazirmatn', -apple-system, system-ui, sans-serif;
+}
+
+/* Palette swaps via attr on the device root ------------------- */
+[data-palette="ocean"] {
+  --grad-from:   #0F2D4D;
+  --grad-via:    #1F5687;
+  --grad-to:     #4E9EC9;
+  --accent:      #F2C04D;
+  --accent-warm: #F6D27E;
+  --accent-deep: #C99427;
+  --primary:     #1F5687;
+  --primary-soft:#E4EFF7;
+  --primary-ink: #0F2D4D;
+}
+
+[data-palette="ember"] {
+  --grad-from:   #3A1F36;
+  --grad-via:    #6E2E50;
+  --grad-to:     #B5536E;
+  --accent:      #F2B33E;
+  --accent-warm: #F6CB78;
+  --accent-deep: #B07F1E;
+  --primary:     #6E2E50;
+  --primary-soft:#F6E8EE;
+  --primary-ink: #3A1F36;
+}
+
+/* Dark mode ---------------------------------------------------- */
+[data-theme="dark"] {
+  --bg:        #16142A;
+  --bg-deeper: #100E22;
+  --card:      #1F1C36;
+  --card-2:    #25223E;
+  --ink:       #F1EEFA;
+  --ink-2:     #C6C0DE;
+  --ink-3:     #8B85A8;
+  --ink-4:     #5D5878;
+  --line:      #2B2848;
+  --line-2:    #38345A;
+  --primary-soft: #2A2552;
+  --success-soft: #1F3A2D;
+  --danger-soft:  #3A2024;
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.25);
+  --shadow-md:  0 2px 4px rgba(0,0,0,0.25), 0 12px 28px rgba(0,0,0,0.35);
+  --shadow-lg:  0 12px 30px rgba(0,0,0,0.45), 0 24px 60px rgba(0,0,0,0.35);
+}
+
+/* Card style variants ----------------------------------------- */
+[data-card="flat"] .zd-card { box-shadow: none; border: 1px solid var(--line); }
+[data-card="glass"] .zd-card {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+/* ────────── base ───────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+.zd-app {
+  width: 100%; height: 100%;
+  direction: rtl;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.zd-app, .zd-app * {
+  font-family: var(--font);
+}
+
+.zd-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 110px;
+  scrollbar-width: none;
+}
+.zd-scroll::-webkit-scrollbar { display: none; }
+
+/* ────────── card ───────────────────────────────────────────── */
+.zd-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ────────── buttons ─────────────────────────────────────────── */
+.zd-btn {
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform .12s ease, box-shadow .15s ease, background .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.zd-btn:active { transform: scale(0.98); }
+
+.zd-btn-primary {
+  background: linear-gradient(135deg, var(--grad-via), var(--grad-to));
+  color: #fff;
+  box-shadow: 0 6px 16px color-mix(in oklab, var(--grad-via) 35%, transparent);
+}
+.zd-btn-primary:hover { box-shadow: 0 8px 22px color-mix(in oklab, var(--grad-via) 50%, transparent); }
+
+.zd-btn-accent {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 16px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.zd-btn-ghost {
+  background: var(--primary-soft);
+  color: var(--primary-ink);
+}
+
+.zd-btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--line-2);
+  color: var(--ink);
+}
+
+.zd-btn-block { width: 100%; }
+
+/* ────────── chips / pills ─────────────────────────────────── */
+.zd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-ink);
+}
+.zd-chip-warm { background: color-mix(in oklab, var(--accent) 18%, transparent); color: var(--accent-deep); }
+.zd-chip-success { background: var(--success-soft); color: var(--success); }
+.zd-chip-danger { background: var(--danger-soft); color: var(--danger); }
+.zd-chip-neutral { background: var(--bg-deeper); color: var(--ink-2); }
+
+/* ────────── progress ──────────────────────────────────────── */
+.zd-bar {
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.zd-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--grad-via), var(--accent));
+  border-radius: 999px;
+  transition: width .6s cubic-bezier(.5,.1,.2,1);
+}
+
+/* ────────── headings / type ───────────────────────────────── */
+.zd-h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); margin: 0; line-height: 1.2; }
+.zd-h2 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.3; }
+.zd-h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; }
+.zd-eyebrow { font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: 0.04em; text-transform: none; }
+.zd-muted { color: var(--ink-3); }
+.zd-num { font-feature-settings: "tnum" 1; font-variant-numeric: tabular-nums; }
+
+/* ────────── header (per-screen) ───────────────────────────── */
+.zd-header {
+  padding: 56px 20px 12px;
+  position: relative;
+}
+.zd-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.zd-icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink-2);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.zd-icon-btn:active { transform: scale(0.95); }
+.zd-icon-btn.is-active { background: var(--accent); color: #fff; border-color: transparent; }
+
+/* ────────── bottom nav ────────────────────────────────────── */
+.zd-tabbar {
+  position: absolute;
+  bottom: 22px;
+  left: 16px; right: 16px;
+  height: 64px;
+  background: color-mix(in oklab, var(--card) 88%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 12px;
+  z-index: 30;
+  border: 1px solid color-mix(in oklab, var(--ink) 6%, transparent);
+}
+.zd-tab {
+  flex: 1;
+  height: 56px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px;
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 18px;
+  transition: color .15s, background .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.zd-tab.is-active {
+  color: var(--primary-ink);
+}
+[data-theme="dark"] .zd-tab.is-active { color: var(--accent); }
+.zd-tab .zd-tab-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 1px;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.zd-tab.is-active .zd-tab-dot { opacity: 1; }
+
+/* ────────── option row (questions) ────────────────────────── */
+.zd-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .12s;
+  -webkit-tap-highlight-color: transparent;
+  text-align: right;
+}
+.zd-option:active { transform: scale(0.99); }
+.zd-option.is-selected { border-color: var(--primary); background: var(--primary-soft); }
+.zd-option.is-correct {
+  border-color: var(--success); background: var(--success-soft); color: var(--ink);
+}
+.zd-option.is-wrong {
+  border-color: var(--danger); background: var(--danger-soft); color: var(--ink);
+}
+.zd-option .zd-opt-letter {
+  width: 30px; height: 30px;
+  border-radius: 10px;
+  background: var(--bg-deeper);
+  color: var(--ink-2);
+  display: grid; place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.zd-option.is-selected .zd-opt-letter { background: var(--primary); color: #fff; }
+.zd-option.is-correct .zd-opt-letter { background: var(--success); color: #fff; }
+.zd-option.is-wrong .zd-opt-letter { background: var(--danger); color: #fff; }
+.zd-option .zd-opt-text { flex: 1; font-size: 15px; line-height: 1.5; }
+.zd-option .zd-opt-mark { width: 22px; height: 22px; flex-shrink: 0; opacity: 0; transition: opacity .2s; }
+.zd-option.is-correct .zd-opt-mark, .zd-option.is-wrong .zd-opt-mark { opacity: 1; }
+
+/* ────────── decorative dusk gradient ──────────────────────── */
+.zd-dusk-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--accent) 22%, transparent) 0%, transparent 55%),
+    radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, var(--grad-via) 28%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, var(--grad-from), var(--grad-via));
+  z-index: 0;
+}
+
+/* ────────── tiny utility ─────────────────────────────────── */
+.zd-stack { display: flex; flex-direction: column; }
+.zd-row { display: flex; align-items: center; }
+.zd-gap-8 { gap: 8px; }
+.zd-gap-12 { gap: 12px; }
+.zd-gap-16 { gap: 16px; }
+.zd-gap-20 { gap: 20px; }
+.zd-mt-8 { margin-top: 8px; }
+.zd-mt-12 { margin-top: 12px; }
+.zd-mt-16 { margin-top: 16px; }
+.zd-mt-20 { margin-top: 20px; }
+.zd-mt-24 { margin-top: 24px; }
+.zd-mt-32 { margin-top: 32px; }
+.zd-px-20 { padding-left: 20px; padding-right: 20px; }
+.zd-py-12 { padding-top: 12px; padding-bottom: 12px; }
+
+/* ────────── keyframes ─────────────────────────────────────── */
+@keyframes zd-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.zd-fade-up { animation: zd-fade-up .35s ease both; }
+
+@keyframes zd-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.zd-pop { animation: zd-pop .5s cubic-bezier(.3,1.4,.5,1) both; }
+
+@keyframes zd-spin {
+  to { transform: rotate(360deg); }
+}
