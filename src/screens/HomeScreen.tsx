@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import type { Category, Progress } from '../types'
 import { ProgressRing } from '../components/ProgressRing'
 import { JourneyPath }  from '../components/JourneyPath'
-import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon } from '../components/Icons'
+import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon } from '../components/Icons'
+import { VideoGallery } from '../components/VideoGallery'
+import { VideoPlayer }  from '../components/VideoPlayer'
+import { VIDEOS } from '../videos'
+import type { VideoEntry } from '../videos'
 import { fa } from '../utils'
 
 interface Props {
@@ -26,6 +30,9 @@ const pillBtn: React.CSSProperties = {
 export function HomeScreen({ progress, categories, onContinue, onPickCategory, onStartExam }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
 
+  const [showGallery, setShowGallery] = useState(false)
+  const [activeVideo, setActiveVideo] = useState<VideoEntry | null>(null)
+
   const miniStats = [
     { icon: FireIcon,  value: `${fa(progress.streakDays)} روز`, label: 'نوبت متوالی' },
     { icon: CheckIcon, value: fa(progress.correct),              label: 'پاسخ درست' },
@@ -33,6 +40,7 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
   ]
 
   return (
+    <>
     <div className="zd-scroll">
       {/* ── Dusk hero ── */}
       <div className="relative overflow-hidden">
@@ -63,6 +71,9 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
               </div>
             </div>
             <div className="flex" style={{ gap: 8 }}>
+              <button aria-label="آموزش تصویری" style={pillBtn} onClick={() => setShowGallery(true)}>
+                <VideoIcon size={18} color="#fff" />
+              </button>
               <button aria-label="اعلان‌ها" style={pillBtn}>
                 <BellIcon size={18} color="#fff" />
                 <span style={{
@@ -185,5 +196,20 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
         <JourneyPath categories={categories} onPick={onPickCategory} />
       </div>
     </div>
+
+    {showGallery && (
+      <VideoGallery
+        videos={VIDEOS}
+        onSelect={v => setActiveVideo(v)}
+        onClose={() => setShowGallery(false)}
+      />
+    )}
+    {activeVideo && (
+      <VideoPlayer
+        video={activeVideo}
+        onClose={() => setActiveVideo(null)}
+      />
+    )}
+    </>
   )
 }

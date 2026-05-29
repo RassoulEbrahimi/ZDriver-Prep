@@ -343,6 +343,22 @@ body {
   z-index: 0;
 }
 
+/* ── Video overlays ──────────────────────────────────────────── */
+.zd-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--bg); overflow-y: auto; overflow-x: hidden;
+  animation: zdSlideUp .28s cubic-bezier(.32,1.1,.65,1) both;
+}
+.zd-video-fullscreen {
+  position: fixed; inset: 0; z-index: 200;
+  background: #000; display: flex; flex-direction: column;
+  animation: zdSlideUp .22s cubic-bezier(.32,1.1,.65,1) both;
+}
+@keyframes zdSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
 /* ── Keyframes ───────────────────────────────────────────────── */
 @keyframes zd-fade-up {
   from { opacity: 0; transform: translateY(8px); }
