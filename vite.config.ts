@@ -20,9 +20,10 @@ export default defineConfig({
         display: 'standalone',
         dir: 'rtl',
         lang: 'fa',
-        start_url: '/',
+        start_url: '/ZDriver-Prep/',
+        scope: '/ZDriver-Prep/',
         icons: [
-          { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
         ],
       },
     }),
