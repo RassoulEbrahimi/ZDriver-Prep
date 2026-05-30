@@ -8,17 +8,18 @@ interface Props {
   questions: Question[]
   categories: Category[]
   progress: Progress
+  onToggleBookmark: (id: string) => void
+  onRecordWrong: (ids: string[]) => void
   onExitToHome: () => void
 }
 
-export function PracticeScreen({ questions, categories, progress, onExitToHome }: Props) {
+export function PracticeScreen({ questions, categories, progress, onToggleBookmark, onRecordWrong, onExitToHome }: Props) {
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
 
   const [idx,       setIdx]       = useState(0)
   const [selected,  setSelected]  = useState<number | null>(null)
   const [submitted, setSubmitted] = useState(false)
-  const [bookmarks, setBookmarks] = useState(new Set(progress.bookmarked))
   const [streak,    setStreak]    = useState(0)
 
   const q   = questions[idx]
@@ -34,21 +35,13 @@ export function PracticeScreen({ questions, categories, progress, onExitToHome }
     if (selected === null) return
     setSubmitted(true)
     setStreak(s => selected === q.answer ? s + 1 : 0)
+    if (selected !== q.answer) onRecordWrong([q.id])
   }
 
   function handleNext() {
     setSelected(null)
     setSubmitted(false)
     setIdx(i => (i + 1) % questions.length)
-  }
-
-  function toggleBookmark() {
-    setBookmarks(prev => {
-      const next = new Set(prev)
-      if (next.has(q.id)) next.delete(q.id)
-      else next.add(q.id)
-      return next
-    })
   }
 
   const sessionPct = ((idx + 1) / questions.length) * 100
@@ -85,8 +78,8 @@ export function PracticeScreen({ questions, categories, progress, onExitToHome }
           selected={selected}
           onSelect={setSelected}
           submitted={submitted}
-          bookmarked={bookmarks.has(q.id)}
-          onBookmark={toggleBookmark}
+          bookmarked={progress.bookmarked.includes(q.id)}
+          onBookmark={() => onToggleBookmark(q.id)}
           signKind={signKind}
           signN={q.text.includes('۵۰') ? '۵۰' : '۸۰'}
           showExplanation

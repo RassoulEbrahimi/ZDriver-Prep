@@ -1,14 +1,6 @@
-import type { Question, Category, Progress } from './types'
+import type { Question } from './types'
 
-export const CATEGORIES: Category[] = [
-  { id: 'signs',    title: 'تابلوها و علائم',   subtitle: 'انواع و رنگ‌ها',                  emoji: '◆', total: 2, done: 0, color: '#7B5FB8' },
-  { id: 'rules',    title: 'قوانین راهنمایی',   subtitle: 'سرعت، حق تقدم',                  emoji: '●', total: 3, done: 0, color: '#4B3A8C' },
-  { id: 'safety',   title: 'ایمنی و رفتار',     subtitle: 'پیش از حرکت، حین رانندگی',      emoji: '▲', total: 2, done: 0, color: '#F39867' },
-  { id: 'vehicle',  title: 'فنی و خودرو',       subtitle: 'مکانیک پایه، نگهداری',           emoji: '■', total: 2, done: 0, color: '#5BA89A' },
-  { id: 'firstaid', title: 'کمک‌های اولیه',     subtitle: 'برخورد با حادثه',                emoji: '+', total: 1, done: 0, color: '#C76B6B' },
-]
-
-export const QUESTIONS: Question[] = [
+export const PHASE2_SAMPLE_QUESTIONS: Question[] = [
   {
     id: "ir-q001",
     cat: "signs",
@@ -160,15 +152,3 @@ export const QUESTIONS: Question[] = [
     difficulty: 1
   }
 ]
-
-export const PROGRESS: Progress = {
-  totalQuestions: 10,
-  answered: 0,
-  correct: 0,
-  wrong: 0,
-  streakDays: 0,
-  daysToExam: 12,
-  examReadiness: 0,
-  bookmarked: [],
-  wrongQuestionIds: [],
-}

@@ -12,9 +12,11 @@ interface Props {
   onHome: () => void
 }
 
+const PASS_THRESHOLD = 26
+
 export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Props) {
   const { correct, total, timeUsed, exam, answers } = result
-  const pass       = correct >= 25
+  const pass       = correct >= PASS_THRESHOLD
   const pct        = Math.round((correct / total) * 100)
   const wrongCount = total - correct
 
@@ -52,7 +54,7 @@ export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Pro
           <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 6 }}>
             {pass
               ? 'برای آزمون رسمی آماده‌ای — یک بار دیگر هم تکرار کن.'
-              : `${fa(25 - correct)} پاسخ درست دیگر تا قبولی نیاز داشتی.`}
+              : `${fa(PASS_THRESHOLD - correct)} پاسخ درست دیگر تا قبولی نیاز داشتی.`}
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@ export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Pro
           </div>
           <div className="flex justify-between" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 6 }}>
             <span>۰</span>
-            <span>قبولی: {fa(25)}</span>
+            <span>قبولی: {fa(PASS_THRESHOLD)}</span>
             <span>{fa(30)}</span>
           </div>
         </div>
