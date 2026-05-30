@@ -14,6 +14,7 @@ type Tab = 'wrong' | 'bookmark'
 
 export function MistakesScreen({ progress, questions, categories, onRetry }: Props) {
   const [tab, setTab] = useState<Tab>('wrong')
+  const [openId, setOpenId] = useState<string | null>(null)
 
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
@@ -103,9 +104,20 @@ export function MistakesScreen({ progress, questions, categories, onRetry }: Pro
                   <span style={{ color: 'var(--ink)', fontWeight: 700 }}>{correctText}</span>
                 </div>
 
+                {openId === q.id && (
+                  <div className="zd-fade-up" style={{
+                    marginTop: 10, padding: 12,
+                    background: 'var(--primary-soft)', borderRadius: 10,
+                    border: '1px solid color-mix(in oklab, var(--primary) 20%, transparent)',
+                    fontSize: 13, lineHeight: 1.65, color: 'var(--ink-2)',
+                  }}>
+                    {q.explanation}
+                  </div>
+                )}
+
                 <div className="flex" style={{ gap: 8, marginTop: 10 }}>
-                  <button className="zd-btn zd-btn-ghost"   style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
-                  <button className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
+                  <button onClick={onRetry} className="zd-btn zd-btn-ghost" style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
+                  <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
                 </div>
               </div>
             )
