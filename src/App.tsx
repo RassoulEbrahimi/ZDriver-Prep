@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import type { TabId, ExamState, ExamResult } from './types'
+import type { TabId, ExamState, ExamResult, Progress } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
@@ -13,6 +13,23 @@ export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
   const [examState, setExamState] = useState<ExamState>('idle')
   const [examResult, setExamResult] = useState<ExamResult | null>(null)
+  const [progress,  setProgress]  = useState<Progress>(PROGRESS)
+
+  function toggleBookmark(id: string) {
+    setProgress(p => ({
+      ...p,
+      bookmarked: p.bookmarked.includes(id)
+        ? p.bookmarked.filter(x => x !== id)
+        : [...p.bookmarked, id],
+    }))
+  }
+
+  function recordWrong(ids: string[]) {
+    setProgress(p => ({
+      ...p,
+      wrongQuestionIds: [...new Set([...p.wrongQuestionIds, ...ids])],
+    }))
+  }
 
   function goToTab(t: TabId) {
     if (t === 'exam') {
@@ -31,6 +48,10 @@ export default function App() {
   }
 
   function handleExamFinish(result: ExamResult) {
+    const wrongIds = result.exam
+      .filter((q, i) => result.answers[i] !== q.answer)
+      .map(q => q.id)
+    recordWrong(wrongIds)
     setExamResult(result)
     setExamState('result')
   }
@@ -39,7 +60,7 @@ export default function App() {
     if (tab === 'home') {
       return (
         <HomeScreen
-          progress={PROGRESS}
+          progress={progress}
           categories={CATEGORIES}
           onContinue={() => goToTab('practice')}
           onPickCategory={() => goToTab('practice')}
@@ -53,7 +74,9 @@ export default function App() {
         <PracticeScreen
           questions={QUESTIONS}
           categories={CATEGORIES}
-          progress={PROGRESS}
+          progress={progress}
+          onToggleBookmark={toggleBookmark}
+          onRecordWrong={recordWrong}
           onExitToHome={goHome}
         />
       )
@@ -83,7 +106,7 @@ export default function App() {
     if (tab === 'mistakes') {
       return (
         <MistakesScreen
-          progress={PROGRESS}
+          progress={progress}
           questions={QUESTIONS}
           categories={CATEGORIES}
           onRetry={() => goToTab('practice')}
@@ -92,7 +115,7 @@ export default function App() {
     }
 
     if (tab === 'progress') {
-      return <ProgressScreen progress={PROGRESS} categories={CATEGORIES} />
+      return <ProgressScreen progress={progress} categories={CATEGORIES} />
     }
 
     return null
