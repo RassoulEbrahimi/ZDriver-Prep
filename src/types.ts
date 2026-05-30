@@ -5,6 +5,9 @@ export interface Question {
   options: string[]
   answer: number
   explanation: string
+  image?: string          // optional per-question illustration URL or asset path
+  source?: string         // e.g. 'driveing.ir', 'aiinname-pdf-2024'
+  difficulty?: 1 | 2 | 3 // 1 = easy, 2 = medium, 3 = hard
 }
 
 export interface Category {
