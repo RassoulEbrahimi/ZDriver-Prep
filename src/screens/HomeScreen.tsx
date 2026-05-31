@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import type { Category, Progress } from '../types'
 import { ProgressRing } from '../components/ProgressRing'
 import { JourneyPath }  from '../components/JourneyPath'
-import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon } from '../components/Icons'
+import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
 import { VIDEOS } from '../videos'
@@ -17,6 +17,7 @@ interface Props {
   onContinue: () => void
   onPickCategory: (cat: Category) => void
   onStartExam: () => void
+  onOpenSourceExams: () => void
 }
 
 const pillBtn: React.CSSProperties = {
@@ -29,7 +30,7 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam }: Props) {
+export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam, onOpenSourceExams }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
 
   const [showGallery, setShowGallery] = useState(false)
@@ -155,6 +156,30 @@ export function HomeScreen({ progress, categories, examSize, passScore, onContin
           <div className="flex-1">
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>شبیه‌ساز آزمون رسمی</div>
             <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{`${fa(examSize)} سؤال · ۲۰ دقیقه · امتیاز قبولی ${fa(passScore)}`}</div>
+          </div>
+          <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
+        </button>
+      </div>
+
+      {/* ── Source exams entry (آزمون‌های آیین‌نامه) ── */}
+      <div style={{ padding: '12px 20px 4px' }}>
+        <button onClick={onOpenSourceExams} className="zd-card" style={{
+          width: '100%', padding: 16, border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: 14,
+          background: 'var(--card)', textAlign: 'right',
+          fontFamily: 'var(--font)', borderRadius: 18,
+        }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 16,
+            background: 'linear-gradient(135deg, var(--primary), var(--accent))',
+            display: 'grid', placeItems: 'center',
+            color: '#fff', flexShrink: 0,
+          }}>
+            <BookIcon size={26} stroke={1.9} />
+          </div>
+          <div className="flex-1">
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>آزمون‌های آیین‌نامه</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>۱۷ آزمون رسمی · ۳۰ سؤال · ۲۰ دقیقه</div>
           </div>
           <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
         </button>

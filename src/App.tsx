@@ -9,6 +9,8 @@ import { ExamScreen }        from './screens/ExamScreen'
 import { ExamResultScreen }  from './screens/ExamResultScreen'
 import { MistakesScreen }    from './screens/MistakesScreen'
 import { ProgressScreen }    from './screens/ProgressScreen'
+import { SourceExamScreen }  from './screens/SourceExamScreen'
+import { SOURCE_EXAMS }      from './data/sourceExams'
 
 const examSize  = examLength(QUESTIONS.length)
 const passScore = passThreshold(examSize)
@@ -74,6 +76,20 @@ export default function App() {
           onContinue={() => goToTab('practice')}
           onPickCategory={() => goToTab('practice')}
           onStartExam={() => goToTab('exam')}
+          onOpenSourceExams={() => goToTab('source')}
+        />
+      )
+    }
+
+    if (tab === 'source') {
+      return (
+        <SourceExamScreen
+          exams={SOURCE_EXAMS}
+          onBack={goHome}
+          onStartRandom={(id) => {
+            // Phase 4A: safe no-op placeholder — does NOT start the real Exam mode yet.
+            console.log(`[Phase 4A] آزمون شانسی انتخاب شد: آزمون ${id}`)
+          }}
         />
       )
     }
