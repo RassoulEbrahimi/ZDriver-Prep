@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import type { Question, Category, ExamResult } from '../types'
 import { QuestionCard } from '../components/QuestionCard'
 import { CloseIcon, FlagIcon, ClockIcon, ChevRightIcon, ChevLeftIcon } from '../components/Icons'
-import { fa, formatTime } from '../utils'
+import { fa, formatTime, shuffleQuestionOptions } from '../utils'
 
 interface Props {
   questions: Question[]
@@ -20,7 +20,8 @@ export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
 
   const exam = useMemo<Question[]>(() => {
     const arr: Question[] = []
-    for (let i = 0; i < EXAM_SIZE; i++) arr.push(questions[i % questions.length])
+    // Pool/length behavior unchanged; only each question's options are shuffled.
+    for (let i = 0; i < EXAM_SIZE; i++) arr.push(shuffleQuestionOptions(questions[i % questions.length]))
     return arr
   }, [questions])
 
