@@ -1,4 +1,6 @@
 import type { Question } from './types'
+import greenDirectionSign from './assets/questions/ir-q001-green-direction-sign.png'
+import schoolCrossingSign from './assets/questions/school-crossing-sign.png'
 
 export const PHASE2_SAMPLE_QUESTIONS: Question[] = [
   {
@@ -14,7 +16,8 @@ export const PHASE2_SAMPLE_QUESTIONS: Question[] = [
     answer: 3,
     explanation: "در آیین‌نامه، رنگ سبز برای تابلوهای راهنمای مسیر در بزرگراه‌ها و مسیرهای مهم استفاده می‌شود تا راننده بتواند سریعاً مسیرها و خروجی‌ها را تشخیص دهد.",
     source: "https://www.driveing.ir/solat-mogadamati/",
-    difficulty: 1
+    difficulty: 1,
+    image: greenDirectionSign
   },
   {
     id: "ir-q002",
@@ -29,7 +32,8 @@ export const PHASE2_SAMPLE_QUESTIONS: Question[] = [
     answer: 1,
     explanation: "در آیین‌نامه، تابلوهای پنج‌گوشه با رأس رو به بالا مخصوص هشدار نزدیک‌شدن به مدرسه یا دبیرستان هستند تا راننده بداند باید سرعت را کم کرده و بیشتر مراقب حضور دانش‌آموزان باشد.",
     source: "https://govahiyar.ir/free-regulation-questions/",
-    difficulty: 1
+    difficulty: 1,
+    image: schoolCrossingSign
   },
   {
     id: "ir-q003",
