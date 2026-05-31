@@ -64,6 +64,8 @@ export function loadProgress(fallback: Progress): Progress {
     return {
       ...fallback,
       ...parsed,
+      // Always reflect the current question bank, not a stale stored count.
+      totalQuestions:   fallback.totalQuestions,
       bookmarked:       Array.isArray(parsed.bookmarked)       ? parsed.bookmarked       : [],
       wrongQuestionIds: Array.isArray(parsed.wrongQuestionIds) ? parsed.wrongQuestionIds : [],
     }
