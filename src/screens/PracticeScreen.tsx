@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import type { Question, Category, Progress } from '../types'
 import { QuestionCard } from '../components/QuestionCard'
 import { ChevRightIcon, MoreIcon, FireIcon, CheckIcon } from '../components/Icons'
-import { fa } from '../utils'
+import { fa, shuffleQuestionOptions } from '../utils'
 
 interface Props {
   questions: Question[]
@@ -25,11 +25,15 @@ export function PracticeScreen({ questions, categories, progress, onToggleBookma
   const q   = questions[idx]
   const cat = catMap[q.cat]
 
+  // Shuffle options once per question. Keyed on the question only (not on
+  // selected/submitted) so the order stays stable while the user is answering.
+  const pq = useMemo(() => shuffleQuestionOptions(q), [q.id, idx])
+
   function handleSubmit() {
     if (selected === null) return
     setSubmitted(true)
-    setStreak(s => selected === q.answer ? s + 1 : 0)
-    if (selected !== q.answer) onRecordWrong([q.id])
+    setStreak(s => selected === pq.answer ? s + 1 : 0)
+    if (selected !== pq.answer) onRecordWrong([q.id])
   }
 
   function handleNext() {
@@ -68,7 +72,7 @@ export function PracticeScreen({ questions, categories, progress, onToggleBookma
 
       <div style={{ padding: '8px 16px' }}>
         <QuestionCard
-          question={{ ...q, catLabel: cat?.title }}
+          question={{ ...pq, catLabel: cat?.title }}
           selected={selected}
           onSelect={setSelected}
           submitted={submitted}
