@@ -3,7 +3,7 @@ import type { ExamResult } from '../types'
 import { ProgressRing } from '../components/ProgressRing'
 import { StatCard } from '../components/StatCard'
 import { AwardIcon, CloseIcon, RefreshIcon, CheckIcon, ClockIcon } from '../components/Icons'
-import { fa, formatTime } from '../utils'
+import { fa, formatTime, passThreshold } from '../utils'
 
 interface Props {
   result: ExamResult
@@ -12,11 +12,10 @@ interface Props {
   onHome: () => void
 }
 
-const PASS_THRESHOLD = 26
-
 export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Props) {
   const { correct, total, timeUsed, exam, answers } = result
-  const pass       = correct >= PASS_THRESHOLD
+  const threshold  = passThreshold(total)
+  const pass       = correct >= threshold
   const pct        = Math.round((correct / total) * 100)
   const wrongCount = total - correct
 
@@ -54,7 +53,7 @@ export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Pro
           <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 6 }}>
             {pass
               ? 'برای آزمون رسمی آماده‌ای — یک بار دیگر هم تکرار کن.'
-              : `${fa(PASS_THRESHOLD - correct)} پاسخ درست دیگر تا قبولی نیاز داشتی.`}
+              : `${fa(threshold - correct)} پاسخ درست دیگر تا قبولی نیاز داشتی.`}
           </div>
         </div>
       </div>
@@ -84,8 +83,8 @@ export function ExamResultScreen({ result, onRetry, onReviewWrong, onHome }: Pro
           </div>
           <div className="flex justify-between" style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 6 }}>
             <span>۰</span>
-            <span>قبولی: {fa(PASS_THRESHOLD)}</span>
-            <span>{fa(30)}</span>
+            <span>قبولی: {fa(threshold)}</span>
+            <span>{fa(total)}</span>
           </div>
         </div>
 

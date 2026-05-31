@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import type { Question, Category, ExamResult } from '../types'
 import { QuestionCard } from '../components/QuestionCard'
 import { CloseIcon, FlagIcon, ClockIcon, ChevRightIcon, ChevLeftIcon } from '../components/Icons'
-import { fa, formatTime, shuffleQuestionOptions } from '../utils'
+import { fa, formatTime, shuffleQuestionOptions, examLength } from '../utils'
 
 interface Props {
   questions: Question[]
@@ -11,22 +11,23 @@ interface Props {
   onExit: () => void
 }
 
-const EXAM_SIZE = 30
 const EXAM_DURATION = 20 * 60
 
 export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
 
+  // Whole pool once when small (no repeats), capped at the official 30.
+  const examSize = examLength(questions.length)
+
   const exam = useMemo<Question[]>(() => {
     const arr: Question[] = []
-    // Pool/length behavior unchanged; only each question's options are shuffled.
-    for (let i = 0; i < EXAM_SIZE; i++) arr.push(shuffleQuestionOptions(questions[i % questions.length]))
+    for (let i = 0; i < examSize; i++) arr.push(shuffleQuestionOptions(questions[i]))
     return arr
   }, [questions])
 
   const [idx,      setIdx]      = useState(0)
-  const [answers,  setAnswers]  = useState<(number | null)[]>(Array(EXAM_SIZE).fill(null))
+  const [answers,  setAnswers]  = useState<(number | null)[]>(Array(examSize).fill(null))
   const [selected, setSelected] = useState<number | null>(null)
   const [timeLeft, setTimeLeft] = useState(EXAM_DURATION)
 
@@ -58,7 +59,7 @@ export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
     const updated = [...currentAnswers]
     updated[idx] = selected
     const correct = updated.filter((a, i) => a === exam[i].answer).length
-    onFinish({ answers: updated, exam, correct, total: EXAM_SIZE, timeUsed: EXAM_DURATION - timeLeft })
+    onFinish({ answers: updated, exam, correct, total: exam.length, timeUsed: EXAM_DURATION - timeLeft })
   }
 
   function handleNext() {
@@ -108,7 +109,7 @@ export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
             <div>
               <div className="zd-eyebrow">شبیه‌ساز آزمون</div>
               <div className="zd-num" style={{ fontSize: 22, fontWeight: 800, marginTop: 2, color: 'var(--ink)' }}>
-                سؤال {fa(idx + 1)} <span style={{ color: 'var(--ink-3)', fontWeight: 600 }}>/ {fa(EXAM_SIZE)}</span>
+                سؤال {fa(idx + 1)} <span style={{ color: 'var(--ink-3)', fontWeight: 600 }}>/ {fa(examSize)}</span>
               </div>
             </div>
             <span className="zd-chip" style={{
@@ -121,7 +122,7 @@ export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
 
           {/* Question dots */}
           <div className="flex" style={{ gap: 3 }}>
-            {Array.from({ length: EXAM_SIZE }).map((_, i) => {
+            {Array.from({ length: examSize }).map((_, i) => {
               const answered = answers[i] !== null && i !== idx
               const current  = i === idx
               return (
@@ -157,7 +158,7 @@ export function ExamScreen({ questions, categories, onFinish, onExit }: Props) {
           <button onClick={handleNext}
                   className="zd-btn zd-btn-primary"
                   style={{ flex: 2, height: 50 }}>
-            {idx === EXAM_SIZE - 1 ? 'پایان آزمون' : 'بعدی'}
+            {idx === exam.length - 1 ? 'پایان آزمون' : 'بعدی'}
             <ChevLeftIcon size={18} stroke={2.4} />
           </button>
         </div>
