@@ -2,12 +2,14 @@ import type { Question, Category, Progress } from './types'
 import greenDirectionSign from './assets/questions/ir-q001-green-direction-sign.png'
 import schoolCrossingSign from './assets/questions/school-crossing-sign.png'
 
-export const CATEGORIES: Category[] = [
-  { id: 'signs',    title: 'تابلوها و علائم',   subtitle: 'انواع و رنگ‌ها',                  emoji: '◆', total: 2, done: 0, color: '#7B5FB8' },
-  { id: 'rules',    title: 'قوانین راهنمایی',   subtitle: 'سرعت، حق تقدم',                  emoji: '●', total: 3, done: 0, color: '#4B3A8C' },
-  { id: 'safety',   title: 'ایمنی و رفتار',     subtitle: 'پیش از حرکت، حین رانندگی',      emoji: '▲', total: 2, done: 0, color: '#F39867' },
-  { id: 'vehicle',  title: 'فنی و خودرو',       subtitle: 'مکانیک پایه، نگهداری',           emoji: '■', total: 2, done: 0, color: '#5BA89A' },
-  { id: 'firstaid', title: 'کمک‌های اولیه',     subtitle: 'برخورد با حادثه',                emoji: '+', total: 1, done: 0, color: '#C76B6B' },
+// Category metadata only — `total` is derived from QUESTIONS below so the
+// counts can never drift out of sync as the question bank grows.
+const CATEGORY_META: Omit<Category, 'total'>[] = [
+  { id: 'signs',    title: 'تابلوها و علائم',   subtitle: 'انواع و رنگ‌ها',                  emoji: '◆', done: 0, color: '#7B5FB8' },
+  { id: 'rules',    title: 'قوانین راهنمایی',   subtitle: 'سرعت، حق تقدم',                  emoji: '●', done: 0, color: '#4B3A8C' },
+  { id: 'safety',   title: 'ایمنی و رفتار',     subtitle: 'پیش از حرکت، حین رانندگی',      emoji: '▲', done: 0, color: '#F39867' },
+  { id: 'vehicle',  title: 'فنی و خودرو',       subtitle: 'مکانیک پایه، نگهداری',           emoji: '■', done: 0, color: '#5BA89A' },
+  { id: 'firstaid', title: 'کمک‌های اولیه',     subtitle: 'برخورد با حادثه',                emoji: '+', done: 0, color: '#C76B6B' },
 ]
 
 export const QUESTIONS: Question[] = [
@@ -165,8 +167,15 @@ export const QUESTIONS: Question[] = [
   }
 ]
 
+// Per-category totals and the overall total are derived from QUESTIONS,
+// the single source of truth — no manual count bookkeeping when adding questions.
+export const CATEGORIES: Category[] = CATEGORY_META.map(c => ({
+  ...c,
+  total: QUESTIONS.filter(q => q.cat === c.id).length,
+}))
+
 export const PROGRESS: Progress = {
-  totalQuestions: 10,
+  totalQuestions: QUESTIONS.length,
   answered: 0,
   correct: 0,
   wrong: 0,
