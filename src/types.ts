@@ -40,6 +40,13 @@ export interface ExamResult {
   timeUsed: number
 }
 
-export type TabId = 'home' | 'practice' | 'exam' | 'mistakes' | 'progress'
+export interface SourceExam {
+  id: number              // 1..17
+  questionCount: number   // 30
+  durationMinutes: number // 20
+  status: 'not-started'   // Phase 4A only; widen (e.g. 'in-progress' | 'passed') later
+}
+
+export type TabId = 'home' | 'practice' | 'exam' | 'mistakes' | 'progress' | 'source'
 export type ExamState = 'idle' | 'active' | 'result'
 export type SignKind = 'stop' | 'warn' | 'mandatory' | 'speed'
