@@ -1,4 +1,4 @@
-import type { Question } from './types'
+import type { Question, Progress } from './types'
 
 const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹'
 
@@ -44,5 +44,39 @@ export function shuffleQuestionOptions(question: Question): Question {
     ...question,
     options: order.map(i => question.options[i]),
     answer: order.indexOf(question.answer),
+  }
+}
+
+const PROGRESS_KEY = 'zdriver:progress:v1'
+
+/**
+ * Reads persisted progress from localStorage, falling back safely on any
+ * problem (storage unavailable, corrupt/invalid JSON). Parsed data is merged
+ * over `fallback` so missing/future fields keep safe defaults, and the
+ * `bookmarked` / `wrongQuestionIds` arrays are validated. Never throws.
+ */
+export function loadProgress(fallback: Progress): Progress {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY)
+    if (!raw) return fallback
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return fallback
+    return {
+      ...fallback,
+      ...parsed,
+      bookmarked:       Array.isArray(parsed.bookmarked)       ? parsed.bookmarked       : [],
+      wrongQuestionIds: Array.isArray(parsed.wrongQuestionIds) ? parsed.wrongQuestionIds : [],
+    }
+  } catch {
+    return fallback
+  }
+}
+
+/** Persists the full progress object to localStorage. Never throws. */
+export function saveProgress(progress: Progress): void {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress))
+  } catch {
+    /* storage unavailable or quota exceeded — ignore, persistence is best-effort */
   }
 }

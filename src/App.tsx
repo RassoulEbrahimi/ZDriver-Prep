@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { TabId, ExamState, ExamResult, Progress } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
-import { examLength, passThreshold } from './utils'
+import { examLength, passThreshold, loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
 import { PracticeScreen }    from './screens/PracticeScreen'
@@ -17,7 +17,10 @@ export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
   const [examState, setExamState] = useState<ExamState>('idle')
   const [examResult, setExamResult] = useState<ExamResult | null>(null)
-  const [progress,  setProgress]  = useState<Progress>(PROGRESS)
+  const [progress,  setProgress]  = useState<Progress>(() => loadProgress(PROGRESS))
+
+  // Persist progress (bookmarks, mistakes, stats) on every change.
+  useEffect(() => { saveProgress(progress) }, [progress])
 
   function toggleBookmark(id: string) {
     setProgress(p => ({
