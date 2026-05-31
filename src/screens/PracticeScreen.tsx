@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import type { Question, Category, Progress, SignKind } from '../types'
+import type { Question, Category, Progress } from '../types'
 import { QuestionCard } from '../components/QuestionCard'
 import { ChevRightIcon, MoreIcon, FireIcon, CheckIcon } from '../components/Icons'
 import { fa } from '../utils'
@@ -24,12 +24,6 @@ export function PracticeScreen({ questions, categories, progress, onToggleBookma
 
   const q   = questions[idx]
   const cat = catMap[q.cat]
-
-  const signKind: SignKind | null = useMemo(() => {
-    if (q.cat !== 'signs') return null
-    const kinds: SignKind[] = ['stop', 'mandatory', 'warn', 'speed']
-    return kinds[idx % 4]
-  }, [q.id, idx, q.cat])
 
   function handleSubmit() {
     if (selected === null) return
@@ -80,8 +74,6 @@ export function PracticeScreen({ questions, categories, progress, onToggleBookma
           submitted={submitted}
           bookmarked={progress.bookmarked.includes(q.id)}
           onBookmark={() => onToggleBookmark(q.id)}
-          signKind={signKind}
-          signN={q.text.includes('۵۰') ? '۵۰' : '۸۰'}
           showExplanation
         />
 

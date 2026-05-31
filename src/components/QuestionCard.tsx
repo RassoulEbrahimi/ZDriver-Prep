@@ -1,6 +1,6 @@
 import React from 'react'
-import type { Question, SignKind } from '../types'
-import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, CloseIcon, BulbIcon, StopSign, WarnSign, MandatorySign, SpeedSign } from './Icons'
+import type { Question } from '../types'
+import { BookmarkIcon, BookmarkFilledIcon, CheckIcon, CloseIcon, BulbIcon } from './Icons'
 
 interface Props {
   question: Question & { catLabel?: string }
@@ -10,8 +10,6 @@ interface Props {
   showExplanation?: boolean
   bookmarked?: boolean
   onBookmark?: () => void
-  signKind?: SignKind | null
-  signN?: string
 }
 
 const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
@@ -19,7 +17,6 @@ const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
 export function QuestionCard({
   question, selected, onSelect, submitted,
   showExplanation = true, bookmarked = false, onBookmark,
-  signKind, signN = '۵۰',
 }: Props) {
   const correctIdx = question.answer
   const isCorrect = submitted && selected === correctIdx
@@ -55,16 +52,18 @@ export function QuestionCard({
         )}
       </div>
 
-      {/* Road sign illustration */}
-      {signKind && (
+      {/* Question image — only when the question actually has one */}
+      {question.image && (
         <div style={{
           background: 'var(--bg-deeper)', borderRadius: 16, padding: 18,
           display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 14,
         }}>
-          {signKind === 'stop'      && <StopSign size={88} />}
-          {signKind === 'warn'      && <WarnSign size={88} />}
-          {signKind === 'mandatory' && <MandatorySign size={88} />}
-          {signKind === 'speed'     && <SpeedSign size={88} n={signN} />}
+          <img
+            src={question.image}
+            alt={question.text}
+            loading="lazy"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 12 }}
+          />
         </div>
       )}
 
