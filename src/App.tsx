@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { TabId, ExamState, ExamResult, Progress } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
+import { examLength, passThreshold } from './utils'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
 import { PracticeScreen }    from './screens/PracticeScreen'
@@ -8,6 +9,9 @@ import { ExamScreen }        from './screens/ExamScreen'
 import { ExamResultScreen }  from './screens/ExamResultScreen'
 import { MistakesScreen }    from './screens/MistakesScreen'
 import { ProgressScreen }    from './screens/ProgressScreen'
+
+const examSize  = examLength(QUESTIONS.length)
+const passScore = passThreshold(examSize)
 
 export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
@@ -62,6 +66,8 @@ export default function App() {
         <HomeScreen
           progress={progress}
           categories={CATEGORIES}
+          examSize={examSize}
+          passScore={passScore}
           onContinue={() => goToTab('practice')}
           onPickCategory={() => goToTab('practice')}
           onStartExam={() => goToTab('exam')}

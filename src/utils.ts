@@ -12,6 +12,20 @@ export function formatTime(seconds: number): string {
   return `${fa(mm)}:${fa(ss)}`
 }
 
+export const MAX_EXAM_SIZE = 30
+const OFFICIAL_TOTAL = 30
+const OFFICIAL_PASS  = 26
+
+/** Exam length = whole pool when small, capped at the official 30. */
+export function examLength(poolSize: number): number {
+  return Math.min(MAX_EXAM_SIZE, poolSize)
+}
+
+/** Pass mark scaled to the official 26/30 ratio. total=30 → 26; total=10 → 9. */
+export function passThreshold(total: number): number {
+  return Math.ceil(total * OFFICIAL_PASS / OFFICIAL_TOTAL)
+}
+
 /**
  * Returns a new Question with its options shuffled and `answer` remapped to the
  * correct option's new position. Correctness is tracked by the original option

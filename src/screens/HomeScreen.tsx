@@ -12,6 +12,8 @@ import { fa } from '../utils'
 interface Props {
   progress: Progress
   categories: Category[]
+  examSize: number
+  passScore: number
   onContinue: () => void
   onPickCategory: (cat: Category) => void
   onStartExam: () => void
@@ -27,7 +29,7 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, onContinue, onPickCategory, onStartExam }: Props) {
+export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
 
   const [showGallery, setShowGallery] = useState(false)
@@ -152,7 +154,7 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
           </div>
           <div className="flex-1">
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>شبیه‌ساز آزمون رسمی</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>۳۰ سؤال · ۲۰ دقیقه · امتیاز قبولی ۲۵</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{`${fa(examSize)} سؤال · ۲۰ دقیقه · امتیاز قبولی ${fa(passScore)}`}</div>
           </div>
           <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
         </button>
