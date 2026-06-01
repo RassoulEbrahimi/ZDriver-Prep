@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/validate-source-exams.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:source-exams": "node scripts/validate-source-exams.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

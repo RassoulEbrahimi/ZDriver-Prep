@@ -5,3 +5,6 @@ dist/
 *.log
 .DS_Store
 .env
+
+# Local-only: source PDF (aeinname_asli.pdf) and extraction drafts — never commit.
+_local/
