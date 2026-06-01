@@ -47,6 +47,24 @@ export interface SourceExam {
   status: 'not-started'   // Phase 4A only; widen (e.g. 'in-progress' | 'passed') later
 }
 
+/** A question inside a source exam. Extends Question with an image-dependent flag
+ *  so the UI can show an image placeholder (real images arrive in Phase 4C/4D). */
+export interface SourceExamQuestion extends Question {
+  hasImage: boolean
+}
+
+export interface SourceExamResult {
+  examNo: number
+  exam: SourceExamQuestion[]
+  answers: (number | null)[]
+  correct: number
+  total: number
+  timeUsed: number
+}
+
+/** Sub-state machine for the dedicated source-exam flow (independent of ExamState). */
+export type SourceView = 'catalog' | 'start' | 'active' | 'result'
+
 export type TabId = 'home' | 'practice' | 'exam' | 'mistakes' | 'progress' | 'source'
 export type ExamState = 'idle' | 'active' | 'result'
 export type SignKind = 'stop' | 'warn' | 'mandatory' | 'speed'
