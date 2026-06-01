@@ -41,6 +41,7 @@ export const MoreIcon    = I(<><circle cx="6"  cy="12" r="1.6" fill="currentColo
 export const ShieldIcon  = I(<path d="M12 3l8 3v5c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-3z"/>)
 export const BulbIcon    = I(<><path d="M9 18h6M10 21h4M12 3a6 6 0 016 6c0 3-2 4.5-2.5 6h-7C8 13.5 6 12 6 9a6 6 0 016-6z"/></>)
 export const VideoIcon   = I(<><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></>)
+export const ImageIcon   = I(<><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></>)
 
 /* ── Road signs ────────────────────────────────────────────── */
 export function StopSign({ size = 96 }: { size?: number }) {
