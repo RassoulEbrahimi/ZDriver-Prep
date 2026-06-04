@@ -15,13 +15,22 @@ interface Props {
  */
 export function QuestionImagePlaceholder({ src, alt = 'تصویر مربوط به سؤال' }: Props) {
   if (src) {
+    // Exam images are part of the question — never crop. Render the full image,
+    // fit to the card width with automatic height; the page may scroll if tall.
     return (
       <img
         src={src}
         alt={alt}
         style={{
-          width: '100%', aspectRatio: '16 / 9', objectFit: 'cover',
-          borderRadius: 16, marginBottom: 16, border: '1px solid var(--line)',
+          display: 'block',
+          width: '100%',
+          height: 'auto',
+          objectFit: 'contain',
+          borderRadius: 16,
+          marginBottom: 16,
+          border: '1px solid var(--line)',
+          background: 'var(--card-2)',
+          padding: 6,
         }}
       />
     )

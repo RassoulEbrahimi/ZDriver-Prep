@@ -3,11 +3,12 @@ import type { Question, Category, SourceExamResult } from '../types'
 import { CloseIcon, FlagIcon, ClockIcon, ImageIcon, ChevRightIcon, ChevLeftIcon } from '../components/Icons'
 import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
 import { fa, formatTime } from '../utils'
-import { buildSourceExam, SOURCE_EXAM_SIZE, SOURCE_EXAM_DURATION } from '../data/sourceExamBuilder'
+import { SOURCE_EXAM_SIZE, SOURCE_EXAM_DURATION } from '../data/sourceExamBuilder'
+import { loadSourceExamQuestions } from '../data/source-exams'
 
 interface Props {
   examNo: number
-  /** Temporary placeholder pool (Phase 4B). Replaced by real source data in 4C/4D. */
+  /** Fallback pool for exams without real data yet (Phase 4B placeholder builder). */
   questions: Question[]
   categories: Category[]
   onFinish: (result: SourceExamResult) => void
@@ -19,7 +20,8 @@ const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
 export function SourceExamQuestionScreen({ examNo, questions, categories, onFinish, onExit }: Props) {
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
-  const exam = useMemo(() => buildSourceExam(examNo, questions), [examNo, questions])
+  // Exam 1 uses real imported data; exams 2–17 fall back to the placeholder builder.
+  const exam = useMemo(() => loadSourceExamQuestions(examNo, questions), [examNo, questions])
 
   const [idx,      setIdx]      = useState(0)
   const [answers,  setAnswers]  = useState<(number | null)[]>(Array(SOURCE_EXAM_SIZE).fill(null))
