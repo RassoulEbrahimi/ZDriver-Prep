@@ -10,13 +10,16 @@ import type { SourceExamData } from './types'
 import { toSourceExamQuestion } from './adapter'
 import { buildSourceExam } from '../sourceExamBuilder'
 import { exam01 } from './exams/exam-01'
+import { exam02 } from './exams/exam-02'
 
 /**
- * Real source exams. Phase 4D-1B: only Exam 1 is imported from aeinname_asli.pdf.
- * Exams 2–17 are not present here yet and fall back to the placeholder builder
- * via `loadSourceExamQuestions`. Append exam-NN modules here as they are imported.
+ * Real source exams. Phase 4D-2B: Exams 1 and 2 are imported from aeinname_asli.pdf.
+ * Exam 1 ships with images; Exam 2 is text/options/answers only (image-dependent
+ * questions are staged as imagePending until the image phase). Exams 3–17 are not
+ * present here yet and fall back to the placeholder builder via
+ * `loadSourceExamQuestions`. Append exam-NN modules here as they are imported.
  */
-export const SOURCE_EXAMS_DATA: SourceExamData[] = [exam01]
+export const SOURCE_EXAMS_DATA: SourceExamData[] = [exam01, exam02]
 
 /** Look up a real source exam by number (1..17), or undefined if not yet authored. */
 export function getSourceExam(examNo: number): SourceExamData | undefined {
