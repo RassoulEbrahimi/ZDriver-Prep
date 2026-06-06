@@ -11,15 +11,31 @@ import { toSourceExamQuestion } from './adapter'
 import { buildSourceExam } from '../sourceExamBuilder'
 import { exam01 } from './exams/exam-01'
 import { exam02 } from './exams/exam-02'
+import { exam03 } from './exams/exam-03'
+import { exam04 } from './exams/exam-04'
+import { exam05 } from './exams/exam-05'
+import { exam06 } from './exams/exam-06'
+import { exam07 } from './exams/exam-07'
+import { exam08 } from './exams/exam-08'
+import { exam09 } from './exams/exam-09'
+import { exam10 } from './exams/exam-10'
+import { exam11 } from './exams/exam-11'
+import { exam12 } from './exams/exam-12'
+import { exam13 } from './exams/exam-13'
+import { exam14 } from './exams/exam-14'
+import { exam15 } from './exams/exam-15'
 
 /**
- * Real source exams. Phase 4D-2B: Exams 1 and 2 are imported from aeinname_asli.pdf.
- * Exam 1 ships with images; Exam 2 is text/options/answers only (image-dependent
- * questions are staged as imagePending until the image phase). Exams 3–17 are not
- * present here yet and fall back to the placeholder builder via
- * `loadSourceExamQuestions`. Append exam-NN modules here as they are imported.
+ * Real source exams imported from aeinname_asli.pdf.
+ * Exam 1 ships with images; Exams 2–15 are text/options/answers only (image-dependent
+ * questions are staged as imagePending until a later image phase). Exams 16–17 are not
+ * present here yet (different page layout/encoding) and fall back to the placeholder
+ * builder via `loadSourceExamQuestions`. Append exam-NN modules here as they are imported.
  */
-export const SOURCE_EXAMS_DATA: SourceExamData[] = [exam01, exam02]
+export const SOURCE_EXAMS_DATA: SourceExamData[] = [
+  exam01, exam02, exam03, exam04, exam05, exam06, exam07, exam08,
+  exam09, exam10, exam11, exam12, exam13, exam14, exam15,
+]
 
 /** Look up a real source exam by number (1..17), or undefined if not yet authored. */
 export function getSourceExam(examNo: number): SourceExamData | undefined {
