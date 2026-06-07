@@ -121,9 +121,12 @@ export function PracticeCatalogScreen({ exams, onOpenExam, onExitToHome }: Props
         {/* Supplementary review (Exam 18) */}
         {review.length > 0 && (
           <>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', margin: '24px 2px 12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '24px 2px 12px' }}>
               <div className="zd-h2">مرور تکمیلی</div>
-              <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>غیررسمی</div>
+              <span className="zd-chip" style={{
+                background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
+                color: 'var(--accent-deep)',
+              }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
               {review.map(exam => <PracticeCard key={exam.id} exam={exam} onOpen={onOpenExam} />)}

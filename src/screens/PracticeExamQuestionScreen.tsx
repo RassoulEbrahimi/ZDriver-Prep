@@ -50,6 +50,7 @@ export function PracticeExamQuestionScreen({
   const correctIdx = q?.answer
   const isCorrect = submitted && selected === correctIdx
   const title = meta?.title ?? `آزمون ${fa(examId)}`
+  const official = meta?.official ?? true
 
   function optClass(i: number): string {
     if (submitted) {
@@ -125,6 +126,12 @@ export function PracticeExamQuestionScreen({
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 700, color: 'var(--ink-2)' }}>
             <span>{title}</span>
+            {!official && (
+              <span className="zd-chip" style={{
+                background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
+                color: 'var(--accent-deep)',
+              }}>مرور تکمیلی · غیررسمی</span>
+            )}
           </div>
           <button className="zd-icon-btn" aria-label="بیشتر"><MoreIcon size={18} /></button>
         </div>
