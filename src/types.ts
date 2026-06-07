@@ -65,6 +65,21 @@ export interface SourceExamResult {
 /** Sub-state machine for the dedicated source-exam flow (independent of ExamState). */
 export type SourceView = 'catalog' | 'start' | 'active' | 'result'
 
+/** Distinguishes the 17 official آیین‌نامه exams from the supplementary review exam (18). */
+export type ExamKind = 'official' | 'supplementary'
+
+/** Display + sizing metadata for one exam in the unified 1..18 catalog.
+ *  Metadata only — question content is resolved separately (see data/examRegistry). */
+export interface ExamMeta {
+  id: number              // 1..18
+  kind: ExamKind          // 'official' for 1..17, 'supplementary' for 18
+  official: boolean        // convenience mirror of (kind === 'official')
+  title: string           // e.g. 'آزمون ۱'  |  'آزمون ۱۸ — مرور تکمیلی'
+  questionCount: number   // 30 for 1..17; QUESTIONS.length for 18
+  durationMinutes: number // 20 for 1..17; 20 for 18
+  passThreshold: number   // 26 for 1..17; derived for 18
+}
+
 export type TabId = 'home' | 'practice' | 'exam' | 'mistakes' | 'progress' | 'source'
 export type ExamState = 'idle' | 'active' | 'result'
 export type SignKind = 'stop' | 'warn' | 'mandatory' | 'speed'
