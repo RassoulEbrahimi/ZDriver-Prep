@@ -68,6 +68,9 @@ export type SourceView = 'catalog' | 'start' | 'active' | 'result'
 /** Sub-state machine for the exam-based Practice flow (تمرین tab): pick an exam, then run it. */
 export type PracticeView = 'catalog' | 'active'
 
+/** Sub-state machine for the exam-based Exam flow (آزمون tab): catalog → timed runner → result. */
+export type ExamView = 'catalog' | 'active' | 'result'
+
 /** Distinguishes the 17 official آیین‌نامه exams from the supplementary review exam (18). */
 export type ExamKind = 'official' | 'supplementary'
 

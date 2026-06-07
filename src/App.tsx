@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import type { TabId, ExamState, ExamResult, Progress, SourceView, SourceExamResult, PracticeView } from './types'
+import type { TabId, Progress, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { examLength, passThreshold, loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
 import { PracticeCatalogScreen }     from './screens/PracticeCatalogScreen'
 import { PracticeExamQuestionScreen } from './screens/PracticeExamQuestionScreen'
-import { ExamScreen }        from './screens/ExamScreen'
-import { ExamResultScreen }  from './screens/ExamResultScreen'
+import { ExamCatalogScreen }       from './screens/ExamCatalogScreen'
+import { ExamRunnerScreen }        from './screens/ExamRunnerScreen'
+import { ExamRunnerResultScreen }  from './screens/ExamRunnerResultScreen'
 import { MistakesScreen }    from './screens/MistakesScreen'
 import { ProgressScreen }    from './screens/ProgressScreen'
 import { SourceExamScreen }        from './screens/SourceExamScreen'
@@ -22,9 +23,12 @@ const passScore = passThreshold(examSize)
 
 export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
-  const [examState, setExamState] = useState<ExamState>('idle')
-  const [examResult, setExamResult] = useState<ExamResult | null>(null)
   const [progress,  setProgress]  = useState<Progress>(() => loadProgress(PROGRESS))
+
+  // ── Exam-based Exam flow (آزمون tab): catalog → timed runner → result ──
+  const [examView,       setExamView]       = useState<ExamView>('catalog')
+  const [examFlowId,     setExamFlowId]     = useState<number | null>(null)
+  const [examFlowResult, setExamFlowResult] = useState<SourceExamResult | null>(null)
 
   // ── Dedicated source-exam flow (independent of the generic exam above) ──
   const [sourceView,   setSourceView]   = useState<SourceView>('catalog')
@@ -55,13 +59,12 @@ export default function App() {
   }
 
   function goToTab(t: TabId) {
+    setTab(t)
+    // Entering the exam section always starts at the exam catalog.
     if (t === 'exam') {
-      setTab('exam')
-      setExamState('active')
-      setExamResult(null)
-    } else {
-      setTab(t)
-      setExamState('idle')
+      setExamView('catalog')
+      setExamFlowId(null)
+      setExamFlowResult(null)
     }
     // Entering the source section always starts at the catalog.
     if (t === 'source') {
@@ -78,19 +81,41 @@ export default function App() {
 
   function goHome() {
     setTab('home')
-    setExamState('idle')
   }
 
-  function handleExamFinish(result: ExamResult) {
+  // ── Exam-flow handlers (آزمون tab; registry-driven timed simulation) ──
+  function openExam(id: number) {
+    setExamFlowId(id)
+    setExamFlowResult(null)
+    setExamView('active')
+  }
+
+  function finishExam(result: SourceExamResult) {
     const wrongIds = result.exam
       .filter((q, i) => result.answers[i] !== q.answer)
       .map(q => q.id)
     recordWrong(wrongIds)
-    setExamResult(result)
-    setExamState('result')
+    setExamFlowResult(result)
+    setExamView('result')
   }
 
-  // ── Source-exam flow handlers (do not touch generic exam state) ──
+  function retryExam() {
+    setExamFlowResult(null)
+    setExamView('active')
+  }
+
+  function backToExamCatalog() {
+    setExamFlowResult(null)
+    setExamFlowId(null)
+    setExamView('catalog')
+  }
+
+  function reviewExamWrong() {
+    backToExamCatalog()
+    setTab('mistakes')
+  }
+
+  // ── Source-exam flow handlers (do not touch exam-flow state) ──
   function openSourceStart(id: number) {
     setSourceExamNo(id)
     setSourceView('start')
@@ -124,7 +149,6 @@ export default function App() {
   function reviewSourceWrong() {
     backToSourceCatalog()
     setTab('mistakes')
-    setExamState('idle')
   }
 
   // ── Practice-flow handlers (تمرین tab; do not touch exam/source state) ──
@@ -219,22 +243,32 @@ export default function App() {
     }
 
     if (tab === 'exam') {
-      if (examState === 'result' && examResult) {
+      if (examView === 'active' && examFlowId != null) {
         return (
-          <ExamResultScreen
-            result={examResult}
-            onRetry={() => { setExamState('active'); setExamResult(null) }}
-            onReviewWrong={() => { setTab('mistakes'); setExamState('idle') }}
-            onHome={goHome}
+          <ExamRunnerScreen
+            examId={examFlowId}
+            fallbackPool={QUESTIONS}
+            categories={CATEGORIES}
+            onFinish={finishExam}
+            onExit={backToExamCatalog}
+          />
+        )
+      }
+      if (examView === 'result' && examFlowResult) {
+        return (
+          <ExamRunnerResultScreen
+            result={examFlowResult}
+            onReviewWrong={reviewExamWrong}
+            onRetry={retryExam}
+            onBackToExams={backToExamCatalog}
           />
         )
       }
       return (
-        <ExamScreen
-          questions={QUESTIONS}
-          categories={CATEGORIES}
-          onFinish={handleExamFinish}
-          onExit={goHome}
+        <ExamCatalogScreen
+          exams={EXAM_REGISTRY}
+          onOpenExam={openExam}
+          onExitToHome={goHome}
         />
       )
     }
@@ -258,7 +292,7 @@ export default function App() {
   }
 
   const showTabBar = !(
-    (tab === 'exam'   && examState === 'active') ||
+    (tab === 'exam'   && examView === 'active') ||
     (tab === 'source' && sourceView === 'active')
   )
 
