@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import type { TabId, ExamState, ExamResult, Progress, SourceView, SourceExamResult } from './types'
+import type { TabId, ExamState, ExamResult, Progress, SourceView, SourceExamResult, PracticeView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { examLength, passThreshold, loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
-import { PracticeScreen }    from './screens/PracticeScreen'
+import { PracticeCatalogScreen }     from './screens/PracticeCatalogScreen'
+import { PracticeExamQuestionScreen } from './screens/PracticeExamQuestionScreen'
 import { ExamScreen }        from './screens/ExamScreen'
 import { ExamResultScreen }  from './screens/ExamResultScreen'
 import { MistakesScreen }    from './screens/MistakesScreen'
@@ -14,6 +15,7 @@ import { SourceExamStartScreen }   from './screens/SourceExamStartScreen'
 import { SourceExamQuestionScreen } from './screens/SourceExamQuestionScreen'
 import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
+import { EXAM_REGISTRY }      from './data/examRegistry'
 
 const examSize  = examLength(QUESTIONS.length)
 const passScore = passThreshold(examSize)
@@ -28,6 +30,10 @@ export default function App() {
   const [sourceView,   setSourceView]   = useState<SourceView>('catalog')
   const [sourceExamNo, setSourceExamNo] = useState<number | null>(null)
   const [sourceResult, setSourceResult] = useState<SourceExamResult | null>(null)
+
+  // ── Exam-based Practice flow (تمرین tab): catalog → per-exam runner ──
+  const [practiceView,   setPracticeView]   = useState<PracticeView>('catalog')
+  const [practiceExamId, setPracticeExamId] = useState<number | null>(null)
 
   // Persist progress (bookmarks, mistakes, stats) on every change.
   useEffect(() => { saveProgress(progress) }, [progress])
@@ -62,6 +68,11 @@ export default function App() {
       setSourceView('catalog')
       setSourceExamNo(null)
       setSourceResult(null)
+    }
+    // Entering Practice always starts at the exam catalog.
+    if (t === 'practice') {
+      setPracticeView('catalog')
+      setPracticeExamId(null)
     }
   }
 
@@ -114,6 +125,17 @@ export default function App() {
     backToSourceCatalog()
     setTab('mistakes')
     setExamState('idle')
+  }
+
+  // ── Practice-flow handlers (تمرین tab; do not touch exam/source state) ──
+  function openPracticeExam(id: number) {
+    setPracticeExamId(id)
+    setPracticeView('active')
+  }
+
+  function backToPracticeCatalog() {
+    setPracticeExamId(null)
+    setPracticeView('catalog')
   }
 
   function renderScreen() {
@@ -174,13 +196,23 @@ export default function App() {
     }
 
     if (tab === 'practice') {
+      if (practiceView === 'active' && practiceExamId != null) {
+        return (
+          <PracticeExamQuestionScreen
+            examId={practiceExamId}
+            fallbackPool={QUESTIONS}
+            categories={CATEGORIES}
+            progress={progress}
+            onToggleBookmark={toggleBookmark}
+            onRecordWrong={recordWrong}
+            onExit={backToPracticeCatalog}
+          />
+        )
+      }
       return (
-        <PracticeScreen
-          questions={QUESTIONS}
-          categories={CATEGORIES}
-          progress={progress}
-          onToggleBookmark={toggleBookmark}
-          onRecordWrong={recordWrong}
+        <PracticeCatalogScreen
+          exams={EXAM_REGISTRY}
+          onOpenExam={openPracticeExam}
           onExitToHome={goHome}
         />
       )
