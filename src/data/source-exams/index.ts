@@ -24,17 +24,18 @@ import { exam12 } from './exams/exam-12'
 import { exam13 } from './exams/exam-13'
 import { exam14 } from './exams/exam-14'
 import { exam15 } from './exams/exam-15'
+import { exam16 } from './exams/exam-16'
+import { exam17 } from './exams/exam-17'
 
 /**
  * Real source exams imported from aeinname_asli.pdf.
- * Exam 1 ships with images; Exams 2–15 are text/options/answers only (image-dependent
- * questions are staged as imagePending until a later image phase). Exams 16–17 are not
- * present here yet (different page layout/encoding) and fall back to the placeholder
- * builder via `loadSourceExamQuestions`. Append exam-NN modules here as they are imported.
+ * Exam 1 ships with images; Exams 2–17 are text/options/answers only (image-dependent
+ * questions are staged as imagePending until a later image phase).
+ * All 17 exams are now present.
  */
 export const SOURCE_EXAMS_DATA: SourceExamData[] = [
   exam01, exam02, exam03, exam04, exam05, exam06, exam07, exam08,
-  exam09, exam10, exam11, exam12, exam13, exam14, exam15,
+  exam09, exam10, exam11, exam12, exam13, exam14, exam15, exam16, exam17,
 ]
 
 /** Look up a real source exam by number (1..17), or undefined if not yet authored. */
