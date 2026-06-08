@@ -11,7 +11,13 @@ import { RefreshIcon, CloseIcon } from './Icons'
  * It also asks the SW to check for updates when the app regains focus / becomes
  * visible, so long-lived sessions discover new builds without a manual navigation.
  */
-export function UpdatePrompt() {
+interface Props {
+  /** Notified when the update toast becomes visible/hidden, so the shell can
+   *  coordinate other bottom prompts (e.g. suppress the install button). Additive. */
+  onVisibleChange?: (visible: boolean) => void
+}
+
+export function UpdatePrompt({ onVisibleChange }: Props = {}) {
   const regRef = useRef<ServiceWorkerRegistration | undefined>(undefined)
 
   const {
@@ -22,6 +28,11 @@ export function UpdatePrompt() {
       regRef.current = registration
     },
   })
+
+  // Report visibility so the app shell can give the update toast priority.
+  useEffect(() => {
+    onVisibleChange?.(needRefresh)
+  }, [needRefresh, onVisibleChange])
 
   // Re-check for a waiting/new SW when the tab regains focus or becomes visible.
   useEffect(() => {
