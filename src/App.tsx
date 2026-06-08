@@ -173,7 +173,7 @@ export default function App() {
           onContinue={() => goToTab('practice')}
           onPickCategory={() => goToTab('practice')}
           onStartExam={() => goToTab('exam')}
-          onOpenSourceExams={() => goToTab('source')}
+          onOpenSourceExams={() => goToTab('exam')}
         />
       )
     }

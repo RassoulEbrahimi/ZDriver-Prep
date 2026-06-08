@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import type { ExamMeta } from '../types'
 import {
-  ChevRightIcon, ChevLeftIcon, BookIcon, ClockIcon, TrophyIcon, RefreshIcon, BulbIcon,
+  ChevRightIcon, ChevLeftIcon, BookIcon, ClockIcon, TrophyIcon, RefreshIcon, BulbIcon, PlayIcon,
 } from '../components/Icons'
 import { fa } from '../utils'
 
@@ -97,7 +97,20 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
   const official = exams.filter(e => e.official)
   const review   = exams.filter(e => !e.official)
 
+  // Random exam start — official exams (1..17) only; never Exam 18.
+  const [randomPick, setRandomPick] = useState<number | null>(null) // → reveal sheet
+  const pickOfficialId = () => official[Math.floor(Math.random() * official.length)].id
+  const rollRandom = () => { if (official.length) setRandomPick(pickOfficialId()) }
+  const reroll = () => setRandomPick(prev => {
+    if (official.length <= 1) return prev
+    let n = prev
+    while (n === prev) n = pickOfficialId()
+    return n
+  })
+  const pickedMeta = randomPick != null ? official.find(e => e.id === randomPick) : undefined
+
   return (
+    <>
     <div className="zd-scroll">
       {/* Header */}
       <div className="zd-header">
@@ -121,6 +134,40 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
       </div>
 
       <div style={{ padding: '4px 20px 8px' }}>
+        {/* Random exam CTA — official exams only */}
+        <button
+          onClick={rollRandom}
+          style={{
+            width: '100%', cursor: 'pointer', border: 'none',
+            fontFamily: 'var(--font)', textAlign: 'right',
+            padding: 18, borderRadius: 'var(--radius-lg)',
+            background: 'linear-gradient(135deg, var(--grad-via), var(--grad-to))',
+            color: '#fff', position: 'relative', overflow: 'hidden',
+            boxShadow: '0 12px 28px color-mix(in oklab, var(--grad-via) 38%, transparent)',
+            display: 'flex', alignItems: 'center', gap: 16, marginBottom: 4,
+          }}
+        >
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'radial-gradient(80% 120% at 12% 0%, color-mix(in oklab, var(--accent) 38%, transparent) 0%, transparent 55%)',
+          }} />
+          <div style={{
+            position: 'relative',
+            width: 56, height: 56, borderRadius: 18, flexShrink: 0,
+            background: 'rgba(255,255,255,0.16)',
+            border: '1px solid rgba(255,255,255,0.28)',
+            display: 'grid', placeItems: 'center', fontSize: 28,
+            backdropFilter: 'blur(6px)',
+          }}>🎲</div>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <div style={{ fontSize: 17, fontWeight: 800 }}>شروع آزمون شانسی</div>
+            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.82)', marginTop: 4, lineHeight: 1.5 }}>
+              یکی از {fa(official.length)} آزمون رسمی به‌صورت تصادفی انتخاب می‌شود
+            </div>
+          </div>
+          <ChevLeftIcon size={20} color="rgba(255,255,255,0.9)" stroke={2.4} />
+        </button>
+
         {/* Official exams 1..17 */}
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', margin: '8px 2px 12px' }}>
           <div className="zd-h2">آزمون‌های آیین‌نامه</div>
@@ -165,5 +212,40 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
         </div>
       </div>
     </div>
+
+    {/* Random exam reveal — bottom sheet (official exams 1..17 only) */}
+    {randomPick !== null && (
+      <div className="zd-backdrop" onClick={() => setRandomPick(null)}>
+        <div className="zd-sheet" onClick={e => e.stopPropagation()}>
+          <div className="zd-sheet-grip" />
+          <div style={{ textAlign: 'center', paddingTop: 4 }}>
+            <div className="zd-dice-roll" key={randomPick} style={{
+              width: 76, height: 76, borderRadius: 24, margin: '0 auto 14px',
+              background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))',
+              display: 'grid', placeItems: 'center', fontSize: 38,
+              boxShadow: '0 12px 26px color-mix(in oklab, var(--accent) 35%, transparent)',
+            }}>🎲</div>
+            <div className="zd-eyebrow" style={{ color: 'var(--accent-deep)', fontWeight: 700 }}>آزمون شانسی</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+              آزمون {fa(randomPick)} برای تو انتخاب شد
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 6, lineHeight: 1.6 }}>
+              {fa(pickedMeta?.questionCount ?? 30)} سؤال · {fa(pickedMeta?.durationMinutes ?? 20)} دقیقه · نمره قبولی {fa(pickedMeta?.passThreshold ?? 26)} از {fa(pickedMeta?.questionCount ?? 30)}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}>
+            <button onClick={() => { const n = randomPick; setRandomPick(null); onOpenExam(n) }}
+              className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 52, fontSize: 16, whiteSpace: 'nowrap' }}>
+              <PlayIcon size={17} stroke={2.4} /> شروع آزمون {fa(randomPick)}
+            </button>
+            <button onClick={reroll} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46, fontSize: 14, whiteSpace: 'nowrap' }}>
+              <RefreshIcon size={16} stroke={2.1} /> انتخاب آزمون دیگر
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
