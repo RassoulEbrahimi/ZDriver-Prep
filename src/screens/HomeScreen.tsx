@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import type { Category, Progress } from '../types'
 import { ProgressRing } from '../components/ProgressRing'
 import { JourneyPath }  from '../components/JourneyPath'
-import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon } from '../components/Icons'
+import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
 import { VIDEOS } from '../videos'
@@ -12,12 +12,11 @@ import { fa } from '../utils'
 interface Props {
   progress: Progress
   categories: Category[]
-  examSize: number
-  passScore: number
   onContinue: () => void
   onPickCategory: (cat: Category) => void
-  onStartExam: () => void
-  onOpenSourceExams: () => void
+  onPractice: () => void
+  onExam: () => void
+  onReviewMistakes: () => void
   onOpenSettings: () => void
 }
 
@@ -31,8 +30,9 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam, onOpenSourceExams, onOpenSettings }: Props) {
+export function HomeScreen({ progress, categories, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
+  const hasMistakes = progress.wrongQuestionIds.length > 0
 
   const [showGallery, setShowGallery] = useState(false)
   const [activeVideo, setActiveVideo] = useState<VideoEntry | null>(null)
@@ -103,12 +103,10 @@ export function HomeScreen({ progress, categories, examSize, passScore, onContin
 
             <div className="flex-1">
               <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 6 }}>
-                ادامهٔ مسیر یادگیری
+                مسیر آزمون رانندگی
               </div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 1.55 }}>
-                {fa(progress.answered)} از {fa(progress.totalQuestions)} سؤال
-                {' · '}
-                {fa(progress.daysToExam)} روز تا آزمون
+                ۱۷ آزمون رسمی + مرور تکمیلی
               </div>
               <button className="zd-btn zd-btn-accent" style={{ marginTop: 12, height: 42, padding: '0 18px', fontSize: 14 }}
                       onClick={onContinue}>
@@ -138,9 +136,10 @@ export function HomeScreen({ progress, categories, examSize, passScore, onContin
         </div>
       </div>
 
-      {/* ── Exam shortcut ── */}
+      {/* ── گام بعدی تو (recommendation) ── */}
       <div style={{ padding: '18px 20px 4px' }}>
-        <button onClick={onStartExam} className="zd-card" style={{
+        <div className="zd-h2" style={{ marginBottom: 10 }}>گام بعدی تو</div>
+        <button onClick={hasMistakes ? onReviewMistakes : onPractice} className="zd-card" style={{
           width: '100%', padding: 16, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', gap: 14,
           background: 'var(--card)', textAlign: 'right',
@@ -148,42 +147,80 @@ export function HomeScreen({ progress, categories, examSize, passScore, onContin
         }}>
           <div style={{
             width: 52, height: 52, borderRadius: 16,
-            background: 'linear-gradient(135deg, var(--accent), var(--accent-deep))',
+            background: hasMistakes
+              ? 'linear-gradient(135deg, var(--danger), var(--accent-deep))'
+              : 'linear-gradient(135deg, var(--primary), var(--accent))',
             display: 'grid', placeItems: 'center',
             color: '#fff', flexShrink: 0,
           }}>
-            <TrophyIcon size={26} stroke={1.9} />
+            {hasMistakes ? <FlagIcon size={24} stroke={1.9} /> : <PlayIcon size={24} stroke={1.9} />}
           </div>
           <div className="flex-1">
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>شبیه‌ساز آزمون رسمی</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{`${fa(examSize)} سؤال · ۲۰ دقیقه · امتیاز قبولی ${fa(passScore)}`}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
+              {hasMistakes ? 'مرور اشتباهات' : 'ادامه تمرین'}
+            </div>
+            <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 3, lineHeight: 1.55 }}>
+              {hasMistakes
+                ? `${fa(progress.wrongQuestionIds.length)} سؤال برای مرور داری؛ بیا اشتباه‌ها را برطرف کنیم.`
+                : 'یک آزمون را برای تمرین انتخاب کن و یادگیری را ادامه بده.'}
+            </div>
           </div>
           <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
         </button>
       </div>
 
-      {/* ── Source exams entry (آزمون‌های آیین‌نامه) ── */}
-      <div style={{ padding: '12px 20px 4px' }}>
-        <button onClick={onOpenSourceExams} className="zd-card" style={{
-          width: '100%', padding: 16, border: 'none', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: 14,
-          background: 'var(--card)', textAlign: 'right',
-          fontFamily: 'var(--font)', borderRadius: 18,
-        }}>
-          <div style={{
-            width: 52, height: 52, borderRadius: 16,
-            background: 'linear-gradient(135deg, var(--primary), var(--accent))',
-            display: 'grid', placeItems: 'center',
-            color: '#fff', flexShrink: 0,
+      {/* ── چه کار می‌خواهی بکنی؟ (Practice vs Exam decision) ── */}
+      <div style={{ padding: '18px 20px 4px' }}>
+        <div className="zd-h2" style={{ marginBottom: 12 }}>چه کار می‌خواهی بکنی؟</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          {/* تمرین */}
+          <button onClick={onPractice} className="zd-card" style={{
+            padding: 16, border: 'none', cursor: 'pointer', textAlign: 'right',
+            fontFamily: 'var(--font)', borderRadius: 18, background: 'var(--card)',
+            display: 'flex', flexDirection: 'column', gap: 10, minHeight: 136,
           }}>
-            <BookIcon size={26} stroke={1.9} />
-          </div>
-          <div className="flex-1">
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>آزمون‌های آیین‌نامه</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>۱۷ آزمون رسمی · ۳۰ سؤال · ۲۰ دقیقه</div>
-          </div>
-          <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
-        </button>
+            <div style={{
+              width: 46, height: 46, borderRadius: 14,
+              background: 'var(--primary-soft)', color: 'var(--primary)',
+              display: 'grid', placeItems: 'center',
+            }}>
+              <BookIcon size={24} stroke={1.9} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--ink)' }}>تمرین</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 4, lineHeight: 1.6 }}>
+                یادگیری، پاسخ فوری، بدون زمان
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--primary)' }}>
+              شروع <ChevLeftIcon size={15} stroke={2.4} />
+            </div>
+          </button>
+
+          {/* آزمون */}
+          <button onClick={onExam} className="zd-card" style={{
+            padding: 16, border: 'none', cursor: 'pointer', textAlign: 'right',
+            fontFamily: 'var(--font)', borderRadius: 18, background: 'var(--card)',
+            display: 'flex', flexDirection: 'column', gap: 10, minHeight: 136,
+          }}>
+            <div style={{
+              width: 46, height: 46, borderRadius: 14,
+              background: 'color-mix(in oklab, var(--accent) 16%, transparent)', color: 'var(--accent-deep)',
+              display: 'grid', placeItems: 'center',
+            }}>
+              <TrophyIcon size={24} stroke={1.9} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--ink)' }}>آزمون</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 4, lineHeight: 1.6 }}>
+                شبیه‌سازی واقعی، با زمان، نتیجه در پایان
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--accent-deep)' }}>
+              شروع <ChevLeftIcon size={15} stroke={2.4} />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* ── Tip of the day ── */}
