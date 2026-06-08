@@ -18,6 +18,7 @@ import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
 import { EXAM_REGISTRY }      from './data/examRegistry'
 import { ThemeSheet }         from './components/ThemeSheet'
+import { UpdatePrompt }       from './components/UpdatePrompt'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -334,6 +335,7 @@ export default function App() {
           onClose={() => setSettingsOpen(false)}
         />
       )}
+      <UpdatePrompt />
     </div>
   )
 }
