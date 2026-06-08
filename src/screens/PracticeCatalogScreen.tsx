@@ -49,7 +49,9 @@ function PracticeCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) =
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
         ) : (
-          <span className="zd-chip zd-chip-neutral">تمرین</span>
+          <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
+            پاسخ فوری
+          </span>
         )}
       </div>
 
@@ -72,8 +74,8 @@ function PracticeCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) =
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        <span style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--ink-3)' }}>
-          {supplementary ? 'مرور آزاد' : 'تمرین با پاسخ فوری'}
+        <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--primary)' }}>
+          {supplementary ? 'مرور آزاد' : 'شروع تمرین'}
         </span>
         <ChevLeftIcon size={16} color="var(--ink-4)" stroke={2.4} />
       </div>
@@ -104,6 +106,11 @@ export function PracticeCatalogScreen({ exams, onOpenExam, onExitToHome }: Props
           <div className="zd-h1">تمرین آزمون‌ها</div>
           <div style={{ fontSize: 13.5, color: 'var(--ink-3)', marginTop: 8, lineHeight: 1.65, maxWidth: 320 }}>
             یک آزمون را برای تمرین انتخاب کن. در حالت تمرین، بدون محدودیت زمان، پاسخ درست را بلافاصله می‌بینی.
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+              <BulbIcon size={13} stroke={2} /> پاسخ فوری · بدون زمان
+            </span>
           </div>
         </div>
       </div>
