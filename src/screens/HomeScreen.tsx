@@ -18,6 +18,7 @@ interface Props {
   onPickCategory: (cat: Category) => void
   onStartExam: () => void
   onOpenSourceExams: () => void
+  onOpenSettings: () => void
 }
 
 const pillBtn: React.CSSProperties = {
@@ -30,7 +31,7 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam, onOpenSourceExams }: Props) {
+export function HomeScreen({ progress, categories, examSize, passScore, onContinue, onPickCategory, onStartExam, onOpenSourceExams, onOpenSettings }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
 
   const [showGallery, setShowGallery] = useState(false)
@@ -85,7 +86,7 @@ export function HomeScreen({ progress, categories, examSize, passScore, onContin
                   background: 'var(--accent)', border: '1.5px solid var(--grad-via)',
                 }} />
               </button>
-              <button aria-label="تنظیمات" style={pillBtn}>
+              <button aria-label="تنظیمات" style={pillBtn} onClick={onOpenSettings}>
                 <SettingsIcon size={18} color="#fff" />
               </button>
             </div>

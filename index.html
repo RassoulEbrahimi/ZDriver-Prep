@@ -10,6 +10,21 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <title>ZDriver Prep</title>
+    <!-- Theme boot: set data-theme before first paint to avoid a flash (Phase 5C). -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem('zd-theme');
+          if (m !== 'light' && m !== 'dark' && m !== 'system') m = 'system';
+          var dark = m === 'dark' || (m === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', dark ? '#16142A' : '#4B3A8C');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

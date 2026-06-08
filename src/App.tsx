@@ -17,6 +17,9 @@ import { SourceExamQuestionScreen } from './screens/SourceExamQuestionScreen'
 import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
 import { EXAM_REGISTRY }      from './data/examRegistry'
+import { ThemeSheet }         from './components/ThemeSheet'
+import type { ThemeMode } from './theme'
+import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
 const examSize  = examLength(QUESTIONS.length)
 const passScore = passThreshold(examSize)
@@ -39,8 +42,26 @@ export default function App() {
   const [practiceView,   setPracticeView]   = useState<PracticeView>('catalog')
   const [practiceExamId, setPracticeExamId] = useState<number | null>(null)
 
+  // ── Theme (system / light / dark) ──
+  const [themeMode,    setThemeMode]    = useState<ThemeMode>(() => getStoredMode())
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
   // Persist progress (bookmarks, mistakes, stats) on every change.
   useEffect(() => { saveProgress(progress) }, [progress])
+
+  // Apply the resolved theme whenever the mode changes.
+  useEffect(() => { applyTheme(themeMode) }, [themeMode])
+
+  // While in 'system' mode, follow live OS/browser color-scheme changes.
+  useEffect(() => subscribeSystem(() => {
+    if (getStoredMode() === 'system') applyTheme('system')
+  }), [])
+
+  function selectTheme(mode: ThemeMode) {
+    setStoredMode(mode)
+    setThemeMode(mode)
+    applyTheme(mode)
+  }
 
   function toggleBookmark(id: string) {
     setProgress(p => ({
@@ -174,6 +195,7 @@ export default function App() {
           onPickCategory={() => goToTab('practice')}
           onStartExam={() => goToTab('exam')}
           onOpenSourceExams={() => goToTab('exam')}
+          onOpenSettings={() => setSettingsOpen(true)}
         />
       )
     }
@@ -303,6 +325,13 @@ export default function App() {
         <TabBar
           active={tab === 'exam' ? 'exam' : tab}
           onChange={goToTab}
+        />
+      )}
+      {settingsOpen && (
+        <ThemeSheet
+          mode={themeMode}
+          onSelect={selectTheme}
+          onClose={() => setSettingsOpen(false)}
         />
       )}
     </div>
