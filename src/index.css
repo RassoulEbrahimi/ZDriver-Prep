@@ -288,6 +288,11 @@ body {
 }
 .zd-tab.is-active { color: var(--primary-ink); }
 [data-theme="dark"] .zd-tab.is-active { color: var(--accent); }
+
+/* Dark mode: ghost buttons use --primary-ink (a dark brand color) on the now-dark
+   --primary-soft surface, which is too low-contrast. Lift the text to a readable
+   light tone while keeping the soft, secondary feel (Phase 5C-1). */
+[data-theme="dark"] .zd-btn-ghost { color: var(--ink-2); }
 .zd-tab-dot {
   width: 4px; height: 4px;
   border-radius: 50%;
