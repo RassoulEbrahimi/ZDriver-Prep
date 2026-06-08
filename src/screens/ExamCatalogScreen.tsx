@@ -84,10 +84,10 @@ function ExamCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) => vo
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        <span style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--ink-3)' }}>
-          {supplementary ? 'مرور تکمیلی' : 'شبیه‌ساز آزمون'}
+        <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent-deep)' }}>
+          {supplementary ? 'مرور تکمیلی' : 'شروع آزمون'}
         </span>
-        <ChevLeftIcon size={16} color="var(--ink-4)" stroke={2.4} />
+        <ChevLeftIcon size={16} color="var(--accent-deep)" stroke={2.4} />
       </div>
     </button>
   )
@@ -129,6 +129,14 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
           <div className="zd-h1">آزمون‌ها</div>
           <div style={{ fontSize: 13.5, color: 'var(--ink-3)', marginTop: 8, lineHeight: 1.65, maxWidth: 320 }}>
             یک آزمون را انتخاب کن و در شرایط واقعی امتحان بده: با زمان‌بندی و بدون نمایش فوری پاسخ. نتیجه در پایان نمایش داده می‌شود.
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <span className="zd-chip" style={{
+              background: 'color-mix(in oklab, var(--accent) 14%, transparent)',
+              color: 'var(--accent-deep)',
+            }}>
+              <ClockIcon size={13} stroke={2} /> با زمان · نتیجه در پایان
+            </span>
           </div>
         </div>
       </div>
