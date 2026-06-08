@@ -102,7 +102,7 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 12,
             background: lowTime ? 'var(--danger-soft)' : 'var(--primary-soft)',
-            color: lowTime ? 'var(--danger)' : 'var(--primary-ink)', fontWeight: 700,
+            color: lowTime ? 'var(--danger)' : 'var(--ink)', fontWeight: 700,
           }}>
             <ClockIcon size={16} stroke={2.2} />
             <span className="zd-num" style={{ fontSize: 15, letterSpacing: 0.5 }}>{formatTime(timeLeft)}</span>
