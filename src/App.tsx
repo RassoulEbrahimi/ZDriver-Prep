@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { TabId, Progress, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
-import { examLength, passThreshold, loadProgress, saveProgress } from './utils'
+import { loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
 import { HomeScreen }        from './screens/HomeScreen'
 import { PracticeCatalogScreen }     from './screens/PracticeCatalogScreen'
@@ -22,9 +22,6 @@ import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
-
-const examSize  = examLength(QUESTIONS.length)
-const passScore = passThreshold(examSize)
 
 export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
@@ -194,12 +191,11 @@ export default function App() {
         <HomeScreen
           progress={progress}
           categories={CATEGORIES}
-          examSize={examSize}
-          passScore={passScore}
           onContinue={() => goToTab('practice')}
           onPickCategory={() => goToTab('practice')}
-          onStartExam={() => goToTab('exam')}
-          onOpenSourceExams={() => goToTab('exam')}
+          onPractice={() => goToTab('practice')}
+          onExam={() => goToTab('exam')}
+          onReviewMistakes={() => goToTab('mistakes')}
           onOpenSettings={() => setSettingsOpen(true)}
         />
       )
