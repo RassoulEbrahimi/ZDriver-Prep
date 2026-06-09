@@ -20,6 +20,7 @@ import { EXAM_REGISTRY }      from './data/examRegistry'
 import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
+import { AuthSheet }          from './components/AuthSheet'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -44,6 +45,9 @@ export default function App() {
   // ── Theme (system / light / dark) ──
   const [themeMode,    setThemeMode]    = useState<ThemeMode>(() => getStoredMode())
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  // ── Account / auth sheet (Phase 7B) ──
+  const [authSheetOpen, setAuthSheetOpen] = useState(false)
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
@@ -197,6 +201,7 @@ export default function App() {
           onExam={() => goToTab('exam')}
           onReviewMistakes={() => goToTab('mistakes')}
           onOpenSettings={() => setSettingsOpen(true)}
+          onOpenAccount={() => setAuthSheetOpen(true)}
         />
       )
     }
@@ -334,6 +339,9 @@ export default function App() {
           onSelect={selectTheme}
           onClose={() => setSettingsOpen(false)}
         />
+      )}
+      {authSheetOpen && (
+        <AuthSheet onClose={() => setAuthSheetOpen(false)} />
       )}
       <UpdatePrompt onVisibleChange={setUpdateVisible} />
       <InstallPrompt hidden={updateVisible} />

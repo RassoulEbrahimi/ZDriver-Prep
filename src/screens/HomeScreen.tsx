@@ -5,6 +5,7 @@ import { JourneyPath }  from '../components/JourneyPath'
 import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
+import { useAuth }      from '../auth/useAuth'
 import { VIDEOS } from '../videos'
 import type { VideoEntry } from '../videos'
 import { fa } from '../utils'
@@ -18,6 +19,7 @@ interface Props {
   onExam: () => void
   onReviewMistakes: () => void
   onOpenSettings: () => void
+  onOpenAccount: () => void
 }
 
 const pillBtn: React.CSSProperties = {
@@ -30,9 +32,13 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings }: Props) {
+export function HomeScreen({ progress, categories, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings, onOpenAccount }: Props) {
   const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
   const hasMistakes = progress.wrongQuestionIds.length > 0
+
+  const { status, user } = useAuth()
+  const authed = status === 'authed' && !!user
+  const avatarChar = authed && user?.email ? user.email[0]!.toUpperCase() : 'ز'
 
   const [showGallery, setShowGallery] = useState(false)
   const [activeVideo, setActiveVideo] = useState<VideoEntry | null>(null)
@@ -60,7 +66,8 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
         <div className="relative" style={{ padding: '54px 20px 28px' }}>
           {/* Top row */}
           <div className="flex justify-between items-center" style={{ marginBottom: 18 }}>
-            <div className="flex items-center" style={{ gap: 10 }}>
+            <button onClick={onOpenAccount} aria-label="حساب کاربری" className="flex items-center"
+              style={{ gap: 10, background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font)', padding: 0, textAlign: 'right' }}>
               <div style={{
                 width: 38, height: 38, borderRadius: 14,
                 background: 'rgba(255,255,255,0.18)',
@@ -68,12 +75,21 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
                 display: 'grid', placeItems: 'center',
                 color: '#fff', fontWeight: 800, fontSize: 14,
                 backdropFilter: 'blur(10px)',
-              }}>ز</div>
+              }}>{avatarChar}</div>
               <div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>سلام،</div>
-                <div style={{ fontSize: 15, color: '#fff', fontWeight: 700 }}>زهرا</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{authed ? 'حساب من' : 'سلام،'}</div>
+                {authed ? (
+                  <div style={{ fontSize: 13, color: '#fff', fontWeight: 700, maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', direction: 'ltr', textAlign: 'right' }}>
+                    {user?.email}
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 15, color: '#fff', fontWeight: 700 }}>زهرا</div>
+                    <div style={{ fontSize: 10.5, color: 'var(--accent-warm)', fontWeight: 600, marginTop: 1 }}>ورود / ثبت‌نام</div>
+                  </>
+                )}
               </div>
-            </div>
+            </button>
             <div className="flex" style={{ gap: 8 }}>
               <button aria-label="آموزش تصویری" style={pillBtn} onClick={() => setShowGallery(true)}>
                 <VideoIcon size={18} color="#fff" />
