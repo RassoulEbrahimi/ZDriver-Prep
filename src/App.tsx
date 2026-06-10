@@ -16,13 +16,13 @@ import { SourceExamStartScreen }   from './screens/SourceExamStartScreen'
 import { SourceExamQuestionScreen } from './screens/SourceExamQuestionScreen'
 import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
-import { EXAM_REGISTRY }      from './data/examRegistry'
+import { EXAM_REGISTRY, getExamMeta } from './data/examRegistry'
 import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
-import { writeExamProgress }  from './data/progress/repo'
+import { writeExamProgress, appendExamAttempt } from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -129,6 +129,33 @@ export default function App() {
     recordWrong(wrongIds)
     setExamFlowResult(result)
     setExamView('result')
+    mirrorExamAttempt(result, wrongIds)
+  }
+
+  // Mirror one finished exam attempt to Firestore (Phase 7H). Best-effort: only
+  // when authed, fire-and-forget, never awaited, never blocks scoring or result
+  // navigation. Appends to examAttempts and updates a safe subset of examProgress
+  // (no bestScore / aggregate passed — those need reads to maintain correctly).
+  function mirrorExamAttempt(result: SourceExamResult, wrongIds: string[]) {
+    if (status !== 'authed' || !user?.uid) return
+    const meta = getExamMeta(result.examNo)
+    const passThreshold = meta?.passThreshold ?? Math.ceil(result.total * 26 / 30)
+    const passed = result.correct >= passThreshold
+    void appendExamAttempt(user.uid, {
+      examId: result.examNo,
+      score: result.correct,
+      totalQuestions: result.total,
+      passed,
+      durationSeconds: result.timeUsed,
+      wrongIds,
+    }).catch(() => undefined)
+    void writeExamProgress(user.uid, {
+      examId: result.examNo,
+      official: meta?.official ?? true,
+      wrongIds,
+      lastScore: result.correct,
+      touchAttemptAt: true,
+    }).catch(() => undefined)
   }
 
   function retryExam() {
