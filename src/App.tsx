@@ -21,6 +21,8 @@ import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
+import { useAuth }            from './auth/useAuth'
+import { writeExamProgress }  from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -48,6 +50,9 @@ export default function App() {
 
   // ── Account / auth sheet (Phase 7B) ──
   const [authSheetOpen, setAuthSheetOpen] = useState(false)
+
+  // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
+  const { status, user } = useAuth()
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
@@ -189,6 +194,22 @@ export default function App() {
     setPracticeView('catalog')
   }
 
+  // Mirror one answered Practice question to Firestore (Phase 7G). Best-effort:
+  // only when authed, fire-and-forget, never awaited, never blocks the UI. The
+  // localStorage Progress above stays the runtime source of truth.
+  function mirrorPracticeAnswer(a: { questionId: string; correct: boolean; index: number; official: boolean }) {
+    if (status !== 'authed' || !user?.uid || practiceExamId == null) return
+    void writeExamProgress(user.uid, {
+      examId: practiceExamId,
+      official: a.official,
+      answeredIds: [a.questionId],
+      correctIds: a.correct ? [a.questionId] : undefined,
+      wrongIds:   a.correct ? undefined : [a.questionId],
+      lastQuestionIndex: a.index,
+      touchPracticedAt: true,
+    }).catch(() => undefined)
+  }
+
   function renderScreen() {
     if (tab === 'home') {
       return (
@@ -257,6 +278,7 @@ export default function App() {
             progress={progress}
             onToggleBookmark={toggleBookmark}
             onRecordWrong={recordWrong}
+            onPracticeAnswer={mirrorPracticeAnswer}
             onExit={backToPracticeCatalog}
           />
         )
