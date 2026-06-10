@@ -16,6 +16,9 @@ interface Props {
   progress: Progress
   onToggleBookmark: (id: string) => void
   onRecordWrong: (ids: string[]) => void
+  /** Best-effort cloud mirror of a single answered question (Phase 7G). The
+   *  screen stays cloud-agnostic — App owns the actual Firestore write. */
+  onPracticeAnswer?: (a: { questionId: string; correct: boolean; index: number; official: boolean }) => void
   /** Back to the practice catalog. */
   onExit: () => void
 }
@@ -29,7 +32,7 @@ const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
  * QuestionImagePlaceholder (real image for Exam 1, striped placeholder otherwise).
  */
 export function PracticeExamQuestionScreen({
-  examId, fallbackPool, categories, progress, onToggleBookmark, onRecordWrong, onExit,
+  examId, fallbackPool, categories, progress, onToggleBookmark, onRecordWrong, onPracticeAnswer, onExit,
 }: Props) {
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
@@ -65,7 +68,10 @@ export function PracticeExamQuestionScreen({
   function handleCheck() {
     if (selected === null) return
     setSubmitted(true)
-    if (selected !== correctIdx) onRecordWrong([q.id])
+    const correct = selected === correctIdx
+    if (!correct) onRecordWrong([q.id])
+    // Best-effort cloud mirror (Phase 7G); App decides whether to write.
+    onPracticeAnswer?.({ questionId: q.id, correct, index: idx, official })
   }
 
   function handleNext() {
