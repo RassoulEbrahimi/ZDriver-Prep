@@ -8,6 +8,7 @@
 
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { getAuth, type Auth } from 'firebase/auth'
+import type { Firestore } from 'firebase/firestore'
 
 const env = import.meta.env
 
@@ -54,4 +55,28 @@ if (isFirebaseConfigured) {
 /** The Auth instance, or null when Firebase is unavailable/unconfigured. */
 export function getAuthInstance(): Auth | null {
   return auth
+}
+
+// ── Firestore (lazy; Phase 7D) ────────────────────────────────────────────
+// Firestore is initialized only on first use via a dynamic import, so the
+// Firestore SDK is code-split into a chunk that is never loaded until a caller
+// (a later phase) actually needs it. Auth is unaffected. Offline persistence is
+// intentionally NOT enabled (deferred). Never throws.
+
+let db: Firestore | null = null
+let dbInitTried = false
+
+/** The Firestore instance, or null when Firebase is unavailable/unconfigured. */
+export async function getDb(): Promise<Firestore | null> {
+  if (db) return db
+  if (dbInitTried) return db
+  dbInitTried = true
+  if (!app) return null
+  try {
+    const { getFirestore } = await import('firebase/firestore')
+    db = getFirestore(app)
+  } catch {
+    db = null
+  }
+  return db
 }

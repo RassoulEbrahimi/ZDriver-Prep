@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// ZDriver Prep — owner-only access. Each authenticated user can read/write ONLY
+// their own data tree under users/{uid}. Everything else is denied by default.
+// API keys are client-public; these rules are the real protection.
+//
+// Deploy manually (not from CI): firebase deploy --only firestore:rules --project <id>
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // All other paths: no access.
+  }
+}
