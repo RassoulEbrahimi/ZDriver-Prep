@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import type { Question, Category, SourceExamResult } from '../types'
 import { CloseIcon, FlagIcon, ClockIcon, ImageIcon, ChevRightIcon, ChevLeftIcon, ShieldIcon } from '../components/Icons'
 import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
@@ -40,11 +40,20 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   const [selected, setSelected] = useState<number | null>(null)
   const [timeLeft, setTimeLeft] = useState(duration)
 
+  // Finish guard — the exam finalizes at most once per runner instance
+  // (protects against timer-expiry racing a manual finish tap).
+  const didFinishRef = useRef(false)
+
+  // Always points at a finish closure from the LATEST render, so the mount-only
+  // timer below never submits stale first-render answers/time state.
+  const latestFinishRef = useRef<() => void>(() => {})
+  latestFinishRef.current = () => finish(answers)
+
   // Timer — auto-submits when it reaches zero.
   useEffect(() => {
     const t = setInterval(() => {
       setTimeLeft(s => {
-        if (s <= 1) { clearInterval(t); finish(answers); return 0 }
+        if (s <= 1) { clearInterval(t); latestFinishRef.current(); return 0 }
         return s - 1
       })
     }, 1000)
@@ -68,6 +77,8 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   }
 
   function finish(currentAnswers: (number | null)[]) {
+    if (didFinishRef.current) return
+    didFinishRef.current = true
     const updated = [...currentAnswers]
     updated[idx] = selected
     const correct = updated.filter((a, i) => a === exam[i].answer).length
