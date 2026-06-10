@@ -1,14 +1,14 @@
-// Phase 7E — Cloud progress write repository (best-effort, fail-soft, NO callers).
+// Phase 7E — Cloud progress repository (best-effort, fail-soft).
 //
-// A thin write layer over Firestore for the Phase 7C model. Every function is
-// best-effort and NEVER throws: it returns a WriteResult instead. Firestore is
+// A thin layer over Firestore for the Phase 7C model. Every function is
+// best-effort and NEVER throws: it returns a result object instead. Firestore is
 // the additive cloud mirror only — localStorage/in-memory Progress stays the
-// runtime source of truth. The Firestore write APIs are loaded via a dynamic
-// import so the SDK stays in the lazy code-split chunk; nothing imports this
-// module at runtime yet, so it tree-shakes out of production entirely.
+// runtime source of truth. The Firestore APIs are loaded via a dynamic import
+// so the SDK stays in the lazy code-split chunk.
 //
 // Inputs are plain app-level objects; this module maps them to Firestore docs.
-// No reads, no listeners, no offline persistence, no questionProgress writes.
+// One-time reads only (Phase 7I hydration) — no listeners, no offline
+// persistence, no questionProgress writes.
 
 import type { Firestore } from 'firebase/firestore'
 import { getDb } from '../../firebase/client'
@@ -17,16 +17,19 @@ import {
   userPath, summaryPath, examProgressPath, examAttemptsPath, bookmarksPath,
 } from './types'
 
+/** Shared failure shape for write and read results (fail-soft, never thrown). */
+type RepoFailure = { ok: false; reason: 'unavailable' | 'unauthed' | 'error'; message?: string }
+
 export type WriteResult =
   | { ok: true }
-  | { ok: false; reason: 'unavailable' | 'unauthed' | 'error'; message?: string }
+  | RepoFailure
 
-const UNAUTHED: WriteResult    = { ok: false, reason: 'unauthed' }
-const UNAVAILABLE: WriteResult = { ok: false, reason: 'unavailable' }
+const UNAUTHED: RepoFailure    = { ok: false, reason: 'unauthed' }
+const UNAVAILABLE: RepoFailure = { ok: false, reason: 'unavailable' }
 
-function fail(e: unknown): WriteResult {
+function fail(e: unknown): RepoFailure {
   const message = e instanceof Error ? e.message : String(e)
-  if (import.meta.env.DEV) console.debug('[progress repo] write failed:', e)
+  if (import.meta.env.DEV) console.debug('[progress repo] call failed:', e)
   return { ok: false, reason: 'error', message }
 }
 
@@ -34,10 +37,10 @@ function fail(e: unknown): WriteResult {
 type Fs = typeof import('firebase/firestore')
 
 /**
- * Resolve { db, fs } or a failure WriteResult. Distinguish at the call-site with
- * `'ok' in ctx` (a WriteResult has `ok`; the success context does not).
+ * Resolve { db, fs } or a RepoFailure. Distinguish at the call-site with
+ * `'ok' in ctx` (a failure has `ok`; the success context does not).
  */
-async function ctx(uid: string): Promise<{ db: Firestore; fs: Fs } | WriteResult> {
+async function ctx(uid: string): Promise<{ db: Firestore; fs: Fs } | RepoFailure> {
   if (!uid) return UNAUTHED
   let db: Firestore | null
   try {
@@ -204,6 +207,44 @@ export async function writeBookmarks(uid: string, changes: { add?: string[]; rem
       await fs.setDoc(ref, { questionIds: fs.arrayUnion(...changes.add), updatedAt: fs.serverTimestamp() }, { merge: true })
     }
     return { ok: true }
+  } catch (e) {
+    return fail(e)
+  }
+}
+
+// ── Read functions (Phase 7I — one-time gets only; no listeners) ────────────
+
+/** Minimal per-exam read projection — only the fields hydration needs. */
+export interface ExamProgressReadItem {
+  examId: number
+  wrongQuestionIds: string[]
+}
+
+export type ReadExamProgressResult =
+  | { ok: true; items: ExamProgressReadItem[] }
+  | RepoFailure
+
+/**
+ * users/{uid}/examProgress — one-time getDocs of all per-exam progress docs
+ * (≤18 by the exam registry). Best-effort and never throws; docs are validated
+ * defensively (non-array wrongQuestionIds → empty array, non-string ids dropped).
+ */
+export async function readAllExamProgress(uid: string): Promise<ReadExamProgressResult> {
+  const c = await ctx(uid)
+  if ('ok' in c) return c
+  const { db, fs } = c
+  try {
+    const snap = await fs.getDocs(fs.collection(db, `users/${uid}/examProgress`))
+    const items: ExamProgressReadItem[] = []
+    snap.forEach(d => {
+      const data = d.data()
+      const examId = typeof data.examId === 'number' ? data.examId : Number(d.id)
+      const wrongQuestionIds = Array.isArray(data.wrongQuestionIds)
+        ? data.wrongQuestionIds.filter((x): x is string => typeof x === 'string')
+        : []
+      items.push({ examId, wrongQuestionIds })
+    })
+    return { ok: true, items }
   } catch (e) {
     return fail(e)
   }

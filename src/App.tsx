@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { TabId, Progress, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { loadProgress, saveProgress } from './utils'
@@ -22,7 +22,7 @@ import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
-import { writeExamProgress, appendExamAttempt } from './data/progress/repo'
+import { writeExamProgress, appendExamAttempt, readAllExamProgress } from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -53,6 +53,30 @@ export default function App() {
 
   // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
   const { status, user } = useAuth()
+
+  // ── Cloud hydration (Phase 7I) — one-time per uid per session. Unions the
+  // cloud wrong-question pool into local progress. Strictly additive: local
+  // progress is never shrunk, cleared, or otherwise overwritten; any failure
+  // is a silent no-op and the app keeps running on local data.
+  const hydratedUidRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (status !== 'authed' || !user?.uid) {
+      hydratedUidRef.current = null
+      return
+    }
+    if (hydratedUidRef.current === user.uid) return
+    hydratedUidRef.current = user.uid
+    void readAllExamProgress(user.uid).then(res => {
+      if (!res.ok) return
+      const cloudIds = res.items.flatMap(it => it.wrongQuestionIds)
+      if (cloudIds.length === 0) return
+      setProgress(p => {
+        const fresh = [...new Set(cloudIds.filter(id => !p.wrongQuestionIds.includes(id)))]
+        if (fresh.length === 0) return p // no new ids — skip the update entirely
+        return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
+      })
+    }).catch(() => undefined)
+  }, [status, user])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
