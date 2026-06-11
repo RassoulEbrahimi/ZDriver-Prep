@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import type { TabId, Progress, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
+import React, { useState, useEffect, useRef } from 'react'
+import type { TabId, Progress, Question, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
@@ -16,15 +16,25 @@ import { SourceExamStartScreen }   from './screens/SourceExamStartScreen'
 import { SourceExamQuestionScreen } from './screens/SourceExamQuestionScreen'
 import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
+import { SOURCE_EXAMS_DATA }  from './data/source-exams'
+import { toSourceExamQuestion } from './data/source-exams/adapter'
 import { EXAM_REGISTRY, getExamMeta } from './data/examRegistry'
 import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
-import { writeExamProgress, appendExamAttempt } from './data/progress/repo'
+import { writeExamProgress, appendExamAttempt, readAllExamProgress } from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
+
+// Combined review pool (Phase 7I-1): generic bank + all real source-exam
+// questions, so Mistakes can resolve both 'ir-q*' and 'se-NN-MM' wrong ids
+// (the two id families are disjoint by design). Static data — built once.
+const REVIEW_QUESTIONS: Question[] = [
+  ...QUESTIONS,
+  ...SOURCE_EXAMS_DATA.flatMap(e => e.questions.map(toSourceExamQuestion)),
+]
 
 export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
@@ -53,6 +63,30 @@ export default function App() {
 
   // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
   const { status, user } = useAuth()
+
+  // ── Cloud hydration (Phase 7I) — one-time per uid per session. Unions the
+  // cloud wrong-question pool into local progress. Strictly additive: local
+  // progress is never shrunk, cleared, or otherwise overwritten; any failure
+  // is a silent no-op and the app keeps running on local data.
+  const hydratedUidRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (status !== 'authed' || !user?.uid) {
+      hydratedUidRef.current = null
+      return
+    }
+    if (hydratedUidRef.current === user.uid) return
+    hydratedUidRef.current = user.uid
+    void readAllExamProgress(user.uid).then(res => {
+      if (!res.ok) return
+      const cloudIds = res.items.flatMap(it => it.wrongQuestionIds)
+      if (cloudIds.length === 0) return
+      setProgress(p => {
+        const fresh = [...new Set(cloudIds.filter(id => !p.wrongQuestionIds.includes(id)))]
+        if (fresh.length === 0) return p // no new ids — skip the update entirely
+        return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
+      })
+    }).catch(() => undefined)
+  }, [status, user])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
@@ -354,7 +388,7 @@ export default function App() {
       return (
         <MistakesScreen
           progress={progress}
-          questions={QUESTIONS}
+          questions={REVIEW_QUESTIONS}
           categories={CATEGORIES}
           onRetry={() => goToTab('practice')}
         />
