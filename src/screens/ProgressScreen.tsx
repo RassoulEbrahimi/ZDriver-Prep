@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react'
 import type { Category, Progress, Question } from '../types'
 import type { ExamAttemptReadItem } from '../data/progress/repo'
+import { ProgressRing } from '../components/ProgressRing'
 import { StatCard } from '../components/StatCard'
 import {
-  CheckIcon, CloseIcon, BookmarkFilledIcon, TargetIcon, AwardIcon, TrophyIcon, FlagIcon,
+  CheckIcon, CloseIcon, BookmarkFilledIcon, TargetIcon, AwardIcon, TrophyIcon,
+  FlagIcon, ShieldIcon, LockIcon, RefreshIcon,
 } from '../components/Icons'
 import { fa } from '../utils'
 
@@ -19,11 +21,39 @@ interface Props {
   onOpenAccount?: () => void
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000
+/** Persian weekday initial, indexed by JS Date.getDay() (0 = Sunday). */
+const WEEKDAY_LETTERS = ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش']
+
+/** Simple percentage bar chart (0..100 absolute scale — bars are real score %). */
+function WeekBarChart({ days }: { days: { label: string; pct: number }[] }) {
+  return (
+    <div className="flex items-end" style={{ gap: 8, height: 76 }}>
+      {days.map((d, i) => (
+        <div key={i} className="flex-1 flex flex-col items-center" style={{ gap: 6 }}>
+          <div className="flex-1 w-full flex items-end">
+            <div style={{
+              width: '100%',
+              height: `${Math.max(d.pct, 4)}%`,
+              borderRadius: '8px 8px 4px 4px',
+              background: d.pct > 0
+                ? 'linear-gradient(180deg, var(--accent), var(--accent-deep))'
+                : 'var(--line)',
+              opacity: d.pct > 0 ? 1 : 0.6,
+            }} />
+          </div>
+          <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{d.label}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /**
  * Real Progress screen MVP (Phase 7J). Every number shown traces to real data:
- * exam stats come from cloud examAttempts (authed, in-memory), mistake/bookmark
- * counts and weak categories come from local progress. No fake readiness,
- * streaks, charts, or achievements.
+ * exam stats, readiness ring, the 7-day trend, and badges come from cloud
+ * examAttempts (authed, in-memory); mistake/bookmark counts and weak categories
+ * come from local progress. Missing data is stated honestly, never faked.
  */
 export function ProgressScreen({
   progress, categories, questions, authed, attempts, onStartExam, onOpenAccount,
@@ -41,6 +71,46 @@ export function ProgressScreen({
     const avg    = Math.round(sorted.reduce((s, a) => s + a.score, 0) / sorted.length)
     return { count: sorted.length, latest, best, avg }
   }, [attempts])
+
+  // Readiness = best exam score as a percentage. Labeled honestly below.
+  const readiness = examStats
+    ? Math.round((examStats.best.score / examStats.best.totalQuestions) * 100)
+    : 0
+  const readyLabel = !examStats
+    ? 'هنوز آزمونی ثبت نشده'
+    : readiness >= 75 ? 'آمادهٔ آزمون' : readiness >= 50 ? 'مسیر خوبی داری' : 'هنوز نیاز به تمرین داری'
+  const readyColor = readiness >= 75 ? 'var(--success)' : readiness >= 50 ? 'var(--accent)' : 'var(--warn)'
+
+  // ── Last 7 days of exam scores (best score % per day, real dates) ──
+  const week = useMemo(() => {
+    if (!attempts || attempts.length === 0) return null
+    const start = new Date(); start.setHours(0, 0, 0, 0)
+    const todayStart = start.getTime()
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const dayStart = todayStart - (6 - i) * DAY_MS
+      const pct = attempts.reduce((best, a) => {
+        if (a.finishedAtMillis === null) return best
+        if (a.finishedAtMillis < dayStart || a.finishedAtMillis >= dayStart + DAY_MS) return best
+        return Math.max(best, Math.round((a.score / a.totalQuestions) * 100))
+      }, 0)
+      return { label: WEEKDAY_LETTERS[new Date(dayStart).getDay()]!, pct }
+    })
+    const bestOfWeek = Math.max(...days.map(d => d.pct))
+    return { days, bestOfWeek, hasData: bestOfWeek > 0 }
+  }, [attempts])
+
+  // ── Badges — unlocked only by real, verifiable activity ──
+  const badges = useMemo(() => {
+    const a = attempts ?? []
+    return [
+      { icon: FlagIcon,    label: 'اولین آزمون',  got: a.length >= 1,                                  color: 'var(--primary)' },
+      { icon: AwardIcon,   label: 'قبولی اول',    got: a.some(x => x.passed),                          color: 'var(--success)' },
+      { icon: ShieldIcon,  label: 'نمرهٔ کامل',    got: a.some(x => x.score === x.totalQuestions),      color: 'var(--accent-deep)' },
+      { icon: TargetIcon,  label: '۵ آزمون',      got: a.length >= 5,                                  color: 'var(--accent)' },
+      { icon: TrophyIcon,  label: '۱۰ آزمون',     got: a.length >= 10,                                 color: 'var(--primary)' },
+      { icon: RefreshIcon, label: 'مرور فعال',    got: wrongCount > 0 || bookmarkCount > 0,            color: 'var(--danger)' },
+    ]
+  }, [attempts, wrongCount, bookmarkCount])
 
   // ── Weak categories: share of the wrong pool per category (real data) ──
   const weakCats = useMemo(() => {
@@ -76,6 +146,29 @@ export function ProgressScreen({
       </div>
 
       <div style={{ padding: '0 20px 24px' }}>
+        {/* ── وضعیت آزمون (readiness ring — real best-exam score) ── */}
+        {authed && attempts !== null && (
+          <div className="zd-card flex items-center" style={{ padding: 22, gap: 18, marginBottom: 20 }}>
+            <ProgressRing value={readiness} size={110} stroke={10} color={readyColor} bg="var(--line)">
+              <div className="zd-num" style={{ fontSize: 26, fontWeight: 800, color: 'var(--ink)' }}>
+                {fa(readiness)}<span style={{ fontSize: 14 }}>٪</span>
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>آمادگی</div>
+            </ProgressRing>
+            <div className="flex-1">
+              <div className="zd-eyebrow" style={{ color: readyColor, fontWeight: 700 }}>وضعیت آزمون</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)', marginTop: 4, lineHeight: 1.3 }}>
+                {readyLabel}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 6, lineHeight: 1.6 }}>
+                {examStats
+                  ? `بر اساس بهترین نمرهٔ آزمون: ${fa(examStats.best.score)} از ${fa(examStats.best.totalQuestions)}`
+                  : 'برای تخمین آمادگی، یک آزمون انجام بده.'}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── کارنامهٔ آزمون‌ها ── */}
         <div className="zd-h2" style={{ marginBottom: 12 }}>کارنامهٔ آزمون‌ها</div>
 
@@ -150,6 +243,30 @@ export function ProgressScreen({
                 icon={AwardIcon}
               />
             </div>
+
+            {/* ── نمره‌های ۷ روز اخیر (real attempt dates and scores) ── */}
+            {week && (
+              <div className="zd-card" style={{ padding: 18, marginTop: 14 }}>
+                <div className="flex justify-between items-baseline" style={{ marginBottom: 14 }}>
+                  <div>
+                    <div className="zd-eyebrow">نمره‌های ۷ روز اخیر</div>
+                    {week.hasData && (
+                      <div className="zd-num" style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+                        {fa(week.bestOfWeek)}<span style={{ fontSize: 13 }}>٪</span>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-3)', marginRight: 6 }}>بهترین نمرهٔ هفته</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {week.hasData ? (
+                  <WeekBarChart days={week.days} />
+                ) : (
+                  <div style={{ fontSize: 13, color: 'var(--ink-3)', textAlign: 'center', padding: '12px 0', lineHeight: 1.6 }}>
+                    در ۷ روز اخیر آزمونی ثبت نشده
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
 
@@ -220,6 +337,31 @@ export function ProgressScreen({
             )}
           </>
         )}
+
+        {/* ── نشان‌های من (unlocked only by real activity) ── */}
+        <div style={{ marginTop: 20 }}>
+          <div className="zd-h2" style={{ marginBottom: 12 }}>نشان‌های من</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            {badges.map(({ icon: Icon, label, got, color }, i) => (
+              <div key={i} style={{
+                textAlign: 'center', padding: '12px 6px', borderRadius: 16,
+                background: got ? 'var(--card)' : 'var(--bg-deeper)',
+                border: '1px solid var(--line)',
+                opacity: got ? 1 : 0.55,
+              }}>
+                <div style={{
+                  width: 44, height: 44, borderRadius: 14, margin: '0 auto',
+                  background: got ? `color-mix(in oklab, ${color} 16%, transparent)` : 'var(--line)',
+                  color: got ? color : 'var(--ink-4)',
+                  display: 'grid', placeItems: 'center', marginBottom: 6,
+                }}>
+                  {got ? <Icon size={22} /> : <LockIcon size={18} />}
+                </div>
+                <div style={{ fontSize: 10.5, color: 'var(--ink-2)', lineHeight: 1.3 }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
