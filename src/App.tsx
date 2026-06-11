@@ -24,7 +24,10 @@ import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
-import { writeExamProgress, appendExamAttempt, readAllExamProgress } from './data/progress/repo'
+import {
+  writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
+  type ExamAttemptReadItem,
+} from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -64,14 +67,20 @@ export default function App() {
   // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
   const { status, user } = useAuth()
 
-  // ── Cloud hydration (Phase 7I) — one-time per uid per session. Unions the
-  // cloud wrong-question pool into local progress. Strictly additive: local
-  // progress is never shrunk, cleared, or otherwise overwritten; any failure
-  // is a silent no-op and the app keeps running on local data.
+  // ── Recent exam attempts (Phase 7J) — in-memory only, never persisted.
+  // null = not loaded / unavailable / read failed; [] = loaded, no attempts yet.
+  const [recentAttempts, setRecentAttempts] = useState<ExamAttemptReadItem[] | null>(null)
+
+  // ── Cloud hydration (Phase 7I/7J) — one-time per uid per session. Unions the
+  // cloud wrong-question pool into local progress and loads recent exam attempts
+  // into memory. Strictly additive: local progress is never shrunk, cleared, or
+  // otherwise overwritten; any failure is a silent no-op and the app keeps
+  // running on local data.
   const hydratedUidRef = useRef<string | null>(null)
   useEffect(() => {
     if (status !== 'authed' || !user?.uid) {
       hydratedUidRef.current = null
+      setRecentAttempts(null)
       return
     }
     if (hydratedUidRef.current === user.uid) return
@@ -85,6 +94,9 @@ export default function App() {
         if (fresh.length === 0) return p // no new ids — skip the update entirely
         return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
       })
+    }).catch(() => undefined)
+    void readRecentExamAttempts(user.uid).then(res => {
+      if (res.ok) setRecentAttempts(res.items)
     }).catch(() => undefined)
   }, [status, user])
 
@@ -396,7 +408,17 @@ export default function App() {
     }
 
     if (tab === 'progress') {
-      return <ProgressScreen progress={progress} categories={CATEGORIES} />
+      return (
+        <ProgressScreen
+          progress={progress}
+          categories={CATEGORIES}
+          questions={REVIEW_QUESTIONS}
+          authed={status === 'authed'}
+          attempts={recentAttempts}
+          onStartExam={() => goToTab('exam')}
+          onOpenAccount={() => setAuthSheetOpen(true)}
+        />
+      )
     }
 
     return null
