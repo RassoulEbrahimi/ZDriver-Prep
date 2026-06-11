@@ -249,3 +249,59 @@ export async function readAllExamProgress(uid: string): Promise<ReadExamProgress
     return fail(e)
   }
 }
+
+/** Minimal per-attempt read projection — only the fields the Progress UI needs. */
+export interface ExamAttemptReadItem {
+  examId: number
+  score: number
+  totalQuestions: number
+  passed: boolean
+  finishedAtMillis: number | null
+}
+
+export type ReadExamAttemptsResult =
+  | { ok: true; items: ExamAttemptReadItem[] }
+  | RepoFailure
+
+/**
+ * users/{uid}/examAttempts — one-time getDocs of the most recent attempts,
+ * newest first by finishedAt, capped at `max`. Best-effort and never throws;
+ * malformed docs are dropped rather than guessed at.
+ */
+export async function readRecentExamAttempts(uid: string, max = 50): Promise<ReadExamAttemptsResult> {
+  const c = await ctx(uid)
+  if ('ok' in c) return c
+  const { db, fs } = c
+  try {
+    const q = fs.query(
+      fs.collection(db, examAttemptsPath(uid)),
+      fs.orderBy('finishedAt', 'desc'),
+      fs.limit(max),
+    )
+    const snap = await fs.getDocs(q)
+    const items: ExamAttemptReadItem[] = []
+    snap.forEach(d => {
+      const data = d.data()
+      if (
+        typeof data.examId !== 'number' ||
+        typeof data.score !== 'number' ||
+        typeof data.totalQuestions !== 'number' ||
+        typeof data.passed !== 'boolean'
+      ) return
+      const finishedAtMillis =
+        data.finishedAt && typeof data.finishedAt.toMillis === 'function'
+          ? data.finishedAt.toMillis()
+          : null
+      items.push({
+        examId: data.examId,
+        score: data.score,
+        totalQuestions: data.totalQuestions,
+        passed: data.passed,
+        finishedAtMillis,
+      })
+    })
+    return { ok: true, items }
+  } catch (e) {
+    return fail(e)
+  }
+}
