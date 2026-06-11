@@ -71,6 +71,20 @@ export default function App() {
   // null = not loaded / unavailable / read failed; [] = loaded, no attempts yet.
   const [recentAttempts, setRecentAttempts] = useState<ExamAttemptReadItem[] | null>(null)
 
+  // In-flight guard so login fetch and Progress-open retry never overlap.
+  const attemptsLoadingRef = useRef(false)
+
+  // Fail-soft fetch of recent attempts: on success store them, on failure leave
+  // recentAttempts as null (the Progress screen shows a quiet fallback). Never throws.
+  function fetchRecentAttempts(uid: string) {
+    if (attemptsLoadingRef.current) return
+    attemptsLoadingRef.current = true
+    void readRecentExamAttempts(uid)
+      .then(res => { if (res.ok) setRecentAttempts(res.items) })
+      .catch(() => undefined)
+      .finally(() => { attemptsLoadingRef.current = false })
+  }
+
   // ── Cloud hydration (Phase 7I/7J) — one-time per uid per session. Unions the
   // cloud wrong-question pool into local progress and loads recent exam attempts
   // into memory. Strictly additive: local progress is never shrunk, cleared, or
@@ -81,6 +95,7 @@ export default function App() {
     if (status !== 'authed' || !user?.uid) {
       hydratedUidRef.current = null
       setRecentAttempts(null)
+      attemptsLoadingRef.current = false
       return
     }
     if (hydratedUidRef.current === user.uid) return
@@ -95,10 +110,20 @@ export default function App() {
         return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
       })
     }).catch(() => undefined)
-    void readRecentExamAttempts(user.uid).then(res => {
-      if (res.ok) setRecentAttempts(res.items)
-    }).catch(() => undefined)
+    fetchRecentAttempts(user.uid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, user])
+
+  // Retry the attempts read when Progress opens (Phase 7J follow-up): a transient
+  // failure at login/session restore (e.g. VPN not connected yet) must not blank
+  // the exam stats for the whole session. Runs at most once per Progress visit;
+  // the in-flight guard in fetchRecentAttempts prevents overlapping calls.
+  useEffect(() => {
+    if (tab !== 'progress' || status !== 'authed' || !user?.uid) return
+    if (recentAttempts !== null) return
+    fetchRecentAttempts(user.uid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, status, user, recentAttempts])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
