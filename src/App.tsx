@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import type { TabId, Progress, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
+import type { TabId, Progress, Question, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
@@ -16,6 +16,8 @@ import { SourceExamStartScreen }   from './screens/SourceExamStartScreen'
 import { SourceExamQuestionScreen } from './screens/SourceExamQuestionScreen'
 import { SourceExamResultScreen }  from './screens/SourceExamResultScreen'
 import { SOURCE_EXAMS }      from './data/sourceExams'
+import { SOURCE_EXAMS_DATA }  from './data/source-exams'
+import { toSourceExamQuestion } from './data/source-exams/adapter'
 import { EXAM_REGISTRY, getExamMeta } from './data/examRegistry'
 import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
@@ -25,6 +27,14 @@ import { useAuth }            from './auth/useAuth'
 import { writeExamProgress, appendExamAttempt, readAllExamProgress } from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
+
+// Combined review pool (Phase 7I-1): generic bank + all real source-exam
+// questions, so Mistakes can resolve both 'ir-q*' and 'se-NN-MM' wrong ids
+// (the two id families are disjoint by design). Static data — built once.
+const REVIEW_QUESTIONS: Question[] = [
+  ...QUESTIONS,
+  ...SOURCE_EXAMS_DATA.flatMap(e => e.questions.map(toSourceExamQuestion)),
+]
 
 export default function App() {
   const [tab,       setTab]       = useState<TabId>('home')
@@ -378,7 +388,7 @@ export default function App() {
       return (
         <MistakesScreen
           progress={progress}
-          questions={QUESTIONS}
+          questions={REVIEW_QUESTIONS}
           categories={CATEGORIES}
           onRetry={() => goToTab('practice')}
         />
