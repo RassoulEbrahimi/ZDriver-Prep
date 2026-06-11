@@ -79,7 +79,6 @@ export function JourneyPath({ categories, onPick }: Props) {
             >
               <div style={{ textAlign: 'center', fontSize: 11, lineHeight: 1.2, padding: '0 6px' }}>
                 <div style={{ fontSize: 22, fontWeight: 800 }}>{cat.emoji}</div>
-                <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2 }}>{fa(pct)}٪</div>
               </div>
             </button>
 
@@ -95,7 +94,7 @@ export function JourneyPath({ categories, onPick }: Props) {
             }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>{cat.title}</div>
               <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>
-                {fa(cat.done)} از {fa(cat.total)} سؤال
+                {fa(cat.total)} سؤال
               </div>
             </div>
           </React.Fragment>
