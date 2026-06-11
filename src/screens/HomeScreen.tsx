@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import type { Category, Progress } from '../types'
+import type { ExamAttemptReadItem } from '../data/progress/repo'
 import { ProgressRing } from '../components/ProgressRing'
 import { JourneyPath }  from '../components/JourneyPath'
-import { BellIcon, SettingsIcon, FireIcon, CheckIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon } from '../components/Icons'
+import { SettingsIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon, BookmarkFilledIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
 import { useAuth }      from '../auth/useAuth'
@@ -13,6 +14,8 @@ import { fa } from '../utils'
 interface Props {
   progress: Progress
   categories: Category[]
+  /** Recent cloud exam attempts; null = not loaded / unavailable / guest. */
+  attempts: ExamAttemptReadItem[] | null
   onContinue: () => void
   onPickCategory: (cat: Category) => void
   onPractice: () => void
@@ -32,8 +35,7 @@ const pillBtn: React.CSSProperties = {
   backdropFilter: 'blur(8px)',
 }
 
-export function HomeScreen({ progress, categories, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings, onOpenAccount }: Props) {
-  const pct = Math.round((progress.answered / progress.totalQuestions) * 100)
+export function HomeScreen({ progress, categories, attempts, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings, onOpenAccount }: Props) {
   const hasMistakes = progress.wrongQuestionIds.length > 0
 
   const { status, user } = useAuth()
@@ -43,10 +45,22 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
   const [showGallery, setShowGallery] = useState(false)
   const [activeVideo, setActiveVideo] = useState<VideoEntry | null>(null)
 
+  // Readiness = best real exam score (Phase 7K). null = no attempt to show —
+  // the ring then states that honestly instead of faking a 0% progress value.
+  const readiness = useMemo(() => {
+    if (!attempts || attempts.length === 0) return null
+    const best = attempts.reduce((m, a) =>
+      a.score / a.totalQuestions > m.score / m.totalQuestions ? a : m, attempts[0])
+    return Math.round((best.score / best.totalQuestions) * 100)
+  }, [attempts])
+
+  // Authed user whose attempts loaded as empty — suggest the first exam.
+  const noAttemptsYet = authed && attempts !== null && attempts.length === 0
+
   const miniStats = [
-    { icon: FireIcon,  value: `${fa(progress.streakDays)} روز`, label: 'نوبت متوالی' },
-    { icon: CheckIcon, value: fa(progress.correct),              label: 'پاسخ درست' },
-    { icon: CloseIcon, value: fa(progress.wrong),                label: 'اشتباه' },
+    { icon: TrophyIcon,         value: attempts !== null ? fa(attempts.length) : '—', label: 'آزمون انجام‌شده' },
+    { icon: CloseIcon,          value: fa(progress.wrongQuestionIds.length),          label: 'برای مرور' },
+    { icon: BookmarkFilledIcon, value: fa(progress.bookmarked.length),                label: 'نشان‌شده' },
   ]
 
   return (
@@ -94,14 +108,6 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
               <button aria-label="آموزش تصویری" style={pillBtn} onClick={() => setShowGallery(true)}>
                 <VideoIcon size={18} color="#fff" />
               </button>
-              <button aria-label="اعلان‌ها" style={pillBtn}>
-                <BellIcon size={18} color="#fff" />
-                <span style={{
-                  position: 'absolute', top: 8, left: 8,
-                  width: 8, height: 8, borderRadius: 99,
-                  background: 'var(--accent)', border: '1.5px solid var(--grad-via)',
-                }} />
-              </button>
               <button aria-label="تنظیمات" style={pillBtn} onClick={onOpenSettings}>
                 <SettingsIcon size={18} color="#fff" />
               </button>
@@ -110,11 +116,22 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
 
           {/* Hero: ring + headline */}
           <div className="flex items-center" style={{ gap: 18, marginTop: 6 }}>
-            <ProgressRing value={pct} size={108} stroke={9} color="var(--accent)" bg="rgba(255,255,255,0.18)">
-              <div className="zd-num" style={{ fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1 }}>
-                {fa(pct)}<span style={{ fontSize: 14, marginRight: 2 }}>٪</span>
-              </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>آمادگی کلی</div>
+            <ProgressRing value={readiness ?? 0} size={108} stroke={9} color="var(--accent)" bg="rgba(255,255,255,0.18)">
+              {readiness !== null ? (
+                <>
+                  <div className="zd-num" style={{ fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1 }}>
+                    {fa(readiness)}<span style={{ fontSize: 14, marginRight: 2 }}>٪</span>
+                  </div>
+                  <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>بر اساس بهترین آزمون</div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: 'rgba(255,255,255,0.85)', lineHeight: 1 }}>—</div>
+                  <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.75)', marginTop: 4, lineHeight: 1.5, padding: '0 10px', textAlign: 'center' }}>
+                    هنوز آزمونی ثبت نشده
+                  </div>
+                </>
+              )}
             </ProgressRing>
 
             <div className="flex-1">
@@ -152,10 +169,27 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
         </div>
       </div>
 
+      {/* ── Guest hint: results only persist with an account ── */}
+      {!authed && (
+        <div style={{ padding: '14px 20px 0' }}>
+          <button onClick={onOpenAccount} className="zd-card" style={{
+            width: '100%', padding: '12px 16px', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 10,
+            background: 'color-mix(in oklab, var(--primary) 8%, var(--card))',
+            textAlign: 'right', fontFamily: 'var(--font)', borderRadius: 16,
+          }}>
+            <div style={{ flex: 1, fontSize: 13, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.6 }}>
+              برای ذخیرهٔ نتیجه‌ها وارد حساب شو
+            </div>
+            <ChevLeftIcon size={16} color="var(--primary)" stroke={2.4} />
+          </button>
+        </div>
+      )}
+
       {/* ── گام بعدی تو (recommendation) ── */}
       <div style={{ padding: '18px 20px 4px' }}>
         <div className="zd-h2" style={{ marginBottom: 10 }}>گام بعدی تو</div>
-        <button onClick={hasMistakes ? onReviewMistakes : onPractice} className="zd-card" style={{
+        <button onClick={noAttemptsYet ? onExam : hasMistakes ? onReviewMistakes : onPractice} className="zd-card" style={{
           width: '100%', padding: 16, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', gap: 14,
           background: 'var(--card)', textAlign: 'right',
@@ -163,22 +197,26 @@ export function HomeScreen({ progress, categories, onContinue, onPickCategory, o
         }}>
           <div style={{
             width: 52, height: 52, borderRadius: 16,
-            background: hasMistakes
-              ? 'linear-gradient(135deg, var(--danger), var(--accent-deep))'
-              : 'linear-gradient(135deg, var(--primary), var(--accent))',
+            background: noAttemptsYet
+              ? 'linear-gradient(135deg, var(--accent-deep), var(--accent))'
+              : hasMistakes
+                ? 'linear-gradient(135deg, var(--danger), var(--accent-deep))'
+                : 'linear-gradient(135deg, var(--primary), var(--accent))',
             display: 'grid', placeItems: 'center',
             color: '#fff', flexShrink: 0,
           }}>
-            {hasMistakes ? <FlagIcon size={24} stroke={1.9} /> : <PlayIcon size={24} stroke={1.9} />}
+            {noAttemptsYet ? <TrophyIcon size={24} stroke={1.9} /> : hasMistakes ? <FlagIcon size={24} stroke={1.9} /> : <PlayIcon size={24} stroke={1.9} />}
           </div>
           <div className="flex-1">
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
-              {hasMistakes ? 'مرور اشتباهات' : 'ادامه تمرین'}
+              {noAttemptsYet ? 'اولین آزمون را شروع کن' : hasMistakes ? 'مرور اشتباهات' : 'ادامه تمرین'}
             </div>
             <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginTop: 3, lineHeight: 1.55 }}>
-              {hasMistakes
-                ? `${fa(progress.wrongQuestionIds.length)} سؤال برای مرور داری؛ بیا اشتباه‌ها را برطرف کنیم.`
-                : 'یک آزمون را برای تمرین انتخاب کن و یادگیری را ادامه بده.'}
+              {noAttemptsYet
+                ? 'یک آزمون واقعی بده تا نقطهٔ شروعت مشخص شود.'
+                : hasMistakes
+                  ? `${fa(progress.wrongQuestionIds.length)} سؤال برای مرور داری؛ بیا اشتباه‌ها را برطرف کنیم.`
+                  : 'یک آزمون را برای تمرین انتخاب کن و یادگیری را ادامه بده.'}
             </div>
           </div>
           <ChevLeftIcon size={18} color="var(--ink-3)" stroke={2.2} />
