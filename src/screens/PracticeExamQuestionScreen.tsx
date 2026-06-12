@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import type { Question, Category, Progress } from '../types'
+import type { Question, Category, Progress, SourceExamQuestion } from '../types'
 import {
   ChevRightIcon, MoreIcon, CheckIcon, CloseIcon, BulbIcon, ImageIcon,
   BookmarkIcon, BookmarkFilledIcon, RefreshIcon, AwardIcon,
@@ -21,6 +21,16 @@ interface Props {
   onPracticeAnswer?: (a: { questionId: string; correct: boolean; index: number; official: boolean }) => void
   /** Back to the practice catalog. */
   onExit: () => void
+
+  // ── Review mode (Phase 7N) — all optional and guarded. When reviewPool is
+  // not provided, every code path below is identical to the practice flow. ──
+  /** Fixed question set for a review session; bypasses the exam loader. */
+  reviewPool?: SourceExamQuestion[]
+  /** Header title override for review sessions (e.g. «مرور اشتباهات»). */
+  sessionTitle?: string
+  /** Per-answer result callback for review sessions (App clears cleared-up
+   *  mistakes); practice sessions never call this. */
+  onReviewResult?: (questionId: string, correct: boolean) => void
 }
 
 const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
@@ -33,13 +43,19 @@ const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
  */
 export function PracticeExamQuestionScreen({
   examId, fallbackPool, categories, progress, onToggleBookmark, onRecordWrong, onPracticeAnswer, onExit,
+  reviewPool, sessionTitle, onReviewResult,
 }: Props) {
   const catMap = useMemo(() =>
     Object.fromEntries(categories.map(c => [c.id, c])), [categories])
 
+  const review = reviewPool !== undefined
   const meta = getExamMeta(examId)
-  // 1..17 → source loader (real data + placeholder fallback); 18 → generic bank.
-  const exam = useMemo(() => loadExamQuestions(examId, fallbackPool), [examId, fallbackPool])
+  // Review mode uses its fixed pool; otherwise 1..17 → source loader (real data
+  // + placeholder fallback); 18 → generic bank.
+  const exam = useMemo(
+    () => reviewPool ?? loadExamQuestions(examId, fallbackPool),
+    [examId, fallbackPool, reviewPool],
+  )
   const total = exam.length
 
   const [idx,       setIdx]       = useState(0)
@@ -52,7 +68,7 @@ export function PracticeExamQuestionScreen({
   const isLast = idx === total - 1
   const correctIdx = q?.answer
   const isCorrect = submitted && selected === correctIdx
-  const title = meta?.title ?? `آزمون ${fa(examId)}`
+  const title = sessionTitle ?? meta?.title ?? `آزمون ${fa(examId)}`
   const official = meta?.official ?? true
 
   function optClass(i: number): string {
@@ -72,6 +88,8 @@ export function PracticeExamQuestionScreen({
     if (!correct) onRecordWrong([q.id])
     // Best-effort cloud mirror (Phase 7G); App decides whether to write.
     onPracticeAnswer?.({ questionId: q.id, correct, index: idx, official })
+    // Review sessions report each result so App can clear cleared-up mistakes.
+    onReviewResult?.(q.id, correct)
   }
 
   function handleNext() {
@@ -101,17 +119,21 @@ export function PracticeExamQuestionScreen({
             }}>
               <AwardIcon size={42} stroke={1.8} />
             </div>
-            <div style={{ fontSize: 21, fontWeight: 800, color: 'var(--ink)' }}>تمرین تمام شد</div>
+            <div style={{ fontSize: 21, fontWeight: 800, color: 'var(--ink)' }}>
+              {review ? 'مرور تمام شد' : 'تمرین تمام شد'}
+            </div>
             <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 8, lineHeight: 1.7 }}>
-              همه سؤال‌های این آزمون را مرور کردی.
+              {review
+                ? 'هر سؤالی که درست جواب دادی از فهرست اشتباهات پاک شد.'
+                : 'همه سؤال‌های این آزمون را مرور کردی.'}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24 }}>
               <button onClick={onExit} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 52, fontSize: 15 }}>
-                بازگشت به لیست آزمون‌ها
+                {review ? 'بازگشت به اشتباهات' : 'بازگشت به لیست آزمون‌ها'}
               </button>
               <button onClick={restart} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 48, fontSize: 14 }}>
-                <RefreshIcon size={16} stroke={2.1} /> تمرین دوباره
+                <RefreshIcon size={16} stroke={2.1} /> {review ? 'مرور دوباره' : 'تمرین دوباره'}
               </button>
             </div>
           </div>
@@ -132,7 +154,7 @@ export function PracticeExamQuestionScreen({
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 700, color: 'var(--ink-2)' }}>
             <span>{title}</span>
-            {!official && (
+            {!official && !review && (
               <span className="zd-chip" style={{
                 background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
                 color: 'var(--accent-deep)',
@@ -144,7 +166,9 @@ export function PracticeExamQuestionScreen({
 
         <div style={{ marginTop: 8 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>حالت تمرین · بدون زمان</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>
+              {review ? 'حالت مرور · بدون زمان' : 'حالت تمرین · بدون زمان'}
+            </div>
             <div className="zd-num" style={{ fontSize: 12, color: 'var(--ink-3)', fontWeight: 700 }}>
               {fa(idx + 1)} از {fa(total)}
             </div>
@@ -240,7 +264,7 @@ export function PracticeExamQuestionScreen({
           <button onClick={() => setDone(true)}
                   className="zd-btn zd-btn-accent zd-btn-block"
                   style={{ marginTop: 16, height: 54, fontSize: 16 }}>
-            پایان تمرین
+            {review ? 'پایان مرور' : 'پایان تمرین'}
           </button>
         ) : (
           <button onClick={handleNext}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import type { TabId, Progress, Question, SourceView, SourceExamResult, PracticeView, ExamView } from './types'
+import type { TabId, Progress, Question, SourceView, SourceExamResult, PracticeView, ExamView, SourceExamQuestion } from './types'
 import { QUESTIONS, CATEGORIES, PROGRESS } from './data'
 import { loadProgress, saveProgress } from './utils'
 import { TabBar }            from './components/TabBar'
@@ -56,6 +56,11 @@ export default function App() {
   // ── Exam-based Practice flow (تمرین tab): catalog → per-exam runner ──
   const [practiceView,   setPracticeView]   = useState<PracticeView>('catalog')
   const [practiceExamId, setPracticeExamId] = useState<number | null>(null)
+
+  // ── Review session (Phase 7N, اشتباهات tab): a fixed snapshot of wrong/
+  // bookmarked questions taken when the session starts, so clearing a mistake
+  // mid-session never reorders or drops the remaining questions. null = list view.
+  const [reviewSession, setReviewSession] = useState<SourceExamQuestion[] | null>(null)
 
   // ── Theme (system / light / dark) ──
   const [themeMode,    setThemeMode]    = useState<ThemeMode>(() => getStoredMode())
@@ -210,6 +215,51 @@ export default function App() {
       setPracticeView('catalog')
       setPracticeExamId(null)
     }
+    // Entering Mistakes always starts at the list, never mid-review.
+    if (t === 'mistakes') {
+      setReviewSession(null)
+    }
+  }
+
+  // ── Review-loop handlers (Phase 7N) ──
+
+  // Snapshot the requested ids into a review session. Ids that no longer
+  // resolve in the combined pool are dropped; an all-stale request is a no-op.
+  function startReview(ids: string[]) {
+    const byId = new Map(REVIEW_QUESTIONS.map(q => [q.id, q]))
+    const pool = ids
+      .map(id => byId.get(id))
+      .filter((q): q is Question => q !== undefined)
+      .map(q => ({ ...q, hasImage: Boolean(q.image) }))
+    if (pool.length === 0) return
+    setReviewSession(pool)
+  }
+
+  // A correctly re-answered question leaves the mistakes pool: local state
+  // updates immediately (and persists via the saveProgress effect); when
+  // authed, the id is also pruned best-effort from every cloud examProgress
+  // doc that lists it (located via the in-memory coverage from Phase 7M-2).
+  // Wrong answers change nothing — the id is already in the pool.
+  function handleReviewResult(questionId: string, correct: boolean) {
+    if (!correct) return
+    setProgress(p => (
+      p.wrongQuestionIds.includes(questionId)
+        ? { ...p, wrongQuestionIds: p.wrongQuestionIds.filter(id => id !== questionId) }
+        : p
+    ))
+    if (status !== 'authed' || !user?.uid || !examCoverage) return
+    const affected = examCoverage.filter(it => it.wrongQuestionIds.includes(questionId))
+    if (affected.length === 0) return
+    for (const it of affected) {
+      void writeExamProgress(user.uid, { examId: it.examId, removeWrongIds: [questionId] })
+        .catch(() => undefined)
+    }
+    // Mirror the prune in memory so repeat clears don't re-issue writes.
+    setExamCoverage(items => items?.map(it =>
+      it.wrongQuestionIds.includes(questionId)
+        ? { ...it, wrongQuestionIds: it.wrongQuestionIds.filter(id => id !== questionId) }
+        : it
+    ) ?? items)
   }
 
   function goHome() {
@@ -455,12 +505,28 @@ export default function App() {
     }
 
     if (tab === 'mistakes') {
+      if (reviewSession) {
+        return (
+          <PracticeExamQuestionScreen
+            examId={0}
+            fallbackPool={QUESTIONS}
+            categories={CATEGORIES}
+            progress={progress}
+            reviewPool={reviewSession}
+            sessionTitle="مرور اشتباهات"
+            onToggleBookmark={toggleBookmark}
+            onRecordWrong={recordWrong}
+            onReviewResult={handleReviewResult}
+            onExit={() => setReviewSession(null)}
+          />
+        )
+      }
       return (
         <MistakesScreen
           progress={progress}
           questions={REVIEW_QUESTIONS}
           categories={CATEGORIES}
-          onRetry={() => goToTab('practice')}
+          onStartReview={startReview}
         />
       )
     }
