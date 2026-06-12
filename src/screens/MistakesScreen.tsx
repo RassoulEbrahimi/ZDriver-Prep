@@ -8,12 +8,13 @@ interface Props {
   progress: Progress
   questions: Question[]
   categories: Category[]
-  onRetry: () => void
+  /** Start a review session over the given question ids (Phase 7N). */
+  onStartReview: (ids: string[]) => void
 }
 
 type Tab = 'wrong' | 'bookmark'
 
-export function MistakesScreen({ progress, questions, categories, onRetry }: Props) {
+export function MistakesScreen({ progress, questions, categories, onStartReview }: Props) {
   const [tab, setTab] = useState<Tab>('wrong')
   const [openId, setOpenId] = useState<string | null>(null)
 
@@ -66,9 +67,9 @@ export function MistakesScreen({ progress, questions, categories, onRetry }: Pro
           })}
         </div>
 
-        {/* Retry CTA */}
+        {/* Review-session CTA — opens a real session over the visible questions */}
         {items.length > 0 && (
-          <button onClick={onRetry} className="zd-btn zd-btn-primary zd-btn-block" style={{ marginBottom: 16 }}>
+          <button onClick={() => onStartReview(items.map(q => q.id))} className="zd-btn zd-btn-primary zd-btn-block" style={{ marginBottom: 16 }}>
             <RefreshIcon size={18} stroke={2.2} />
             مرور {fa(items.length)} سؤال
           </button>
@@ -118,7 +119,7 @@ export function MistakesScreen({ progress, questions, categories, onRetry }: Pro
                 )}
 
                 <div className="flex" style={{ gap: 8, marginTop: 10 }}>
-                  <button onClick={onRetry} className="zd-btn zd-btn-ghost" style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
+                  <button onClick={() => onStartReview([q.id])} className="zd-btn zd-btn-ghost" style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
                   {q.explanation && (
                     <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
                   )}
