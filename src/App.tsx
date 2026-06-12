@@ -26,7 +26,7 @@ import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
 import {
   writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
-  type ExamAttemptReadItem,
+  type ExamAttemptReadItem, type ExamProgressReadItem,
 } from './data/progress/repo'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
@@ -74,6 +74,32 @@ export default function App() {
   // In-flight guard so login fetch and Progress-open retry never overlap.
   const attemptsLoadingRef = useRef(false)
 
+  // ── Per-exam cloud progress (Phase 7M-2) — in-memory only. Feeds the Practice
+  // catalog coverage chips. null = not loaded / unavailable / read failed.
+  const [examCoverage, setExamCoverage] = useState<ExamProgressReadItem[] | null>(null)
+  const coverageLoadingRef = useRef(false)
+
+  // Fail-soft fetch of all per-exam cloud progress. On success it stores the
+  // items (coverage chips) and unions the cloud wrong-question pool into local
+  // progress — the union is strictly additive and idempotent, so re-running on
+  // a Practice-tab retry can never shrink or duplicate local data. Never throws.
+  function fetchExamProgress(uid: string) {
+    if (coverageLoadingRef.current) return
+    coverageLoadingRef.current = true
+    void readAllExamProgress(uid).then(res => {
+      if (!res.ok) return
+      setExamCoverage(res.items)
+      const cloudIds = res.items.flatMap(it => it.wrongQuestionIds)
+      if (cloudIds.length === 0) return
+      setProgress(p => {
+        const fresh = [...new Set(cloudIds.filter(id => !p.wrongQuestionIds.includes(id)))]
+        if (fresh.length === 0) return p // no new ids — skip the update entirely
+        return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
+      })
+    }).catch(() => undefined)
+      .finally(() => { coverageLoadingRef.current = false })
+  }
+
   // Fail-soft fetch of recent attempts: on success store them, on failure leave
   // recentAttempts as null (the Progress screen shows a quiet fallback). Never throws.
   function fetchRecentAttempts(uid: string) {
@@ -96,20 +122,13 @@ export default function App() {
       hydratedUidRef.current = null
       setRecentAttempts(null)
       attemptsLoadingRef.current = false
+      setExamCoverage(null)
+      coverageLoadingRef.current = false
       return
     }
     if (hydratedUidRef.current === user.uid) return
     hydratedUidRef.current = user.uid
-    void readAllExamProgress(user.uid).then(res => {
-      if (!res.ok) return
-      const cloudIds = res.items.flatMap(it => it.wrongQuestionIds)
-      if (cloudIds.length === 0) return
-      setProgress(p => {
-        const fresh = [...new Set(cloudIds.filter(id => !p.wrongQuestionIds.includes(id)))]
-        if (fresh.length === 0) return p // no new ids — skip the update entirely
-        return { ...p, wrongQuestionIds: [...p.wrongQuestionIds, ...fresh] }
-      })
-    }).catch(() => undefined)
+    fetchExamProgress(user.uid)
     fetchRecentAttempts(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, user])
@@ -125,6 +144,16 @@ export default function App() {
     fetchRecentAttempts(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, status, user, recentAttempts])
+
+  // Same retry for the per-exam coverage read when Practice opens (Phase 7M-2):
+  // runs only while the data is still missing; the in-flight guard prevents
+  // overlap with the login fetch, and the wrong-id union it performs is idempotent.
+  useEffect(() => {
+    if (tab !== 'practice' || status !== 'authed' || !user?.uid) return
+    if (examCoverage !== null) return
+    fetchExamProgress(user.uid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, status, user, examCoverage])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
@@ -386,6 +415,7 @@ export default function App() {
       return (
         <PracticeCatalogScreen
           exams={EXAM_REGISTRY}
+          coverage={examCoverage}
           onOpenExam={openPracticeExam}
           onExitToHome={goHome}
         />
