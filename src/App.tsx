@@ -114,13 +114,13 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, user])
 
-  // Retry the attempts read when Progress or Home opens (Phase 7J follow-up,
-  // extended for the honest Home dashboard in 7K): a transient failure at
-  // login/session restore (e.g. VPN not connected yet) must not blank the exam
-  // stats for the whole session. Runs at most once per visit; the in-flight
-  // guard in fetchRecentAttempts prevents overlapping calls.
+  // Retry the attempts read when Progress, Home, or the Exam catalog opens
+  // (Phase 7J follow-up; extended in 7K for Home and 7M for exam status chips):
+  // a transient failure at login/session restore (e.g. flaky connection) must
+  // not blank the exam stats for the whole session. Runs at most once per
+  // visit; the in-flight guard in fetchRecentAttempts prevents overlapping calls.
   useEffect(() => {
-    if ((tab !== 'progress' && tab !== 'home') || status !== 'authed' || !user?.uid) return
+    if ((tab !== 'progress' && tab !== 'home' && tab !== 'exam') || status !== 'authed' || !user?.uid) return
     if (recentAttempts !== null) return
     fetchRecentAttempts(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -417,6 +417,7 @@ export default function App() {
       return (
         <ExamCatalogScreen
           exams={EXAM_REGISTRY}
+          attempts={recentAttempts}
           onOpenExam={openExam}
           onExitToHome={goHome}
         />

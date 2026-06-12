@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import type { ExamMeta } from '../types'
+import type { ExamAttemptReadItem } from '../data/progress/repo'
 import {
   ChevRightIcon, ChevLeftIcon, BookIcon, ClockIcon, TrophyIcon, RefreshIcon, BulbIcon, PlayIcon,
 } from '../components/Icons'
@@ -8,16 +9,38 @@ import { fa } from '../utils'
 interface Props {
   /** Unified 1..18 registry (17 official source exams + Exam 18 review). */
   exams: ExamMeta[]
+  /** Recent cloud exam attempts; null = guest / not loaded / unavailable. */
+  attempts: ExamAttemptReadItem[] | null
   /** Start the timed exam runner for a chosen exam. */
   onOpenExam: (id: number) => void
   /** Back to home. */
   onExitToHome: () => void
 }
 
+/** Per-exam result derived from real attempts: pass-ever + best score (with the
+ *  best attempt's own question total, in case exam sizing ever changes). */
+interface ExamStatus {
+  passed: boolean
+  best: number
+  total: number
+}
+
+function statusChipColors(passed: boolean) {
+  return passed
+    ? { background: 'var(--success-soft)', color: 'var(--success)' }
+    : { background: 'var(--danger-soft)',  color: 'var(--danger)' }
+}
+
 /** Single exam card. Exam framing: shows question count + duration. Exam 18
- *  (supplementary) is visually distinguished as «مرور تکمیلی». */
-function ExamCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) => void }) {
+ *  (supplementary) is visually distinguished as «مرور تکمیلی». When real attempt
+ *  data exists, a status chip («قبول/مردود · بهترین نمره») replaces the static
+ *  «رسمی» chip; supplementary keeps its identity chip and shows the status in
+ *  the footer caption instead. Never-attempted cards are unchanged. */
+function ExamCard({ exam, status, onOpen }: { exam: ExamMeta; status: ExamStatus | null; onOpen: (id: number) => void }) {
   const supplementary = !exam.official
+  const statusLabel = status
+    ? `${status.passed ? 'قبول' : 'مردود'} · ${fa(status.best)} از ${fa(status.total)}`
+    : null
   return (
     <button
       onClick={() => onOpen(exam.id)}
@@ -49,6 +72,10 @@ function ExamCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) => vo
             color: 'var(--accent-deep)',
           }}>
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
+          </span>
+        ) : status && statusLabel ? (
+          <span className="zd-chip zd-num" style={{ ...statusChipColors(status.passed), whiteSpace: 'nowrap' }}>
+            {statusLabel}
           </span>
         ) : (
           <span className="zd-chip" style={{
@@ -84,18 +111,41 @@ function ExamCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) => vo
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent-deep)' }}>
-          {supplementary ? 'مرور تکمیلی' : 'شروع آزمون'}
-        </span>
+        {supplementary && status && statusLabel ? (
+          <span className="zd-num" style={{ fontSize: 11.5, fontWeight: 700, color: statusChipColors(status.passed).color, whiteSpace: 'nowrap' }}>
+            {statusLabel}
+          </span>
+        ) : (
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent-deep)' }}>
+            {supplementary ? 'مرور تکمیلی' : 'شروع آزمون'}
+          </span>
+        )}
         <ChevLeftIcon size={16} color="var(--accent-deep)" stroke={2.4} />
       </div>
     </button>
   )
 }
 
-export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
+export function ExamCatalogScreen({ exams, attempts, onOpenExam, onExitToHome }: Props) {
   const official = exams.filter(e => e.official)
   const review   = exams.filter(e => !e.official)
+
+  // Real per-exam status from loaded attempts: passed-ever + best score. The
+  // stored `passed` flag and `totalQuestions` of each attempt are trusted as-is
+  // (never recomputed). null/empty attempts → empty map → no chips anywhere.
+  const statusByExam = useMemo(() => {
+    const m = new Map<number, ExamStatus>()
+    for (const a of attempts ?? []) {
+      const cur = m.get(a.examId)
+      if (!cur) {
+        m.set(a.examId, { passed: a.passed, best: a.score, total: a.totalQuestions })
+      } else {
+        if (a.score > cur.best) { cur.best = a.score; cur.total = a.totalQuestions }
+        cur.passed = cur.passed || a.passed
+      }
+    }
+    return m
+  }, [attempts])
 
   // Random exam start — official exams (1..17) only; never Exam 18.
   const [randomPick, setRandomPick] = useState<number | null>(null) // → reveal sheet
@@ -182,7 +232,7 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>با زمان · بدون نمایش پاسخ</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-          {official.map(exam => <ExamCard key={exam.id} exam={exam} onOpen={onOpenExam} />)}
+          {official.map(exam => <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} onOpen={onOpenExam} />)}
         </div>
 
         {/* Supplementary review (Exam 18) */}
@@ -196,7 +246,7 @@ export function ExamCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-              {review.map(exam => <ExamCard key={exam.id} exam={exam} onOpen={onOpenExam} />)}
+              {review.map(exam => <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} onOpen={onOpenExam} />)}
             </div>
           </>
         )}
