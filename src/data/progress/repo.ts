@@ -256,6 +256,31 @@ export async function readAllExamProgress(uid: string): Promise<ReadExamProgress
   }
 }
 
+export type ReadBookmarksResult =
+  | { ok: true; questionIds: string[] }
+  | RepoFailure
+
+/**
+ * users/{uid}/bookmarks/main — one-time getDoc of the bookmarked question ids
+ * (Phase 7O hydration). Best-effort and never throws; a missing doc is an empty
+ * list, and non-string entries are dropped rather than guessed at.
+ */
+export async function readBookmarks(uid: string): Promise<ReadBookmarksResult> {
+  const c = await ctx(uid)
+  if ('ok' in c) return c
+  const { db, fs } = c
+  try {
+    const snap = await fs.getDoc(fs.doc(db, bookmarksPath(uid)))
+    const data = snap.exists() ? snap.data() : undefined
+    const questionIds = Array.isArray(data?.questionIds)
+      ? data.questionIds.filter((x): x is string => typeof x === 'string')
+      : []
+    return { ok: true, questionIds }
+  } catch (e) {
+    return fail(e)
+  }
+}
+
 /** Minimal per-attempt read projection — only the fields the Progress UI needs. */
 export interface ExamAttemptReadItem {
   examId: number
