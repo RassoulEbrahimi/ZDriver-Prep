@@ -26,6 +26,7 @@ import { AuthSheet }          from './components/AuthSheet'
 import { useAuth }            from './auth/useAuth'
 import {
   writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
+  readBookmarks, writeBookmarks,
   type ExamAttemptReadItem, type ExamProgressReadItem,
 } from './data/progress/repo'
 import type { ThemeMode } from './theme'
@@ -116,6 +117,41 @@ export default function App() {
       .finally(() => { attemptsLoadingRef.current = false })
   }
 
+  // ── Cloud bookmarks (Phase 7O) — the synced list lives in progress.bookmarked.
+  // bookmarksSynced records whether the cloud read has succeeded this session,
+  // so a transient failure at login (e.g. flaky connection) can be retried on
+  // tab opens instead of silencing sync for the whole session.
+  const [bookmarksSynced, setBookmarksSynced] = useState(false)
+  const bookmarksLoadingRef = useRef(false)
+
+  // Fail-soft bookmark hydration: union the cloud list into local bookmarks
+  // (never destructive — bookmarks made while signed out survive), then push
+  // any local-only ids up once so both sides converge. arrayUnion is
+  // idempotent, so a duplicated merge-up write is harmless. Never throws.
+  function fetchBookmarks(uid: string) {
+    if (bookmarksLoadingRef.current) return
+    bookmarksLoadingRef.current = true
+    void readBookmarks(uid).then(res => {
+      if (!res.ok) return
+      setBookmarksSynced(true)
+      const cloud = res.questionIds
+      let missing: string[] = []
+      setProgress(p => {
+        missing = p.bookmarked.filter(id => !cloud.includes(id))
+        const fresh = cloud.filter(id => !p.bookmarked.includes(id))
+        if (fresh.length === 0) return p // nothing new — skip the update entirely
+        return { ...p, bookmarked: [...p.bookmarked, ...fresh] }
+      })
+      // Merge local-only bookmarks up after the state update settles.
+      setTimeout(() => {
+        if (missing.length > 0) {
+          void writeBookmarks(uid, { add: missing }).catch(() => undefined)
+        }
+      }, 0)
+    }).catch(() => undefined)
+      .finally(() => { bookmarksLoadingRef.current = false })
+  }
+
   // ── Cloud hydration (Phase 7I/7J) — one-time per uid per session. Unions the
   // cloud wrong-question pool into local progress and loads recent exam attempts
   // into memory. Strictly additive: local progress is never shrunk, cleared, or
@@ -129,12 +165,15 @@ export default function App() {
       attemptsLoadingRef.current = false
       setExamCoverage(null)
       coverageLoadingRef.current = false
+      setBookmarksSynced(false)
+      bookmarksLoadingRef.current = false
       return
     }
     if (hydratedUidRef.current === user.uid) return
     hydratedUidRef.current = user.uid
     fetchExamProgress(user.uid)
     fetchRecentAttempts(user.uid)
+    fetchBookmarks(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, user])
 
@@ -160,6 +199,15 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, status, user, examCoverage])
 
+  // Same retry for the bookmark read (Phase 7O) on the tabs where bookmarks
+  // are shown, while the cloud list has not been read successfully this session.
+  useEffect(() => {
+    if ((tab !== 'home' && tab !== 'mistakes' && tab !== 'progress') || status !== 'authed' || !user?.uid) return
+    if (bookmarksSynced) return
+    fetchBookmarks(user.uid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, status, user, bookmarksSynced])
+
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
 
@@ -181,12 +229,20 @@ export default function App() {
   }
 
   function toggleBookmark(id: string) {
+    // Direction is decided from the rendered state the user acted on; the
+    // cloud mirror below uses the same decision so both sides stay aligned.
+    const adding = !progress.bookmarked.includes(id)
     setProgress(p => ({
       ...p,
-      bookmarked: p.bookmarked.includes(id)
-        ? p.bookmarked.filter(x => x !== id)
-        : [...p.bookmarked, id],
+      bookmarked: adding
+        ? (p.bookmarked.includes(id) ? p.bookmarked : [...p.bookmarked, id])
+        : p.bookmarked.filter(x => x !== id),
     }))
+    // Best-effort cloud mirror (Phase 7O): fire-and-forget, never blocks the
+    // toggle; guests stay local-only. arrayUnion/arrayRemove are idempotent.
+    if (status !== 'authed' || !user?.uid) return
+    void writeBookmarks(user.uid, adding ? { add: [id] } : { remove: [id] })
+      .catch(() => undefined)
   }
 
   function recordWrong(ids: string[]) {
