@@ -214,10 +214,13 @@ export async function writeBookmarks(uid: string, changes: { add?: string[]; rem
 
 // ── Read functions (Phase 7I — one-time gets only; no listeners) ────────────
 
-/** Minimal per-exam read projection — only the fields hydration needs. */
+/** Minimal per-exam read projection — only the fields hydration and the
+ *  Practice catalog coverage chips need. */
 export interface ExamProgressReadItem {
   examId: number
   wrongQuestionIds: string[]
+  /** Count of distinct practiced question ids (answeredQuestionIds length). */
+  answeredCount: number
 }
 
 export type ReadExamProgressResult =
@@ -242,7 +245,10 @@ export async function readAllExamProgress(uid: string): Promise<ReadExamProgress
       const wrongQuestionIds = Array.isArray(data.wrongQuestionIds)
         ? data.wrongQuestionIds.filter((x): x is string => typeof x === 'string')
         : []
-      items.push({ examId, wrongQuestionIds })
+      const answeredCount = Array.isArray(data.answeredQuestionIds)
+        ? data.answeredQuestionIds.filter((x: unknown) => typeof x === 'string').length
+        : 0
+      items.push({ examId, wrongQuestionIds, answeredCount })
     })
     return { ok: true, items }
   } catch (e) {

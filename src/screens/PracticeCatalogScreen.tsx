@@ -1,21 +1,46 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import type { ExamMeta } from '../types'
+import type { ExamProgressReadItem } from '../data/progress/repo'
 import { ChevRightIcon, ChevLeftIcon, BookIcon, BulbIcon, RefreshIcon } from '../components/Icons'
 import { fa } from '../utils'
 
 interface Props {
   /** Unified 1..18 registry (17 official source exams + Exam 18 review). */
   exams: ExamMeta[]
+  /** Per-exam cloud progress; null = guest / not loaded / unavailable. */
+  coverage: ExamProgressReadItem[] | null
   /** Open the practice runner for a chosen exam. */
   onOpenExam: (id: number) => void
   /** Back to home. */
   onExitToHome: () => void
 }
 
+/** Coverage label for one exam, from the real practiced-question count.
+ *  Returns null when nothing was practiced (card stays unchanged). The count
+ *  is capped at the exam size, so a shrunken bank can never overflow the chip. */
+function coverageLabel(answeredCount: number | undefined, questionCount: number) {
+  if (!answeredCount || answeredCount <= 0) return null
+  const n = Math.min(answeredCount, questionCount)
+  const complete = n >= questionCount
+  return {
+    text: complete
+      ? `کامل · ${fa(questionCount)} از ${fa(questionCount)}`
+      : `تمرین · ${fa(n)} از ${fa(questionCount)}`,
+    complete,
+  }
+}
+
 /** Single practice exam card. Learning-focused: shows question count, no timer.
- *  Exam 18 (supplementary) is visually distinguished as «مرور تکمیلی». */
-function PracticeCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) => void }) {
+ *  Exam 18 (supplementary) is visually distinguished as «مرور تکمیلی». With real
+ *  practiced-question data, a coverage chip («تمرین/کامل · N از M») replaces the
+ *  static «پاسخ فوری» chip; supplementary keeps its identity chip and shows the
+ *  coverage in the footer caption instead. Unpracticed cards are unchanged. */
+function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answeredCount: number | undefined; onOpen: (id: number) => void }) {
   const supplementary = !exam.official
+  const cov = coverageLabel(answeredCount, exam.questionCount)
+  const covColors = cov?.complete
+    ? { background: 'var(--success-soft)', color: 'var(--success)' }
+    : { background: 'var(--primary-soft)', color: 'var(--primary)' }
   return (
     <button
       onClick={() => onOpen(exam.id)}
@@ -48,6 +73,10 @@ function PracticeCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) =
           }}>
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
+        ) : cov ? (
+          <span className="zd-chip zd-num" style={{ ...covColors, whiteSpace: 'nowrap' }}>
+            {cov.text}
+          </span>
         ) : (
           <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
             پاسخ فوری
@@ -74,18 +103,29 @@ function PracticeCard({ exam, onOpen }: { exam: ExamMeta; onOpen: (id: number) =
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--primary)' }}>
-          {supplementary ? 'مرور آزاد' : 'شروع تمرین'}
-        </span>
+        {supplementary && cov ? (
+          <span className="zd-num" style={{ fontSize: 11.5, fontWeight: 700, color: covColors.color, whiteSpace: 'nowrap' }}>
+            {cov.text}
+          </span>
+        ) : (
+          <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--primary)' }}>
+            {supplementary ? 'مرور آزاد' : 'شروع تمرین'}
+          </span>
+        )}
         <ChevLeftIcon size={16} color="var(--ink-4)" stroke={2.4} />
       </div>
     </button>
   )
 }
 
-export function PracticeCatalogScreen({ exams, onOpenExam, onExitToHome }: Props) {
+export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHome }: Props) {
   const official = exams.filter(e => e.official)
   const review   = exams.filter(e => !e.official)
+
+  // examId → distinct practiced-question count, from the loaded cloud progress.
+  // null/empty coverage → empty map → no chips anywhere (guest / not loaded).
+  const countByExam = useMemo(() =>
+    new Map((coverage ?? []).map(it => [it.examId, it.answeredCount])), [coverage])
 
   return (
     <div className="zd-scroll">
@@ -122,7 +162,7 @@ export function PracticeCatalogScreen({ exams, onOpenExam, onExitToHome }: Props
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>پاسخ فوری · بدون تایمر</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-          {official.map(exam => <PracticeCard key={exam.id} exam={exam} onOpen={onOpenExam} />)}
+          {official.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
         </div>
 
         {/* Supplementary review (Exam 18) */}
@@ -136,7 +176,7 @@ export function PracticeCatalogScreen({ exams, onOpenExam, onExitToHome }: Props
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-              {review.map(exam => <PracticeCard key={exam.id} exam={exam} onOpen={onOpenExam} />)}
+              {review.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
             </div>
           </>
         )}
