@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// Phase 4C — Source-exam validation runner (CI / prebuild guard).
+// Source-exam validation runner (CI / prebuild guard) — Phase 7Q-0.
 //
-// Plain Node ESM so it runs with `node scripts/validate-source-exams.mjs` (no extra
-// deps). The canonical, typed validator lives in src/data/source-exams/validate.ts
-// and is used in-app; this script mirrors those rules so the dataset can be guarded
-// without a TS loader. In Phase 4D — once real per-exam .ts files exist — this can
-// be unified to import the TS validator + data directly (e.g. via tsx).
+// Loads the REAL typed dataset (src/data/source-exams/index.ts) through Vite's
+// programmatic SSR module loader, so the exact objects the app bundles are what
+// get validated — no parallel parser, no extra dependency (Vite is already a
+// devDependency), and it works on Node 20 (local) and 22 (CI) alike.
 //
-// Phase 4C has no real data: SOURCE_EXAMS_DATA is empty, so non-strict mode PASSES.
+// Flags:
+//   --strict             enforce the full dataset (17 exams, every examNo present)
+//   --lint-explanations  fail on empty `explanation` fields (off by default while
+//                        the Phase 7Q content batches are still being authored)
 
 const EXPECTED_EXAM_COUNT = 17
 const QUESTIONS_PER_EXAM = 30
@@ -16,13 +18,23 @@ const VALID_CATEGORIES = ['signs', 'rules', 'safety', 'vehicle', 'firstaid']
 
 const isNonEmpty = (s) => typeof s === 'string' && s.trim().length > 0
 
-/**
- * Phase 4C data source: EMPTY. No PDF / real questions are imported yet.
- * Phase 4D will replace this with the real dataset (typed files under
- * src/data/source-exams/exams/), loaded here via tsx or a generated JSON.
- */
-function loadSourceExamsData() {
-  return []
+/** Load SOURCE_EXAMS_DATA via Vite's SSR transform (handles TS + import.meta.glob). */
+async function loadSourceExamsData() {
+  const { createServer } = await import('vite')
+  const server = await createServer({
+    configFile: false,
+    logLevel: 'silent',
+    server: { middlewareMode: true },
+    optimizeDeps: { noDiscovery: true },
+  })
+  try {
+    const mod = await server.ssrLoadModule('/src/data/source-exams/index.ts')
+    const data = mod.SOURCE_EXAMS_DATA
+    if (!Array.isArray(data)) throw new Error('SOURCE_EXAMS_DATA is not an array')
+    return data
+  } finally {
+    await server.close()
+  }
 }
 
 function validateSourceExams(data, { strict = false } = {}) {
@@ -82,6 +94,9 @@ function validateSourceExams(data, { strict = false } = {}) {
         if (!isNonEmpty(q.image.alt)) err('IMAGE_ALT_REQUIRED', `${q.id}: image question requires alt text`)
       }
       if (q.imagePending && !q.image) warn('IMAGE_PENDING', `${q.id}: image declared pending`)
+      if (lintExplanations && !isNonEmpty(q.explanation)) {
+        err('EXPLANATION_EMPTY', `${q.id}: explanation is empty`)
+      }
     }
   }
 
@@ -90,19 +105,22 @@ function validateSourceExams(data, { strict = false } = {}) {
 
 // ── Run ──────────────────────────────────────────────────────────
 const strict = process.argv.includes('--strict')
-const data = loadSourceExamsData()
+const lintExplanations = process.argv.includes('--lint-explanations')
+const data = await loadSourceExamsData()
 const { ok, errors, warnings } = validateSourceExams(data, { strict })
 
-console.log(`▶ validate-source-exams (${strict ? 'strict' : 'non-strict'} mode)`)
+const allQuestions = data.flatMap(e => e.questions ?? [])
+const explained = allQuestions.filter(q => isNonEmpty(q.explanation)).length
+const pendingImages = allQuestions.filter(q => q.imagePending && !q.image).length
+
+console.log(`▶ validate-source-exams (${strict ? 'strict' : 'non-strict'} mode${lintExplanations ? ' + explanation lint' : ''})`)
 console.log(`  exams loaded: ${data.length}`)
+console.log(`  questions: ${allQuestions.length} · explanations: ${explained}/${allQuestions.length} · imagePending: ${pendingImages}`)
 
-for (const w of warnings) console.warn(`  ⚠ [${w.code}] ${w.message}`)
+// IMAGE_PENDING warnings are expected at scale until the image phases land —
+// they are summarized in the count line above instead of printed one-by-one.
+for (const w of warnings.filter(w => w.code !== 'IMAGE_PENDING')) console.warn(`  ⚠ [${w.code}] ${w.message}`)
 for (const e of errors) console.error(`  ✖ [${e.code}] ${e.message}`)
-
-if (data.length === 0) {
-  console.log('  ℹ Phase 4C: SOURCE_EXAMS_DATA is empty — no real exam data yet.')
-  console.log('  ℹ Run with --strict once all 17 exams are added to enforce the full dataset.')
-}
 
 if (!ok) {
   console.error(`✖ validation failed with ${errors.length} error(s).`)
