@@ -17,15 +17,15 @@ interface Props {
 
 /** Coverage label for one exam, from the real practiced-question count.
  *  Returns null when nothing was practiced (card stays unchanged). The count
- *  is capped at the exam size, so a shrunken bank can never overflow the chip. */
+ *  is capped at the exam size, so a shrunken bank can never overflow the chip.
+ *  Labels are deliberately short — the chip shares a ~134px card row with the
+ *  exam medallion, so anything longer truncates on 375px screens. */
 function coverageLabel(answeredCount: number | undefined, questionCount: number) {
   if (!answeredCount || answeredCount <= 0) return null
   const n = Math.min(answeredCount, questionCount)
   const complete = n >= questionCount
   return {
-    text: complete
-      ? `کامل · ${fa(questionCount)} از ${fa(questionCount)}`
-      : `تمرین · ${fa(n)} از ${fa(questionCount)}`,
+    text: complete ? 'کامل' : `${fa(n)} از ${fa(questionCount)}`,
     complete,
   }
 }
@@ -46,7 +46,9 @@ function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answere
       onClick={() => onOpen(exam.id)}
       className="zd-card"
       style={{
-        width: '100%', textAlign: 'right', cursor: 'pointer',
+        // minWidth 0 lets the card shrink inside its grid column (grid items
+        // default to min-width:auto, so long chip text would widen the column).
+        width: '100%', minWidth: 0, textAlign: 'right', cursor: 'pointer',
         border: supplementary
           ? '1px solid color-mix(in oklab, var(--accent) 32%, transparent)'
           : 'none',
@@ -74,8 +76,10 @@ function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answere
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
         ) : cov ? (
-          <span className="zd-chip zd-num" style={{ ...covColors, whiteSpace: 'nowrap' }}>
-            {cov.text}
+          <span className="zd-chip zd-num" style={{ ...covColors, minWidth: 0, maxWidth: '100%' }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {cov.text}
+            </span>
           </span>
         ) : (
           <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
@@ -104,7 +108,10 @@ function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answere
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
         {supplementary && cov ? (
-          <span className="zd-num" style={{ fontSize: 11.5, fontWeight: 700, color: covColors.color, whiteSpace: 'nowrap' }}>
+          <span className="zd-num" style={{
+            fontSize: 11.5, fontWeight: 700, color: covColors.color,
+            whiteSpace: 'nowrap', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis',
+          }}>
             {cov.text}
           </span>
         ) : (
@@ -161,7 +168,9 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHom
           <div className="zd-h2">آزمون‌های آیین‌نامه</div>
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>پاسخ فوری · بدون تایمر</div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        {/* minmax(0,1fr) keeps both columns equal even if a card's content
+            (e.g. a coverage chip) would otherwise refuse to shrink. */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
           {official.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
         </div>
 
@@ -175,7 +184,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHom
                 color: 'var(--accent-deep)',
               }}>غیررسمی</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
               {review.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
             </div>
           </>
