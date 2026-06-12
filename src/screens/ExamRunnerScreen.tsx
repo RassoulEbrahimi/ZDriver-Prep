@@ -40,6 +40,10 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   const [selected, setSelected] = useState<number | null>(null)
   const [timeLeft, setTimeLeft] = useState(duration)
 
+  // Exit confirmation (Phase 7L-2): a خروج tap opens a sheet instead of
+  // discarding the attempt immediately. The timer keeps running underneath.
+  const [confirmExit, setConfirmExit] = useState(false)
+
   // Finish guard — the exam finalizes at most once per runner instance
   // (protects against timer-expiry racing a manual finish tap).
   const didFinishRef = useRef(false)
@@ -109,7 +113,7 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
         borderBottom: '1px solid var(--line)',
       }}>
         <div className="zd-header-row">
-          <button className="zd-icon-btn" onClick={onExit} aria-label="خروج"><CloseIcon size={18} /></button>
+          <button className="zd-icon-btn" onClick={() => setConfirmExit(true)} aria-label="خروج"><CloseIcon size={18} /></button>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 12,
             background: lowTime ? 'var(--danger-soft)' : 'var(--primary-soft)',
@@ -198,6 +202,34 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
           </button>
         </div>
       </div>
+
+      {/* Exit confirmation sheet */}
+      {confirmExit && (
+        <div className="zd-backdrop" onClick={() => setConfirmExit(false)}>
+          <div className="zd-sheet" onClick={e => e.stopPropagation()}>
+            <div className="zd-sheet-grip" />
+
+            <div style={{ textAlign: 'center', marginBottom: 4 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+                خروج از آزمون؟
+              </div>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
+                اگر الان خارج شوی، این آزمون نیمه‌کاره رها می‌شود و پاسخ‌هایت ثبت نمی‌شود.
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              <button onClick={() => setConfirmExit(false)} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50 }}>
+                ادامه آزمون
+              </button>
+              <button onClick={onExit} className="zd-btn zd-btn-outline zd-btn-block"
+                style={{ height: 46, color: 'var(--danger)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
+                خروج از آزمون
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
