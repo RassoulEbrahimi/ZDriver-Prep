@@ -25,6 +25,25 @@ interface Props {
   onOpenAccount: () => void
 }
 
+// نکتهٔ روز — rotated by day-of-year, no persistence. All tips state real
+// آیین‌نامه rules consistent with the question bank's explanations.
+const DAILY_TIPS = [
+  'فاصلهٔ ایمن از خودروی جلویی را با قانون «دو ثانیه» تخمین بزن؛ روی جادهٔ خیس این فاصله را دو برابر کن.',
+  'در گذرگاه پیادهٔ بدون چراغ راهنمایی، حق تقدم همیشه با عابر پیاده است؛ سرعت را کم کن و آمادهٔ توقف باش.',
+  'در تقاطع هم‌عرض بدون علائم، حق تقدم با وسیله‌ای است که در سمت راست تو قرار دارد.',
+  'سبقت گرفتن در تونل‌ها و روی پل‌ها ممنوع است و تنها پس از پایان آن‌ها آزاد می‌شود.',
+  'شب‌ها وقتی خودرویی از روبه‌رو نزدیک می‌شود و فاصله به ۱۵۰ متر یا کمتر رسید، نور بالا را به نور پایین تبدیل کن.',
+  'هنگام عبور از تقاطع ریلی هم‌سطح، روی ریل هرگز دنده عوض نکن؛ با دندهٔ مناسب و ثابت عبور کن.',
+  'در پنچری ناگهانی، فرمان را محکم نگه دار و بدون ترمز شدید اجازه بده خودرو به‌تدریج متوقف شود.',
+] as const
+
+function tipOfTheDay(): string {
+  const now = new Date()
+  const startOfYear = new Date(now.getFullYear(), 0, 0)
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / 86_400_000)
+  return DAILY_TIPS[dayOfYear % DAILY_TIPS.length]!
+}
+
 const pillBtn: React.CSSProperties = {
   position: 'relative',
   width: 38, height: 38, borderRadius: 12,
@@ -295,7 +314,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
           <div>
             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-deep)' }}>نکتهٔ روز</div>
             <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 4, lineHeight: 1.6 }}>
-              فاصلهٔ ایمن از خودروی جلویی را با قانون «دو ثانیه» تخمین بزن؛ روی جادهٔ خیس این فاصله را دو برابر کن.
+              {tipOfTheDay()}
             </div>
           </div>
         </div>

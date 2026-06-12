@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import type { Question, Category, Progress } from '../types'
 import { CloseIcon, BookmarkFilledIcon, RefreshIcon, CheckIcon } from '../components/Icons'
+import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
 import { fa } from '../utils'
 
 interface Props {
@@ -87,8 +88,9 @@ export function MistakesScreen({ progress, questions, categories, onRetry }: Pro
                   }}>
                     {cat?.emoji} {cat?.title}
                   </span>
-                  <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{fa(2)} روز پیش</div>
                 </div>
+
+                {q.image && <QuestionImagePlaceholder src={q.image} />}
 
                 <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', lineHeight: 1.6, marginBottom: 10 }}>
                   {q.text}
@@ -117,7 +119,9 @@ export function MistakesScreen({ progress, questions, categories, onRetry }: Pro
 
                 <div className="flex" style={{ gap: 8, marginTop: 10 }}>
                   <button onClick={onRetry} className="zd-btn zd-btn-ghost" style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
-                  <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
+                  {q.explanation && (
+                    <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
+                  )}
                 </div>
               </div>
             )
