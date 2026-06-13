@@ -1,7 +1,7 @@
 // Phase 4D-2B — Real Exam 2 (آزمون ۲) imported from aeinname_asli.pdf.
 // Generated from a human-reviewed draft; answers confirmed by the red-color signal
-// and visual review. 30 questions; 10 are image-dependent and staged as
-// imagePending (no image assets yet — handled in a later image phase).
+// and visual review. 30 questions; 10 are image-dependent with real assets under
+// src/assets/source-exams/exam-02/ (wired in Phase 7Q-2A).
 // Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q10, Q13, Q16, Q19.
 
 import type { SourceExamData } from '../types'
@@ -19,7 +19,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q1",
-      imagePending: true,
+      image: { path: "exam-02/q01.png", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-02-02",
@@ -31,7 +31,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q2",
-      imagePending: true,
+      image: { path: "exam-02/q02.png", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-02-03",
@@ -43,7 +43,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q3",
-      imagePending: true,
+      image: { path: "exam-02/q03.png", alt: "تابلوی هشدار مثلثی" },
     },
     {
       id: "se-02-04",
@@ -55,7 +55,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q4",
-      imagePending: true,
+      image: { path: "exam-02/q04.png", alt: "تابلوی هشدار مثلثی با تصویر حیوان" },
     },
     {
       id: "se-02-05",
@@ -67,7 +67,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q5",
-      imagePending: true,
+      image: { path: "exam-02/q05.png", alt: "تابلوی دایره‌ای ممنوعیت با تصویر کامیون" },
     },
     {
       id: "se-02-06",
@@ -79,7 +79,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q6",
-      imagePending: true,
+      image: { path: "exam-02/q06.png", alt: "تابلوی هشدار مثلثی با تصویر چند خودرو" },
     },
     {
       id: "se-02-07",
@@ -124,7 +124,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q10",
-      imagePending: true,
+      image: { path: "exam-02/q10.png", alt: "چهار گزینهٔ تصویری از خط‌کشی‌های راه" },
     },
     {
       id: "se-02-11",
@@ -158,7 +158,7 @@ export const exam02: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q13",
-      imagePending: true,
+      image: { path: "exam-02/q13.png", alt: "تقاطع با خودروی امدادی، خودروی زرد (الف) و خودروی سبز (ب)" },
     },
     {
       id: "se-02-14",
@@ -192,7 +192,7 @@ export const exam02: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q16",
-      imagePending: true,
+      image: { path: "exam-02/q16.png", alt: "خودرو در حال پارک کنار خیابان" },
     },
     {
       id: "se-02-17",
@@ -226,7 +226,7 @@ export const exam02: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q19",
-      imagePending: true,
+      image: { path: "exam-02/q19.png", alt: "نمای موتور خودرو" },
     },
     {
       id: "se-02-20",
