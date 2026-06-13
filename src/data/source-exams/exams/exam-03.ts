@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 3 (آزمون 3) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q9
+// correct answers confirmed by the red-color signal. Image-dependent questions
+// have real assets under src/assets/source-exams/exam-03/ (wired in Phase 7Q-3A).
+// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q11, Q12, Q25
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q1",
-      imagePending: true,
+      image: { path: "exam-03/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-03-02",
@@ -31,7 +31,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q2",
-      imagePending: true,
+      image: { path: "exam-03/q02.webp", alt: "تابلوی راهنمایی و رانندگی" },
     },
     {
       id: "se-03-03",
@@ -43,7 +43,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q3",
-      imagePending: true,
+      image: { path: "exam-03/q03.webp", alt: "تابلوی راهنمایی و رانندگی" },
     },
     {
       id: "se-03-04",
@@ -55,7 +55,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q4",
-      imagePending: true,
+      image: { path: "exam-03/q04.webp", alt: "تابلوی راهنمایی و رانندگی" },
     },
     {
       id: "se-03-05",
@@ -67,7 +67,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q5",
-      imagePending: true,
+      image: { path: "exam-03/q05.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-03-06",
@@ -79,7 +79,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q6",
-      imagePending: true,
+      image: { path: "exam-03/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-03-07",
@@ -91,7 +91,7 @@ export const exam03: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q7",
-      imagePending: true,
+      image: { path: "exam-03/q07.webp", alt: "تقاطع بدون چراغ راهنمایی با چند خودرو" },
     },
     {
       id: "se-03-08",
@@ -103,6 +103,7 @@ export const exam03: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q8",
+      image: { path: "exam-03/q08.webp", alt: "چراغ راهنمایی با نور سبز روشن" },
     },
     {
       id: "se-03-09",
@@ -114,7 +115,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q9",
-      imagePending: true,
+      image: { path: "exam-03/q09.webp", alt: "نمودار خط‌کشی پارک خودرو" },
     },
     {
       id: "se-03-10",
@@ -137,6 +138,7 @@ export const exam03: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q11",
+      image: { path: "exam-03/q11.webp", alt: "چراغ راهنمایی با نور زرد روشن" },
     },
     {
       id: "se-03-12",
@@ -148,6 +150,7 @@ export const exam03: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q12",
+      image: { path: "exam-03/q12.webp", alt: "تابلوی لوزی‌شکل نارنجی‌رنگ" },
     },
     {
       id: "se-03-13",
@@ -291,6 +294,7 @@ export const exam03: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 3 q25",
+      image: { path: "exam-03/q25.webp", alt: "دستهٔ دنده با الگوی دنده‌ها" },
     },
     {
       id: "se-03-26",
