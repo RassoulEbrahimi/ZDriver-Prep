@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 4 (آزمون 4) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-4A — 10 image assets wired (Q1–Q8, Q12, Q29); PNGs replaced with
+// optimized WebP (quality 82, method 6); all imagePending flags cleared.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q1",
-      imagePending: true,
+      image: { path: "exam-04/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-04-02",
@@ -31,7 +31,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q2",
-      imagePending: true,
+      image: { path: "exam-04/q02.webp", alt: "تابلوی هشدار پل متحرک" },
     },
     {
       id: "se-04-03",
@@ -43,7 +43,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q3",
-      imagePending: true,
+      image: { path: "exam-04/q03.webp", alt: "تابلوی هشدار تقاطع راه آهن بدون راهبند" },
     },
     {
       id: "se-04-04",
@@ -55,7 +55,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q4",
-      imagePending: true,
+      image: { path: "exam-04/q04.webp", alt: "تابلوی عبور با زنجیر چرخ" },
     },
     {
       id: "se-04-05",
@@ -67,7 +67,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q5",
-      imagePending: true,
+      image: { path: "exam-04/q05.webp", alt: "تابلوی هشدار نزدیک شدن به تابلوی ایست" },
     },
     {
       id: "se-04-06",
@@ -79,7 +79,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q6",
-      imagePending: true,
+      image: { path: "exam-04/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-04-07",
@@ -91,6 +91,7 @@ export const exam04: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q7",
+      image: { path: "exam-04/q07.webp", alt: "چراغ راهنمایی با پیکان سبز و نور قرمز" },
     },
     {
       id: "se-04-08",
@@ -102,6 +103,7 @@ export const exam04: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q8",
+      image: { path: "exam-04/q08.webp", alt: "خط‌کشی هاشور اضطراری در حاشیهٔ راه" },
     },
     {
       id: "se-04-09",
@@ -146,6 +148,7 @@ export const exam04: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q12",
+      image: { path: "exam-04/q12.webp", alt: "تابلوی قرمز رنگ در علائم عبور و مرور" },
     },
     {
       id: "se-04-13",
@@ -333,6 +336,7 @@ export const exam04: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 4 q29",
+      image: { path: "exam-04/q29.webp", alt: "رادیاتور خودرو" },
     },
     {
       id: "se-04-30",
