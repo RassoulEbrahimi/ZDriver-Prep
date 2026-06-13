@@ -19,7 +19,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q1",
-      image: { path: "exam-02/q01.png", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
+      image: { path: "exam-02/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-02-02",
@@ -31,7 +31,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q2",
-      image: { path: "exam-02/q02.png", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
+      image: { path: "exam-02/q02.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-02-03",
@@ -43,7 +43,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q3",
-      image: { path: "exam-02/q03.png", alt: "تابلوی هشدار مثلثی" },
+      image: { path: "exam-02/q03.webp", alt: "تابلوی هشدار مثلثی" },
     },
     {
       id: "se-02-04",
@@ -55,7 +55,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q4",
-      image: { path: "exam-02/q04.png", alt: "تابلوی هشدار مثلثی با تصویر حیوان" },
+      image: { path: "exam-02/q04.webp", alt: "تابلوی هشدار مثلثی با تصویر حیوان" },
     },
     {
       id: "se-02-05",
@@ -67,7 +67,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q5",
-      image: { path: "exam-02/q05.png", alt: "تابلوی دایره‌ای ممنوعیت با تصویر کامیون" },
+      image: { path: "exam-02/q05.webp", alt: "تابلوی دایره‌ای ممنوعیت با تصویر کامیون" },
     },
     {
       id: "se-02-06",
@@ -79,7 +79,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q6",
-      image: { path: "exam-02/q06.png", alt: "تابلوی هشدار مثلثی با تصویر چند خودرو" },
+      image: { path: "exam-02/q06.webp", alt: "تابلوی هشدار مثلثی با تصویر چند خودرو" },
     },
     {
       id: "se-02-07",
@@ -124,7 +124,7 @@ export const exam02: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q10",
-      image: { path: "exam-02/q10.png", alt: "چهار گزینهٔ تصویری از خط‌کشی‌های راه" },
+      image: { path: "exam-02/q10.webp", alt: "چهار گزینهٔ تصویری از خط‌کشی‌های راه" },
     },
     {
       id: "se-02-11",
@@ -158,7 +158,7 @@ export const exam02: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q13",
-      image: { path: "exam-02/q13.png", alt: "تقاطع با خودروی امدادی، خودروی زرد (الف) و خودروی سبز (ب)" },
+      image: { path: "exam-02/q13.webp", alt: "تقاطع با خودروی امدادی، خودروی زرد (الف) و خودروی سبز (ب)" },
     },
     {
       id: "se-02-14",
@@ -192,7 +192,7 @@ export const exam02: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q16",
-      image: { path: "exam-02/q16.png", alt: "خودرو در حال پارک کنار خیابان" },
+      image: { path: "exam-02/q16.webp", alt: "خودرو در حال پارک کنار خیابان" },
     },
     {
       id: "se-02-17",
@@ -226,7 +226,7 @@ export const exam02: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 2 q19",
-      image: { path: "exam-02/q19.png", alt: "نمای موتور خودرو" },
+      image: { path: "exam-02/q19.webp", alt: "نمای موتور خودرو" },
     },
     {
       id: "se-02-20",
