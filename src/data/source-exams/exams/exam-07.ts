@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 7 (آزمون 7) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q6, Q7
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-6A — 10 image assets wired (Q1–Q7, Q9, Q15, Q27); PNGs replaced
+// with optimized WebP (quality 82, method 6); all imagePending flags cleared.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q1",
-      imagePending: true,
+      image: { path: "exam-07/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-07-02",
@@ -31,7 +31,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q2",
-      imagePending: true,
+      image: { path: "exam-07/q02.webp", alt: "تابلوی راننده ناشنوا" },
     },
     {
       id: "se-07-03",
@@ -43,7 +43,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q3",
-      imagePending: true,
+      image: { path: "exam-07/q03.webp", alt: "تابلوی شروع محل پیاده‌روی" },
     },
     {
       id: "se-07-04",
@@ -55,7 +55,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q4",
-      imagePending: true,
+      image: { path: "exam-07/q04.webp", alt: "تابلوی محدودیت ارتفاع ۳/۵ متر" },
     },
     {
       id: "se-07-05",
@@ -67,6 +67,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q5",
+      image: { path: "exam-07/q05.webp", alt: "تابلوهای فاصله تا تقاطع جاده و راه آهن" },
     },
     {
       id: "se-07-06",
@@ -78,7 +79,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q6",
-      imagePending: true,
+      image: { path: "exam-07/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-07-07",
@@ -90,7 +91,7 @@ export const exam07: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q7",
-      imagePending: true,
+      image: { path: "exam-07/q07.webp", alt: "خط‌کشی عبور عابر پیاده" },
     },
     {
       id: "se-07-08",
@@ -113,6 +114,7 @@ export const exam07: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q9",
+      image: { path: "exam-07/q09.webp", alt: "چراغ زرد چشمک‌زن در تقاطع" },
     },
     {
       id: "se-07-10",
@@ -179,6 +181,7 @@ export const exam07: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q15",
+      image: { path: "exam-07/q15.webp", alt: "هشدار شرایط غیراستاندارد جاده" },
     },
     {
       id: "se-07-16",
@@ -311,6 +314,7 @@ export const exam07: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 7 q27",
+      image: { path: "exam-07/q27.webp", alt: "مبدل کاتالیستی در سیستم اگزوز" },
     },
     {
       id: "se-07-28",
