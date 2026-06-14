@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 8 (آزمون 8) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-6A — 8 image assets wired (Q1–Q7, Q11); PNGs replaced
+// with optimized WebP (quality 82, method 6); all imagePending flags cleared.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q1",
-      imagePending: true,
+      image: { path: "exam-08/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-08-02",
@@ -31,7 +31,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q2",
-      imagePending: true,
+      image: { path: "exam-08/q02.webp", alt: "تابلوی توقف ممنوع در ساعات معین" },
     },
     {
       id: "se-08-03",
@@ -43,7 +43,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q3",
-      imagePending: true,
+      image: { path: "exam-08/q03.webp", alt: "تابلوی هشدار چاله در راه" },
     },
     {
       id: "se-08-04",
@@ -55,7 +55,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q4",
-      imagePending: true,
+      image: { path: "exam-08/q04.webp", alt: "تابلوی طول ممنوعیت پارکینگ" },
     },
     {
       id: "se-08-05",
@@ -67,7 +67,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q5",
-      imagePending: true,
+      image: { path: "exam-08/q05.webp", alt: "تابلوی شروع جدا کننده" },
     },
     {
       id: "se-08-06",
@@ -79,7 +79,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q6",
-      imagePending: true,
+      image: { path: "exam-08/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-08-07",
@@ -91,7 +91,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q7",
-      imagePending: true,
+      image: { path: "exam-08/q07.webp", alt: "جهت قرار گیری چرخ هنگام پارک در سرازیری دارای جدول" },
     },
     {
       id: "se-08-08",
@@ -136,6 +136,7 @@ export const exam08: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 8 q11",
+      image: { path: "exam-08/q11.webp", alt: "خطوط شطرنجی در وسط تقاطع" },
     },
     {
       id: "se-08-12",
