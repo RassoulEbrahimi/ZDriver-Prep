@@ -1,8 +1,7 @@
 // Phase 4D-3-17 — Real Exam 9 (آزمون 9) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q29
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-5A — Images wired for Q1–Q9, Q11, Q14, Q29 (12 assets, WebP optimized).
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +18,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q1",
-      imagePending: true,
+      image: { path: "exam-09/q01.webp", alt: "تابلوی ایست بازرسی (گمرک)" },
     },
     {
       id: "se-09-02",
@@ -31,7 +30,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q2",
-      imagePending: true,
+      image: { path: "exam-09/q02.webp", alt: "تابلوی سمت راست بن بست" },
     },
     {
       id: "se-09-03",
@@ -43,7 +42,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q3",
-      imagePending: true,
+      image: { path: "exam-09/q03.webp", alt: "تابلوی مدرسه" },
     },
     {
       id: "se-09-04",
@@ -55,7 +54,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q4",
-      imagePending: true,
+      image: { path: "exam-09/q04.webp", alt: "تابلوی ورود ممنوع" },
     },
     {
       id: "se-09-05",
@@ -67,7 +66,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q5",
-      imagePending: true,
+      image: { path: "exam-09/q05.webp", alt: "تابلوی عبور سواری ممنوع" },
     },
     {
       id: "se-09-06",
@@ -79,7 +78,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q6",
-      imagePending: true,
+      image: { path: "exam-09/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-09-07",
@@ -91,6 +90,7 @@ export const exam09: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q7",
+      image: { path: "exam-09/q07.webp", alt: "خودرو پشت سر دوچرخه‌سوار کنار جاده" },
     },
     {
       id: "se-09-08",
@@ -102,7 +102,7 @@ export const exam09: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q8",
-      imagePending: true,
+      image: { path: "exam-09/q08.webp", alt: "خط توقف منقطع در تقاطع" },
     },
     {
       id: "se-09-09",
@@ -114,7 +114,7 @@ export const exam09: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q9",
-      imagePending: true,
+      image: { path: "exam-09/q09.webp", alt: "سه‌راه با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-09-10",
@@ -137,6 +137,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q11",
+      image: { path: "exam-09/q11.webp", alt: "تابلوی سبز رنگ در علائم عبور و مرور" },
     },
     {
       id: "se-09-12",
@@ -170,6 +171,7 @@ export const exam09: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q14",
+      image: { path: "exam-09/q14.webp", alt: "نمای داخل خودرو با شماره‌گذاری پدال‌ها" },
     },
     {
       id: "se-09-15",
@@ -335,7 +337,7 @@ export const exam09: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 9 q29",
-      imagePending: true,
+      image: { path: "exam-09/q29.webp", alt: "خط‌کشی ممتد و منقطع در جاده" },
     },
     {
       id: "se-09-30",

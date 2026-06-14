@@ -1,8 +1,7 @@
 // Phase 4D-3-17 — Real Exam 10 (آزمون 10) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-5A — Images wired for Q1–Q8, Q13, Q20, Q24 (11 assets, WebP optimized).
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +18,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q1",
-      imagePending: true,
+      image: { path: "exam-10/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-10-02",
@@ -31,7 +30,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q2",
-      imagePending: true,
+      image: { path: "exam-10/q02.webp", alt: "تابلوی حداقل سرعت ۳۰ کیلومتر" },
     },
     {
       id: "se-10-03",
@@ -43,7 +42,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q3",
-      imagePending: true,
+      image: { path: "exam-10/q03.webp", alt: "تابلوی ابتدای منطقه مسکونی" },
     },
     {
       id: "se-10-04",
@@ -55,7 +54,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q4",
-      imagePending: true,
+      image: { path: "exam-10/q04.webp", alt: "تابلوی سرعت توصیه شده" },
     },
     {
       id: "se-10-05",
@@ -67,7 +66,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q5",
-      imagePending: true,
+      image: { path: "exam-10/q05.webp", alt: "تابلوی ایستادن ممنوع" },
     },
     {
       id: "se-10-06",
@@ -79,7 +78,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q6",
-      imagePending: true,
+      image: { path: "exam-10/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-10-07",
@@ -91,7 +90,7 @@ export const exam10: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q7",
-      imagePending: true,
+      image: { path: "exam-10/q07.webp", alt: "تقاطع با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-10-08",
@@ -103,7 +102,7 @@ export const exam10: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q8",
-      imagePending: true,
+      image: { path: "exam-10/q08.webp", alt: "خط ممتد ایست در تقاطع" },
     },
     {
       id: "se-10-09",
@@ -159,6 +158,7 @@ export const exam10: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q13",
+      image: { path: "exam-10/q13.webp", alt: "تابلوی قهوه‌ای در علائم عبور و مرور" },
     },
     {
       id: "se-10-14",
@@ -236,6 +236,7 @@ export const exam10: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q20",
+      image: { path: "exam-10/q20.webp", alt: "تقاطع چراغ‌دار با ترافیک بسته" },
     },
     {
       id: "se-10-21",
@@ -280,6 +281,7 @@ export const exam10: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 10 q24",
+      image: { path: "exam-10/q24.webp", alt: "سه تصویر از فشار باد تایر" },
     },
     {
       id: "se-10-25",
