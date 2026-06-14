@@ -19,7 +19,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «ورود به راه اصلی از راست» را نشان می‌دهد و راننده را از پیوستن یک راه فرعی از سمت راست به مسیر اصلی آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 11 q1",
-      imagePending: true,
+      image: { path: "exam-11/q01.webp", alt: "تابلوی ورود به راه اصلی از راست" },
     },
     {
       id: "se-11-02",
@@ -31,7 +31,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «مسیر توصیه‌شده برای وسایل سنگین» را نشان می‌دهد و خودروهای سنگین را به استفاده از این مسیر هدایت می‌کند.",
       source: "aeinname_asli.pdf exam 11 q2",
-      imagePending: true,
+      image: { path: "exam-11/q02.webp", alt: "تابلوی مسیر توصیه‌شده برای وسایل سنگین" },
     },
     {
       id: "se-11-03",
@@ -43,7 +43,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی خدماتی «جایگاه سوخت» را نشان می‌دهد و وجود پمپ بنزین در ادامهٔ مسیر را به رانندگان اطلاع می‌دهد.",
       source: "aeinname_asli.pdf exam 11 q3",
-      imagePending: true,
+      image: { path: "exam-11/q03.webp", alt: "تابلوی جایگاه سوخت" },
     },
     {
       id: "se-11-04",
@@ -55,7 +55,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «خروجی از آزادراه تا ۲۰۰ متر» را نشان می‌دهد و راننده را برای آماده شدن جهت خروج از آزادراه آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 11 q4",
-      imagePending: true,
+      image: { path: "exam-11/q04.webp", alt: "تابلوی خروجی از آزادراه تا ۲۰۰ متر" },
     },
     {
       id: "se-11-05",
@@ -67,7 +67,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «پارکینگ مخصوص افراد معلول» را نشان می‌دهد و این جایگاه ویژهٔ توقف خودروهای دارای معلولیت است.",
       source: "aeinname_asli.pdf exam 11 q5",
-      imagePending: true,
+      image: { path: "exam-11/q05.webp", alt: "تابلوی پارکینگ مخصوص افراد معلول" },
     },
     {
       id: "se-11-06",
@@ -79,7 +79,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «پرتاب سنگ» است و به راننده هشدار می‌دهد که در این مسیر سنگ‌ریزه‌های روی جاده ممکن است پرتاب شده و خطرآفرین باشند.",
       source: "aeinname_asli.pdf exam 11 q6",
-      imagePending: true,
+      image: { path: "exam-11/q06.webp", alt: "تابلوی هشدار پرتاب سنگ" },
     },
     {
       id: "se-11-07",
@@ -102,7 +102,7 @@ export const exam11: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این شکل، ترتیب حق تقدم عبور به‌صورت قرمز(ب)، مشکی(الف) و سپس سفید(ج) است.",
       source: "aeinname_asli.pdf exam 11 q8",
-      imagePending: true,
+      image: { path: "exam-11/q08.webp", alt: "تقاطع با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-11-09",
@@ -114,7 +114,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "خطوط هاشور در این شکل نشانهٔ وجود موانع در راه است و رانندگان نباید روی این محدوده حرکت یا توقف کنند.",
       source: "aeinname_asli.pdf exam 11 q9",
-      imagePending: true,
+      image: { path: "exam-11/q09.webp", alt: "خط‌کشی هاشور نشان‌دهندهٔ موانع در راه" },
     },
     {
       id: "se-11-10",
@@ -126,7 +126,7 @@ export const exam11: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت خودروها در این تقاطع، ترتیب حق تقدم عبور ابتدا با آبی(الف) و سپس قهوه‌ای(ب) است.",
       source: "aeinname_asli.pdf exam 11 q10",
-      imagePending: true,
+      image: { path: "exam-11/q10.webp", alt: "تقاطع با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-11-11",
@@ -149,7 +149,7 @@ export const exam11: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این تقاطع هم‌عرض، ترتیب حق تقدم عبور به‌صورت دوچرخه، موتورسیکلت و سپس سواری است.",
       source: "aeinname_asli.pdf exam 11 q12",
-      imagePending: true,
+      image: { path: "exam-11/q12.webp", alt: "تقاطع هم‌عرض با وسایل نقلیهٔ مختلف" },
     },
     {
       id: "se-11-13",
@@ -326,7 +326,7 @@ export const exam11: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «عبور حیوانات وحشی» است و راننده را از احتمال حضور حیوانات وحشی در جاده آگاه می‌کند تا با احتیاط حرکت کند.",
       source: "aeinname_asli.pdf exam 11 q28",
-      imagePending: true,
+      image: { path: "exam-11/q28.webp", alt: "تابلوی هشدار عبور حیوانات وحشی" },
     },
     {
       id: "se-11-29",
