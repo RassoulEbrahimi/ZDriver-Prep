@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 6 (آزمون 6) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q9, Q11
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-5A — 10 image assets wired (Q1–Q7, Q9, Q11, Q25); PNGs replaced
+// with optimized WebP (quality 82, method 6); all imagePending flags cleared.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q1",
-      imagePending: true,
+      image: { path: "exam-06/q01.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-06-02",
@@ -31,7 +31,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q2",
-      imagePending: true,
+      image: { path: "exam-06/q02.webp", alt: "تابلوی اخباری میدان" },
     },
     {
       id: "se-06-03",
@@ -43,7 +43,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q3",
-      imagePending: true,
+      image: { path: "exam-06/q03.webp", alt: "تابلوی هشدار تقاطع در قوس" },
     },
     {
       id: "se-06-04",
@@ -55,7 +55,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q4",
-      imagePending: true,
+      image: { path: "exam-06/q04.webp", alt: "تابلوی بوق زدن ممنوع" },
     },
     {
       id: "se-06-05",
@@ -67,7 +67,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q5",
-      imagePending: true,
+      image: { path: "exam-06/q05.webp", alt: "تابلوی حق تقدم با وسیلهٔ مقابل" },
     },
     {
       id: "se-06-06",
@@ -79,7 +79,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q6",
-      imagePending: true,
+      image: { path: "exam-06/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-06-07",
@@ -91,7 +91,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q7",
-      imagePending: true,
+      image: { path: "exam-06/q07.webp", alt: "محدودهٔ نقاط کور در خودروهای سنگین" },
     },
     {
       id: "se-06-08",
@@ -114,7 +114,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q9",
-      imagePending: true,
+      image: { path: "exam-06/q09.webp", alt: "خط‌کشی عبور عابر پیاده" },
     },
     {
       id: "se-06-10",
@@ -137,7 +137,7 @@ export const exam06: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q11",
-      imagePending: true,
+      image: { path: "exam-06/q11.webp", alt: "هشدار نقاط کور موتورسیکلت هنگام گردش" },
     },
     {
       id: "se-06-12",
@@ -292,6 +292,7 @@ export const exam06: SourceExamData = {
       category: "vehicle",
       explanation: "",
       source: "aeinname_asli.pdf exam 6 q25",
+      image: { path: "exam-06/q25.webp", alt: "نمودار جابه‌جایی تایرها" },
     },
     {
       id: "se-06-26",
