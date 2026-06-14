@@ -19,6 +19,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «جهت وزش باد شدید از راست» را نشان می‌دهد و راننده را برای کنترل فرمان در برابر باد جانبی آماده می‌کند.",
       source: "aeinname_asli.pdf exam 12 q1",
+      image: { path: "exam-12/q01.webp", alt: "تابلوی هشدار وزش باد شدید از راست" },
     },
     {
       id: "se-12-02",
@@ -30,7 +31,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «رعایت حق تقدم» است و راننده باید سرعت خود را کاهش داده و در صورت لزوم برای عبور وسایل دارای حق تقدم توقف کند.",
       source: "aeinname_asli.pdf exam 12 q2",
-      imagePending: true,
+      image: { path: "exam-12/q02.webp", alt: "تابلوی رعایت حق تقدم" },
     },
     {
       id: "se-12-03",
@@ -42,7 +43,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «پایان آزادراه» را اعلام می‌کند؛ یعنی امکانات و مقررات ویژهٔ آزادراه از این نقطه به پایان می‌رسد و راننده باید با شرایط راه جدید هماهنگ شود.",
       source: "aeinname_asli.pdf exam 12 q3",
-      imagePending: true,
+      image: { path: "exam-12/q03.webp", alt: "تابلوی پایان آزادراه" },
     },
     {
       id: "se-12-04",
@@ -54,7 +55,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی انتظامی «دور زدن ممنوع» است و انجام حرکت دور زدن در آن محدوده مجاز نیست.",
       source: "aeinname_asli.pdf exam 12 q4",
-      imagePending: true,
+      image: { path: "exam-12/q04.webp", alt: "تابلوی دور زدن ممنوع" },
     },
     {
       id: "se-12-05",
@@ -66,7 +67,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «ورود به راه اصلی از چپ» را نشان می‌دهد و راننده را از پیوستن یک راه فرعی از سمت چپ به مسیر اصلی آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 12 q5",
-      imagePending: true,
+      image: { path: "exam-12/q05.webp", alt: "تابلوی ورود به راه اصلی از چپ" },
     },
     {
       id: "se-12-06",
@@ -78,7 +79,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «جهت عبور در میدان» را نشان می‌دهد و رانندگان را موظف می‌کند که در میدان در جهت تعیین‌شده (خلاف عقربه‌های ساعت) حرکت کنند.",
       source: "aeinname_asli.pdf exam 12 q6",
-      imagePending: true,
+      image: { path: "exam-12/q06.webp", alt: "تابلوی جهت عبور در میدان" },
     },
     {
       id: "se-12-07",
@@ -90,7 +91,7 @@ export const exam12: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این شکل، ترتیب حق تقدم عبور به‌صورت اتوبوس، دوچرخه و سپس سواری است.",
       source: "aeinname_asli.pdf exam 12 q7",
-      imagePending: true,
+      image: { path: "exam-12/q07.webp", alt: "تقاطع با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-12-08",
@@ -102,7 +103,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «عبور با عرض بیش از ۲ متر ممنوع» را نشان می‌دهد و وسایل نقلیه‌ای که پهنای آن‌ها بیش از ۲ متر است حق عبور ندارند.",
       source: "aeinname_asli.pdf exam 12 q8",
-      imagePending: true,
+      image: { path: "exam-12/q08.webp", alt: "تابلوی محدودیت عرض ۲ متر" },
     },
     {
       id: "se-12-09",
@@ -180,7 +181,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "شکل دایره معمولاً برای تابلوهای دستوری یا بازدارنده به کار می‌رود که راننده را به انجام یا خودداری از کاری ملزم می‌کنند.",
       source: "aeinname_asli.pdf exam 12 q15",
-      imagePending: true,
+      image: { path: "exam-12/q15.webp", alt: "تابلوی دایره‌ای دستوری یا بازدارنده" },
     },
     {
       id: "se-12-16",
@@ -225,6 +226,7 @@ export const exam12: SourceExamData = {
       category: "signs",
       explanation: "رنگ سیاه و سفید در علائم عبور و مرور برای تابلوهای دستوری و راهنمای مسیر در سایر راه‌ها به کار می‌رود.",
       source: "aeinname_asli.pdf exam 12 q19",
+      image: { path: "exam-12/q19.webp", alt: "تابلوی سیاه و سفید در علائم عبور و مرور" },
     },
     {
       id: "se-12-20",
