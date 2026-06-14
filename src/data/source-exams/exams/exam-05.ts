@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 5 (آزمون 5) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q9, Q10, Q11
+// correct answers confirmed by the red-color signal.
+// Phase 7Q-5A — 12 image assets wired (Q1–Q7, Q9–Q11, Q13, Q15); PNGs replaced
+// with optimized WebP (quality 82, method 6); all imagePending flags cleared.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q1",
-      imagePending: true,
+      image: { path: "exam-05/q01.webp", alt: "تابلوی هشدار خطر" },
     },
     {
       id: "se-05-02",
@@ -31,7 +31,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q2",
-      imagePending: true,
+      image: { path: "exam-05/q02.webp", alt: "تابلوی هشدار راه لغزنده" },
     },
     {
       id: "se-05-03",
@@ -43,7 +43,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q3",
-      imagePending: true,
+      image: { path: "exam-05/q03.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-05-04",
@@ -55,7 +55,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q4",
-      imagePending: true,
+      image: { path: "exam-05/q04.webp", alt: "تابلوی رعایت فاصله کمتر از ۷۰ متر ممنوع" },
     },
     {
       id: "se-05-05",
@@ -67,7 +67,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q5",
-      imagePending: true,
+      image: { path: "exam-05/q05.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-05-06",
@@ -79,7 +79,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q6",
-      imagePending: true,
+      image: { path: "exam-05/q06.webp", alt: "چهار گزینهٔ تصویری از تابلوهای راهنمایی و رانندگی" },
     },
     {
       id: "se-05-07",
@@ -91,6 +91,7 @@ export const exam05: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q7",
+      image: { path: "exam-05/q07.webp", alt: "چراغ قرمز چشمک‌زن در تقاطع" },
     },
     {
       id: "se-05-08",
@@ -113,7 +114,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q9",
-      imagePending: true,
+      image: { path: "exam-05/q09.webp", alt: "علامت پلیس راهنمایی برای توقف" },
     },
     {
       id: "se-05-10",
@@ -125,7 +126,7 @@ export const exam05: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q10",
-      imagePending: true,
+      image: { path: "exam-05/q10.webp", alt: "تقاطع با شماره‌گذاری وسایل نقلیه" },
     },
     {
       id: "se-05-11",
@@ -137,7 +138,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q11",
-      imagePending: true,
+      image: { path: "exam-05/q11.webp", alt: "خط‌کشی پارک افقی" },
     },
     {
       id: "se-05-12",
@@ -160,6 +161,7 @@ export const exam05: SourceExamData = {
       category: "signs",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q13",
+      image: { path: "exam-05/q13.webp", alt: "تابلوی زرد رنگ در علائم عبور و مرور" },
     },
     {
       id: "se-05-14",
@@ -182,6 +184,7 @@ export const exam05: SourceExamData = {
       category: "rules",
       explanation: "",
       source: "aeinname_asli.pdf exam 5 q15",
+      image: { path: "exam-05/q15.webp", alt: "نمودار فاصله مطمئن با خودرو جلویی" },
     },
     {
       id: "se-05-16",
