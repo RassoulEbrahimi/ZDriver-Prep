@@ -17,7 +17,7 @@ export const exam17: SourceExamData = {
       options: ["هنگامی که وسیله نقلیه ای در فاصله ای نزدیک و غیر ایمن از روبرو در حال حرکت است.", "از ۲۲۱ متر مانده به پیچ ها تا ۲۲۱ متر پس از آنها", "از ۲۰۱ متر مانده به ورودی تونل ها و پل ها", "برای اتوبوس ها و کامیون ها در معابر برون شهری"],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "سبقت گرفتن هنگامی که وسیله نقلیه‌ای در فاصلهٔ نزدیک و غیرایمن از روبرو در حال حرکت است ممنوع می‌باشد، زیرا خطر تصادف رودررو وجود دارد.",
       source: "aeinname_asli.pdf exam 17 q1",
     },
     {
@@ -28,7 +28,7 @@ export const exam17: SourceExamData = {
       options: ["حق تقدم عبور دارد.", "حق تقدم عبور ندارد.", "در صورت داشتن سرعت ، حق تقدم عبور دارد.", "در صورت زدن چراغ راهنما ، حق تقدم عبور دارد."],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "وسیله‌ای که در مسیر مجاز در حال حرکت است نسبت به خودروی متوقفی که تازه شروع به حرکت می‌کند حق تقدم عبور دارد و خودروی متوقف باید منتظر بماند.",
       source: "aeinname_asli.pdf exam 17 q2",
     },
     {
@@ -39,7 +39,7 @@ export const exam17: SourceExamData = {
       options: ["سوختن لامپ ها", "کاهش شدت روشنایی", "عدم کار کردن نور بالا", "از کار افتادن چراغ های راهنما"],
       correctAnswerIndex: 1,
       category: "safety",
-      explanation: "",
+      explanation: "کثیف بودن شیشهٔ چراغ‌ها باعث کاهش شدت روشنایی می‌شود و دید راننده و دیده شدن خودرو را کم می‌کند.",
       source: "aeinname_asli.pdf exam 17 q3",
     },
     {
@@ -50,7 +50,7 @@ export const exam17: SourceExamData = {
       options: ["باید چراغ های نور پایین را روشن نمود.", "استفاده از برف پاکن فقط در صورت شدت یافتن ریزش باران", "عدم استفاده از سیستم تهویه خودرو", "عدم استفاده از چراغ ها در روز"],
       correctAnswerIndex: 0,
       category: "safety",
-      explanation: "",
+      explanation: "در شرایط ریزش برف و باران باید چراغ‌های نور پایین را روشن کرد تا دید راننده بهتر شده و خودرو برای دیگران بهتر دیده شود.",
       source: "aeinname_asli.pdf exam 17 q4",
     },
     {
@@ -61,7 +61,7 @@ export const exam17: SourceExamData = {
       options: ["صدمات و تلفات در تصادفات بیشتر خواهد بود.", "کنترل وسیله نقلیه سخت تر خواهد شد.", "سایر کاربران راه ، زمان واکنش بسیار کمی داشته و توانایی گریز از تصادف را نخواهند داشت.", "تمام موارد"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "سرعت زیاد هر سه پیامد را دارد: افزایش شدت صدمات، دشواری کنترل خودرو و کاهش زمان واکنش سایر کاربران راه؛ بنابراین «تمام موارد» درست است.",
       source: "aeinname_asli.pdf exam 17 q5",
     },
     {
@@ -72,7 +72,7 @@ export const exam17: SourceExamData = {
       options: ["روشن نمودن چراغ های کوچک و بزرگ به طور همزمان", "استفاده از بوق کوتاه هنگام سبقت", "کاهش سرعت در صورت نزدیک شدن خودرویی از روبرو که از نور بالا استفاده می کند.", "استفاده از چراغ مه شکن در هنگام ریزش باران"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "هنگام سبقت در شب باید با تبدیل نور چراغ هشدار داد نه با بوق؛ بنابراین استفاده از بوق کوتاه هنگام سبقت در شب اشتباه است.",
       source: "aeinname_asli.pdf exam 17 q6",
     },
     {
@@ -83,7 +83,7 @@ export const exam17: SourceExamData = {
       options: ["توقف", "ایستادن ممنوع", "توقف مطلقا ممنوع", "توقف ممنوع"],
       correctAnswerIndex: 3,
       category: "vehicle",
-      explanation: "",
+      explanation: "«توقف ممنوع» یعنی ایست وسیله نقلیه جز برای سوار و پیاده کردن (مشروط به حضور راننده پشت فرمان) ممنوع است.",
       source: "aeinname_asli.pdf exam 17 q7",
     },
     {
@@ -94,7 +94,7 @@ export const exam17: SourceExamData = {
       options: ["کارگاه ها", "خودرو", "وسایل گازسوز خانگی", "پالایشگاه ها"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "خودروها بزرگ‌ترین منبع آلودگی هوا در کلان‌شهرها هستند، زیرا با احتراق سوخت گازهای سمی و ذرات معلق فراوانی منتشر می‌کنند.",
       source: "aeinname_asli.pdf exam 17 q8",
     },
     {
@@ -105,7 +105,7 @@ export const exam17: SourceExamData = {
       options: ["حدود ۲۲۲ هزار کیلومتر", "حدود ۲۲۳ هزار کیلومتر", "حدود ۲ سال", "حدود ۲۱ سال"],
       correctAnswerIndex: 2,
       category: "vehicle",
-      explanation: "",
+      explanation: "عمر مفید کنیستر حدود ۲ سال است؛ پس از این مدت کارایی آن در جذب بخارهای بنزین کاهش می‌یابد و باید تعویض شود.",
       source: "aeinname_asli.pdf exam 17 q9",
     },
     {
@@ -116,7 +116,7 @@ export const exam17: SourceExamData = {
       options: ["۲۲۱ متری اطراف چراغ راهنمایی", "۰۲ متری مراکز فوریت های پزشکی", "۲۲ متری شیر های آب آتش نشانی", "معابر در ارتفاع"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "توقف در معابر واقع در ارتفاع (مانند پل و شیب) ممنوع است، زیرا دید محدود و شرایط مسیر خطر تصادف را افزایش می‌دهد.",
       source: "aeinname_asli.pdf exam 17 q10",
     },
     {
@@ -127,7 +127,7 @@ export const exam17: SourceExamData = {
       options: ["صرفا در فصل تابستان که هوا گرم است.", "زمانی که خودرو روشن است.", "زمانی که خودرو در حال حرکت است.", "زمانی که موتور خاموش و سرد است."],
       correctAnswerIndex: 3,
       category: "vehicle",
-      explanation: "",
+      explanation: "بازدید مخزن آب رادیاتور باید زمانی انجام شود که موتور خاموش و سرد است، زیرا باز کردن درِ رادیاتور داغ خطر پاشش آب جوش و سوختگی دارد.",
       source: "aeinname_asli.pdf exam 17 q11",
     },
     {
@@ -138,7 +138,7 @@ export const exam17: SourceExamData = {
       options: ["برای مشخص نمودن مسیر عبور دوچرخه", "عمل سبقت ، گردش ، تغییر خط حرکت و دور زدن از روی این خطوط (با رعایت احتیاط) بدون اشکال می باشد.", "رانندگان وسایل نقلیه نباید به هیچ وجه از روی این خطوط عبور نمایند.", "محل پارک خودرو"],
       correctAnswerIndex: 1,
       category: "signs",
-      explanation: "",
+      explanation: "خطوط مقطع (بریده‌بریده) محدودیتی ایجاد نمی‌کنند؛ سبقت، گردش، تغییر خط حرکت و دور زدن از روی آن‌ها با رعایت احتیاط بدون اشکال است.",
       source: "aeinname_asli.pdf exam 17 q12",
       imagePending: true,
     },
@@ -150,7 +150,7 @@ export const exam17: SourceExamData = {
       options: ["زمانی که هوا رو به تاریکی است.", "زمانی که سرعت خودرو سبقت گیرنده خیلی زیاد باشد.", "زمانی که شرایط بارانی یا برقی است.", "در هیچ شرایطی"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "در هیچ شرایطی نباید مانع سبقت گرفتن خودروی در حال سبقت شد؛ افزایش سرعت یا بستن مسیر برای آن خطر تصادف را به‌شدت بالا می‌برد.",
       source: "aeinname_asli.pdf exam 17 q13",
     },
     {
@@ -161,7 +161,7 @@ export const exam17: SourceExamData = {
       options: ["فیلتر هوا", "مبدل کاتالیست", "نشانگر سوخت", "فن"],
       correctAnswerIndex: 1,
       category: "vehicle",
-      explanation: "",
+      explanation: "مبدل کاتالیست جزو سیستم اگزوز خودرو است که گازهای سمی خروجی موتور را به ترکیبات کم‌خطرتر تبدیل می‌کند.",
       source: "aeinname_asli.pdf exam 17 q14",
     },
     {
@@ -172,7 +172,7 @@ export const exam17: SourceExamData = {
       options: ["ممنوع است.", "مجاز است.", "باعث سد راه و ایجاد خطر و انحراف وسایل نقلیه از مسیر حرکت می شود.", "موارد ۱ و ۳"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "شستشوی وسایل نقلیه در راه‌ها ممنوع است و باعث سد معبر، ایجاد خطر و انحراف وسایل نقلیه از مسیر می‌شود؛ بنابراین موارد ۱ و ۳ هر دو درست‌اند.",
       source: "aeinname_asli.pdf exam 17 q15",
     },
     {
@@ -183,7 +183,7 @@ export const exam17: SourceExamData = {
       options: ["در طرف راست وسیله ی نقلیه دیگر قرار دارد.", "به سمت راست گردش می کند.", "سرعت بیشتری دارد.", "در حال گردش به چپ می باشد."],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "هرگاه دو وسیله روبروی هم بخواهند وارد یک خیابان مجاور واحد شوند، حق تقدم با وسیله‌ای است که به سمت راست گردش می‌کند، زیرا مسیر کوتاه‌تر و کم‌برخوردتری دارد.",
       source: "aeinname_asli.pdf exam 17 q16",
     },
     {
@@ -194,7 +194,7 @@ export const exam17: SourceExamData = {
       options: ["حمل مسافر در قسمت بار یا صندوق عقب ممنوع است.", "از ۲۲۱ متر مانده به پیچ ها تا ۲۲۱ متر پس از آنها سبقت گرفتن ممنوع است.", "از ۲۰۱ متر مانده به ورودی تونل ها و پل ها سبقت ممنوع است.", "سبقت گرفتن برای اتوبوس ها و کامیون ها ممنوع است."],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "حمل مسافر در قسمت بار یا صندوق عقب ممنوع است، زیرا این بخش فاقد ایمنی و تجهیزات لازم برای محافظت از سرنشین است.",
       source: "aeinname_asli.pdf exam 17 q17",
     },
     {
@@ -205,7 +205,7 @@ export const exam17: SourceExamData = {
       options: ["آلودگی هوا ناشی از کارخانجات", "آلودگی هوا ناشی از منابع خانگی", "آلودگی شنیداری", "آلودگی هوا ناشی از وسایل نقلیه موتوری"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "وسایل نقلیهٔ موتوری با انتشار گازهای سمی و ذرات معلق بیشترین سهم را در آلودگی هوای ترافیک شهری دارند.",
       source: "aeinname_asli.pdf exam 17 q18",
     },
     {
@@ -216,7 +216,7 @@ export const exam17: SourceExamData = {
       options: ["خط مقطع یا بریده بریده", "خط ممتد و مقطع ترکیبی", "خط طولی ممتد", "خطوط هاشور"],
       correctAnswerIndex: 1,
       category: "signs",
-      explanation: "",
+      explanation: "این خطوط طولی از نوع «ممتد و مقطع ترکیبی» هستند؛ سمت خط مقطع اجازهٔ سبقت دارد و سمت خط ممتد اجازهٔ عبور از روی آن را ندارد.",
       source: "aeinname_asli.pdf exam 17 q19",
     },
     {
@@ -227,7 +227,7 @@ export const exam17: SourceExamData = {
       options: ["سرعتی – قدرتی", "اولیه – ثانویه", "قدرتی – سرعتی", "ثانویه - اولیه"],
       correctAnswerIndex: 3,
       category: "vehicle",
-      explanation: "",
+      explanation: "ترمز دستی به‌عنوان ترمز ثانویه و ترمز پایی به‌عنوان ترمز اولیه (سرویس) شناخته می‌شود که در شرایط عادی برای توقف خودرو به کار می‌رود.",
       source: "aeinname_asli.pdf exam 17 q20",
     },
     {
@@ -238,7 +238,7 @@ export const exam17: SourceExamData = {
       options: ["خودرو های ۱ و ۲", "خودرو های ۱ و ۳", "خودرو های ۲ و ۳", "تمام خودرو ها"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "بر پایهٔ موقعیت خودروها در این شکل، خودروی مشخص‌شده با دایره باید به خودروهای ۱ و ۳ اجازهٔ عبور بدهد و حق تقدم را به آن‌ها واگذار کند.",
       source: "aeinname_asli.pdf exam 17 q21",
     },
     {
@@ -249,7 +249,7 @@ export const exam17: SourceExamData = {
       options: ["دستوری و خدمات", "علائم راهنما", "علامت هشدار دهنده برای خطر", "دستوری یا بازدارنده"],
       correctAnswerIndex: 2,
       category: "signs",
-      explanation: "",
+      explanation: "مثلث متساوی‌الاضلاع نشسته روی قاعده معمولاً برای تابلوهای هشداردهنده (اخطاری) به کار می‌رود که راننده را از خطر پیش رو آگاه می‌کنند.",
       source: "aeinname_asli.pdf exam 17 q22",
     },
     {
@@ -260,7 +260,7 @@ export const exam17: SourceExamData = {
       options: ["شروع و پایان حق تقدم مسیر", "صرفًا برای رعایت حق تقدم", "معمولًا برای علائم راهنما", "علامت دستوری ، بازدارنده"],
       correctAnswerIndex: 1,
       category: "signs",
-      explanation: "",
+      explanation: "مثلث متساوی‌الاضلاع نشسته روی یک رأس (مثلث وارونه) صرفًا برای تابلوی «رعایت حق تقدم» به کار می‌رود.",
       source: "aeinname_asli.pdf exam 17 q23",
       imagePending: true,
     },
@@ -272,7 +272,7 @@ export const exam17: SourceExamData = {
       options: ["ایستادن", "ایستادن ممنوع", "توقف", "توقف ممنوع"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "«ایستادن ممنوع» به معنای ایست وسیله نقلیه برای هر مدت ممنوع است؛ یعنی خودرو حتی برای لحظه‌ای کوتاه هم حق ایست در آن محل را ندارد.",
       source: "aeinname_asli.pdf exam 17 q24",
     },
     {
@@ -283,7 +283,7 @@ export const exam17: SourceExamData = {
       options: ["به جز اتومبیل های مجاز ، برای مابقی وسایل نقلیه ممنوع است.", "در ساعات شب می توان از مسیر ویژه اتوبوس عبور نمود.", "در صورت نبود پلیس می توان از خطوط ویژه استفاده نمود.", "در صورت ترافیک سنگین می توان از مسیر ویژه اتوبوس عبور کرد."],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "عبور و توقف در مسیر ویژهٔ اتوبوس شرکت واحد به جز برای اتومبیل‌های مجاز، برای سایر وسایل نقلیه ممنوع است.",
       source: "aeinname_asli.pdf exam 17 q25",
     },
     {
@@ -294,7 +294,7 @@ export const exam17: SourceExamData = {
       options: ["خودرو های قرمز", "خودروی آبی", "خودرویی که از چپ به راست در حال حرکت است.", "خودرویی که از راست به چپ در حال حرکت است."],
       correctAnswerIndex: 0,
       category: "signs",
-      explanation: "",
+      explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودروهای قرمز است و سایر خودروها باید منتظر بمانند.",
       source: "aeinname_asli.pdf exam 17 q26",
       imagePending: true,
     },
@@ -306,7 +306,7 @@ export const exam17: SourceExamData = {
       options: ["تابلو های هشدار دهنده", "تابلو های اخطاری", "تابلو های آگاهی دهنده غیر دسنوری", "تابلو های آگاهی دهنده دستوری"],
       correctAnswerIndex: 3,
       category: "signs",
-      explanation: "",
+      explanation: "تبعیت از تابلوهای آگاهی‌دهندهٔ دستوری الزامی است و در صورت بی‌توجهی، راننده مرتکب خلاف و نقض قانون می‌شود.",
       source: "aeinname_asli.pdf exam 17 q27",
     },
     {
@@ -317,7 +317,7 @@ export const exam17: SourceExamData = {
       options: ["حرکت با سرعت مطمئنه", "عدم تنظیم موتور و احتراق ناقص در سیلندر ها", "رانندگی در شب", "رانندگی در مناطق سردسیر"],
       correctAnswerIndex: 1,
       category: "vehicle",
-      explanation: "",
+      explanation: "عدم تنظیم موتور و احتراق ناقص در سیلندرها از عوامل مهم اتلاف سوخت و انرژی است، زیرا بخشی از سوخت بدون تبدیل به انرژی هدر می‌رود.",
       source: "aeinname_asli.pdf exam 17 q28",
     },
     {
@@ -328,7 +328,7 @@ export const exam17: SourceExamData = {
       options: ["مجاز است.", "در صورت نبودن مانع اشکالی ندارد.", "ممنوع است.", "در صورت عدم ایجاد خطر اشکالی ندارد."],
       correctAnswerIndex: 2,
       category: "vehicle",
-      explanation: "",
+      explanation: "حرکت با دندهٔ خلاص در سرازیری ممنوع است، زیرا ترمز موتور از بین می‌رود، خودرو شتاب می‌گیرد و کنترل و ترمزگیری دشوار می‌شود.",
       source: "aeinname_asli.pdf exam 17 q29",
     },
     {
@@ -339,7 +339,7 @@ export const exam17: SourceExamData = {
       options: ["صدمات و تلفات در تصادفات با سرعت زیاد بسیار بیشتر است.", "در سرعت های بالا زمان واکنش نسبت به خطرات بسیار افزایش می یابد.", "احتمال کشته شدن در تصادفات با سرعت های بالا بسیار زیاد است.", "کنترل وسیله نقلیه در سرعت های بالا بسیار سخت است."],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "این گزینه نادرست است؛ در سرعت‌های بالا زمان واکنش نسبت به خطرات افزایش نمی‌یابد بلکه فرصت واکنش کاهش می‌یابد و کنترل خودرو دشوارتر می‌شود.",
       source: "aeinname_asli.pdf exam 17 q30",
     },
   ],
