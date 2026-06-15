@@ -3,7 +3,7 @@ import type { Category, Progress } from '../types'
 import type { ExamAttemptReadItem } from '../data/progress/repo'
 import { ProgressRing } from '../components/ProgressRing'
 import { JourneyPath }  from '../components/JourneyPath'
-import { SettingsIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon, BookmarkFilledIcon } from '../components/Icons'
+import { SettingsIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon, BookmarkFilledIcon, UserIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
 import { useAuth }      from '../auth/useAuth'
@@ -59,7 +59,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
 
   const { status, user } = useAuth()
   const authed = status === 'authed' && !!user
-  const avatarChar = authed && user?.email ? user.email[0]!.toUpperCase() : 'ز'
+  const avatarChar = authed && user?.email ? user.email[0]!.toUpperCase() : ''
 
   const [showGallery, setShowGallery] = useState(false)
   const [activeVideo, setActiveVideo] = useState<VideoEntry | null>(null)
@@ -108,7 +108,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                 display: 'grid', placeItems: 'center',
                 color: '#fff', fontWeight: 800, fontSize: 14,
                 backdropFilter: 'blur(10px)',
-              }}>{avatarChar}</div>
+              }}>{authed ? avatarChar : <UserIcon size={18} color="#fff" />}</div>
               <div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{authed ? 'حساب من' : 'سلام،'}</div>
                 {authed ? (
@@ -117,7 +117,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                   </div>
                 ) : (
                   <>
-                    <div style={{ fontSize: 15, color: '#fff', fontWeight: 700 }}>زهرا</div>
+                    <div style={{ fontSize: 15, color: '#fff', fontWeight: 700 }}>مهمان</div>
                     <div style={{ fontSize: 10.5, color: 'var(--accent-warm)', fontWeight: 600, marginTop: 1 }}>ورود / ثبت‌نام</div>
                   </>
                 )}
