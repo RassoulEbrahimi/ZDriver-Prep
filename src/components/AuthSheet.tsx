@@ -81,7 +81,7 @@ export function AuthSheet({ onClose }: Props) {
           <div style={{ textAlign: 'center', padding: '8px 4px 4px' }}>
             <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)' }}>حساب کاربری</div>
             <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 10, lineHeight: 1.8 }}>
-              ورود فعلاً در دسترس نیست.<br />می‌توانی بدون حساب از برنامه استفاده کنی.
+              اتصال به سرویس ورود برقرار نشد. اگر در ایران هستی، اینترنت یا فیلترشکن پایدار را بررسی کن. می‌توانی فعلاً بدون حساب ادامه بدهی؛ پیشرفت مهمان فقط روی همین دستگاه ذخیره می‌شود.
             </div>
             <button onClick={onClose} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46, marginTop: 18, fontSize: 14 }}>
               بستن
