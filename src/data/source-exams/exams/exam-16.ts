@@ -17,7 +17,7 @@ export const exam16: SourceExamData = {
       options: ["۲۲۰ متری", "۲۲۲ متری", "۲۰۲ متری", "۲۰۱ متری"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "دور زدن در نزدیکی پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد و خطر تصادف را بالا می‌برد.",
       source: "aeinname_asli.pdf exam 16 q1",
     },
     {
@@ -28,7 +28,7 @@ export const exam16: SourceExamData = {
       options: ["دارای سرنشین بیشتری است.", "به سمت راست گردش می کند.", "در طرف راست وسیله نقلیه دیگر قرار دارد.", "دارای شتاب وسرعت بیشتری می باشد."],
       correctAnswerIndex: 2,
       category: "rules",
-      explanation: "",
+      explanation: "در تقاطع هم‌عرض، حق تقدم با وسیله‌ای است که در طرف راست وسیلهٔ نقلیهٔ دیگر قرار دارد (قاعدهٔ دست راست).",
       source: "aeinname_asli.pdf exam 16 q2",
     },
     {
@@ -39,7 +39,7 @@ export const exam16: SourceExamData = {
       options: ["این چراغ نشان دهنده ی آن است که می توانید با احتیاط از تقاطع عبور نمایید.", "به معنی هشدار جهت تغییر رنگ چراغ است و باید با دیدن آن توقف سپس حرکت نمایید.", "با دیدن این چراغ شما می توانید به آرامی و درصورتیکه معبر خالی است از تقاطع عبور نمایید.", "این چراغ به معنی توقف می باشد و با دیدن آن باید پشت خط ایست"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "چراغ قرمز به معنای توقف است و راننده باید با دیدن آن پشت خط ایست به‌طور کامل توقف کند.",
       source: "aeinname_asli.pdf exam 16 q3",
     },
     {
@@ -50,7 +50,7 @@ export const exam16: SourceExamData = {
       options: ["ایست کامل و سپس عبور", "عبور یا گردش آزاد است مگر آنکه گردش نمودن توسط علائم دیگر ممنوع شده باشد.", "افزایش سرعت وسیله نقلیه و عبور سریع از تقاطع", "توقف پشت تابلو ایست در تقاطع"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "چراغ سبز به معنای آزاد بودن عبور یا گردش است، مگر آنکه گردش به‌وسیلهٔ علائم دیگری ممنوع شده باشد.",
       source: "aeinname_asli.pdf exam 16 q4",
     },
     {
@@ -61,7 +61,7 @@ export const exam16: SourceExamData = {
       options: ["در فاصله ۲۲ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "پیاده رو و گذرگاه پیاده", "از ۲۰ متری ورودی مراکز آتش نشانی", "از ۲۰ متری ورودی مراکز فوریت های پزشکی"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "ایستادن یا توقف روی پیاده‌رو و گذرگاه پیاده ممنوع است، زیرا مسیر تردد عابران پیاده را مسدود می‌کند.",
       source: "aeinname_asli.pdf exam 16 q5",
     },
     {
@@ -72,7 +72,7 @@ export const exam16: SourceExamData = {
       options: ["همزمان می توانند وارد یک مسیر شوند.", "وسیله ای که در سمت راست وسیله دیگر قرار دارد.", "وسیله ای که به سمت راست گردش می کند.", "وسیله ای که به سمت چپ گردش می کند."],
       correctAnswerIndex: 2,
       category: "signs",
-      explanation: "",
+      explanation: "بر پایهٔ موقعیت خودروها در این تقاطع هم‌عرض، حق تقدم با وسیله‌ای است که به سمت راست گردش می‌کند.",
       source: "aeinname_asli.pdf exam 16 q6",
       imagePending: true,
     },
@@ -84,7 +84,7 @@ export const exam16: SourceExamData = {
       options: ["سبقت از انتهای آنها مجاز است.", "۲۰ متری", "۲۲۱ متری", "۲۰ متری"],
       correctAnswerIndex: 2,
       category: "rules",
-      explanation: "",
+      explanation: "سبقت گرفتن تنها پس از پایان تونل‌ها و پل‌ها و گذشتن از فاصلهٔ ایمن مجاز است، زیرا فضای محدود و دید کم در آن‌ها خطرناک است.",
       source: "aeinname_asli.pdf exam 16 q7",
     },
     {
@@ -95,7 +95,7 @@ export const exam16: SourceExamData = {
       options: ["۲۰ کیلومتر در ساعت", "۲۰ کیلومتر در ساعت", "۲۳ کیلومتر در ساعت", "۲۰ کیلومتر در ساعت"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "در آزادراه‌های درون‌شهری یک حداقل سرعت تعیین می‌شود تا خودروهای کند جریان روان ترافیک را مختل نکنند؛ گزینهٔ مشخص‌شده این مقدار را بیان می‌کند.",
       source: "aeinname_asli.pdf exam 16 q8",
     },
     {
@@ -106,7 +106,7 @@ export const exam16: SourceExamData = {
       options: ["اگزوز", "گیربکس", "دیفرانسیل", "موتور"],
       correctAnswerIndex: 3,
       category: "vehicle",
-      explanation: "",
+      explanation: "موتور دستگاهی است که انرژی حرارتی و شیمیایی موجود در سوخت را به انرژی جنبشی (مکانیکی) تبدیل کرده و خودرو را به حرکت در می‌آورد.",
       source: "aeinname_asli.pdf exam 16 q9",
     },
     {
@@ -117,7 +117,7 @@ export const exam16: SourceExamData = {
       options: ["به طور کلی حرکت با دنده عقب ممنوع است.", "راننده نمی تواند پشت سر خود را به درستی و کامل ببیند.", "دنده ها در حرکت رو به عقب آسیب می بینند.", "خودرو صرفا برای حرکت رو به جلو طراحی شده است."],
       correctAnswerIndex: 1,
       category: "vehicle",
-      explanation: "",
+      explanation: "حرکت با دندهٔ عقب خطرناک است چون راننده نمی‌تواند پشت سر خود را به‌درستی و کامل ببیند؛ بنابراین باید با احتیاط و سرعت کم انجام شود.",
       source: "aeinname_asli.pdf exam 16 q10",
     },
     {
@@ -128,7 +128,7 @@ export const exam16: SourceExamData = {
       options: ["۲۰", "۲۰", "۲۰", "۰۵"],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "در خیابان‌های شریانی فرعی شهری حداکثر سرعت مجاز محدودتر از شریانی اصلی است؛ گزینهٔ مشخص‌شده این مقدار را بیان می‌کند.",
       source: "aeinname_asli.pdf exam 16 q11",
     },
     {
@@ -139,7 +139,7 @@ export const exam16: SourceExamData = {
       options: ["در طرف راست وسیله ی نقلیه دیگر قرار دارد.", "به سمت راست گردش می کند.", "به طور مستقیم و در مسیر مجاز حرکت می کند.", "به سمت چپ در حال گردش است."],
       correctAnswerIndex: 2,
       category: "rules",
-      explanation: "",
+      explanation: "در سه‌راه‌ها حق تقدم با وسیله‌ای است که مستقیم و در مسیر مجاز حرکت می‌کند؛ وسیلهٔ متمایل به گردش باید منتظر بماند.",
       source: "aeinname_asli.pdf exam 16 q12",
     },
     {
@@ -150,7 +150,7 @@ export const exam16: SourceExamData = {
       options: ["۲۰ متری", "۲۳ متری", "۲۴ متری", "سبقت گرفتن محدودیت ندارد."],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "سبقت گرفتن در نزدیکی پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد.",
       source: "aeinname_asli.pdf exam 16 q13",
     },
     {
@@ -161,7 +161,7 @@ export const exam16: SourceExamData = {
       options: ["قطع و وصل کردن مدار آب از موتور به رادیاتور", "خنک کردن آب داخل لوله های رادیاتور", "به گردش در آوردن آب داخل پوسته موتور و اطراف سیلندر ها", "تصفیه آب رادیاتور"],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "ترموستات با حس کردن دمای موتور، مدار آب میان موتور و رادیاتور را قطع و وصل می‌کند تا موتور سریع‌تر به دمای کاری برسد و از گرمای بیش از حد جلوگیری شود.",
       source: "aeinname_asli.pdf exam 16 q14",
     },
     {
@@ -172,7 +172,7 @@ export const exam16: SourceExamData = {
       options: ["خودرویی که با دایره مشخص شده است.", "خودرویی که خارج میدان قرار دارد.", "بستگی به جهت حرکت خودرو دارد.", "بستگی به مسیر نهایی خودرو دارد."],
       correctAnswerIndex: 0,
       category: "signs",
-      explanation: "",
+      explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودرویی است که با دایره مشخص شده است.",
       source: "aeinname_asli.pdf exam 16 q15",
       imagePending: true,
     },
@@ -184,7 +184,7 @@ export const exam16: SourceExamData = {
       options: ["۲۲۱", "۰۲۱", "۲۰", "۰۵"],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "",
+      explanation: "حداکثر سرعت مجاز برای وانت‌بارها در آزادراه‌های برون‌شهری و مناطق غیرمسکونی مقدار معینی است که گزینهٔ مشخص‌شده آن را بیان می‌کند.",
       source: "aeinname_asli.pdf exam 16 q16",
     },
     {
@@ -195,7 +195,7 @@ export const exam16: SourceExamData = {
       options: ["۲۲۱ متری", "۲۲۲ متری", "۲۰۱ متری", "۲۰ متری"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "هنگام خرابی خودرو و نبود امکان انتقال آن، باید چراغ الکتریکی هشدار را در فاصلهٔ مناسبی پشت خودرو قرار داد تا رانندگان دیگر به‌موقع از خطر آگاه شوند.",
       source: "aeinname_asli.pdf exam 16 q17",
     },
     {
@@ -206,7 +206,7 @@ export const exam16: SourceExamData = {
       options: ["عبور از تقاطع با سرعت کم و احتیاط لازم", "عبور با احتیاط", "عبور از تقاطع با همان سرعت و احتیاط لازم", "ایست و عبور"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "چراغ چشمک‌زن قرمز حکم تابلوی ایست را دارد؛ راننده باید ابتدا توقف کامل کند و سپس پس از اطمینان از نبود خطر عبور نماید.",
       source: "aeinname_asli.pdf exam 16 q18",
     },
     {
@@ -217,7 +217,7 @@ export const exam16: SourceExamData = {
       options: ["سریعًا به سمت راست گردش نمایند.", "با روشن نمودن راهنما وارد راه اصلی شوند.", "سریعًا به سمت چپ گردش نمایند.", "پیش از ورود ، در صورت لزوم توقف و با رعایت حق تقدم وارد راه"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "رانندگانی که از راه فرعی وارد راه اصلی می‌شوند باید پیش از ورود در صورت لزوم توقف کرده و با رعایت حق تقدم وارد راه اصلی شوند.",
       source: "aeinname_asli.pdf exam 16 q19",
     },
     {
@@ -228,7 +228,7 @@ export const exam16: SourceExamData = {
       options: ["زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۲۰۱ متر یا بیشتر باشد.", "زمانی که فاصله شما با خودرویی که از مقابل به شما نزدیک می شود ۲۰۱ متر یا کمتر باشد.", "زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۲۲۲ متر یا کمتر باشد.", "نیازی به تغییر نور بالا به نور پایین به جز در جاده های پر رفت و آمد"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "هنگام نزدیک شدن خودرویی از روبرو باید نور بالا را به نور پایین تبدیل کرد تا نور چراغ باعث خیرگی رانندهٔ مقابل نشود.",
       source: "aeinname_asli.pdf exam 16 q20",
     },
     {
@@ -239,7 +239,7 @@ export const exam16: SourceExamData = {
       options: ["توقف نموده و بلافاصله گردش به چپ نمایید.", "توقف نموده و با دنده عقب به پشت چراغ راهنمایی برگردید.", "در همان محل توقف نموده و اجازه عبور را به سایرین بدهید.", "با احتیاط کامل و سرعت کم عبور نمایید."],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "اگر هنگام عبور در وسط تقاطع چراغ زرد شود، راننده باید با احتیاط کامل و سرعت کم تقاطع را تخلیه کند، نه آنکه توقف یا دنده‌عقب نماید.",
       source: "aeinname_asli.pdf exam 16 q21",
     },
     {
@@ -250,7 +250,7 @@ export const exam16: SourceExamData = {
       options: ["پر باد بودن تایر ها می تواند فرمان پذیری خودرو را افزایش دهد.", "کم باد بودن تایر ها باعث کاهش مصرف سوخت می شود.", "کم باد بودن تایر ها باعث فرسایش تایر و از دست رفتن تعادل و هدایت و فرمانپذیری هنگام ترمز گیری خواهد شد.", "باد تایر زاپاس را می توان تخلیه و به همان شکل آن را نگهداری نمود."],
       correctAnswerIndex: 2,
       category: "vehicle",
-      explanation: "",
+      explanation: "کم باد بودن تایرها باعث فرسایش تایر و از دست رفتن تعادل، هدایت و فرمان‌پذیری هنگام ترمزگیری می‌شود؛ بنابراین این گزینه صحیح است.",
       source: "aeinname_asli.pdf exam 16 q22",
     },
     {
@@ -261,7 +261,7 @@ export const exam16: SourceExamData = {
       options: ["حرکت کردن از روی خطوط هاشور ممنوع است.", "خطوط هاشور مخصوص عبور اضطراری وسایل نقلیه امدادی می باشد.", "خطوط هاشور معمولا در کناره شبکه معابر آزاد راه ها ، بزرگراه ها و تونل ها کشیده می شوند.", "تمام موارد"],
       correctAnswerIndex: 3,
       category: "signs",
-      explanation: "",
+      explanation: "هر سه مورد درست است؛ خطوط هاشور مخصوص عبور اضطراری وسایل امدادی است، معمولاً در کناره آزادراه‌ها، بزرگراه‌ها و تونل‌ها کشیده می‌شود و حرکت روی آن‌ها ممنوع است.",
       source: "aeinname_asli.pdf exam 16 q23",
       imagePending: true,
     },
@@ -273,7 +273,7 @@ export const exam16: SourceExamData = {
       options: ["پیاده رو و گذرگاه پیاده", "در فاصله ۰۱ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "از ابتدا تا انتهای پیچ ها", "تمام موارد"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "ایستادن یا توقف روی پیاده‌رو و گذرگاه پیاده، نزدیک میدان و تقاطع و از ابتدا تا انتهای پیچ‌ها همگی ممنوع است؛ بنابراین «تمام موارد» درست است.",
       source: "aeinname_asli.pdf exam 16 q24",
     },
     {
@@ -284,7 +284,7 @@ export const exam16: SourceExamData = {
       options: ["استعمال دخانیات", "استفاده از تلفن همراه", "عدم تمرکز", "توجه کامل به جلو"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "",
+      explanation: "از میان این موارد، تنها توجه کامل به جلو حین رانندگی مجاز و صحیح است؛ استعمال دخانیات، استفاده از تلفن همراه و عدم تمرکز رفتارهای پرخطر هستند.",
       source: "aeinname_asli.pdf exam 16 q25",
     },
     {
@@ -295,7 +295,7 @@ export const exam16: SourceExamData = {
       options: ["در سمت چپ راه قرار گرفته و سپس با رعایت حق تقدم گردش نمایند.", "در سمت چپ راه متوقف نمایند.", "در شانه راه و یا در منتهی الیه سمت راست راه متوقف نمایند.", "در سمت چپ راه قرار گرفته و با زدن راهنما اقدام به گردش نمایند."],
       correctAnswerIndex: 2,
       category: "rules",
-      explanation: "",
+      explanation: "در راه‌های برون‌شهری دوخطه و بدون جداکنندهٔ فیزیکی، برای گردش به چپ راننده باید ابتدا در شانهٔ راه یا منتهی‌الیه سمت راست متوقف شود و سپس با اطمینان از خالی بودن مسیر گردش کند.",
       source: "aeinname_asli.pdf exam 16 q26",
     },
     {
@@ -306,7 +306,7 @@ export const exam16: SourceExamData = {
       options: ["خودروی ۱", "بستگی به سرعت خودرو دارد.", "خودرو ۲", "هر دو با هم می توانند عبور نمایند."],
       correctAnswerIndex: 0,
       category: "signs",
-      explanation: "",
+      explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودروی ۱ است.",
       source: "aeinname_asli.pdf exam 16 q27",
       imagePending: true,
     },
@@ -318,7 +318,7 @@ export const exam16: SourceExamData = {
       options: ["رانندگان", "علایم و تابلوها", "استفاده کنندگان از راه", "افراد صلاحیت دار"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "محدودیت‌های حرکت و سرعت در جاده‌ها به‌وسیلهٔ علائم و تابلوها تعیین می‌گردد و رانندگان موظف به رعایت آن‌ها هستند.",
       source: "aeinname_asli.pdf exam 16 q28",
     },
     {
@@ -329,7 +329,7 @@ export const exam16: SourceExamData = {
       options: ["گردش یا تغییر مسیر به راست", "گردش یا تغییر مسیر به چپ", "توقف", "افزایش سرعت"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "",
+      explanation: "نگه داشتن دست چپ به‌طور افقی علامت گردش یا تغییر مسیر به چپ است و برای آگاه کردن دیگران در نبود چراغ راهنما به کار می‌رود.",
       source: "aeinname_asli.pdf exam 16 q29",
     },
     {
@@ -340,7 +340,7 @@ export const exam16: SourceExamData = {
       options: ["افزایش سرعت و تبدیل متناوب نور", "تعویض نور چراغ بالا و پایین", "اشاره با دست به همراه بوق متناوب", "بوق کوتاه و چراغ راهنما"],
       correctAnswerIndex: 3,
       category: "signs",
-      explanation: "",
+      explanation: "برای آگاه‌سازی جهت سبقت گرفتن در روز از بوق کوتاه همراه با چراغ راهنما استفاده می‌شود تا رانندهٔ جلویی از قصد سبقت آگاه شود.",
       source: "aeinname_asli.pdf exam 16 q30",
     },
   ],
