@@ -76,6 +76,21 @@ function validateSourceExams(data, { strict = false } = {}) {
       } else if (q.options.some(o => !isNonEmpty(o))) {
         err('OPTION_EMPTY', `${q.id}: empty option`)
       }
+      // Duplicate option text within a question — warn only (often an OCR artifact;
+      // the content team verifies and fixes against the source PDF in a separate pass).
+      if (Array.isArray(q.options)) {
+        const seen = new Set()
+        const warned = new Set()
+        for (const o of q.options) {
+          if (!isNonEmpty(o)) continue            // empties already covered by OPTION_EMPTY
+          const key = o.trim()
+          if (seen.has(key) && !warned.has(key)) {
+            warn('OPTIONS_DUP', `${q.id}: duplicate option "${key}"`)
+            warned.add(key)
+          }
+          seen.add(key)
+        }
+      }
       if (!Number.isInteger(q.correctAnswerIndex) || q.correctAnswerIndex < 0 || q.correctAnswerIndex > OPTIONS_PER_QUESTION - 1) {
         err('ANSWER_INDEX', `${q.id}: correctAnswerIndex must be 0..${OPTIONS_PER_QUESTION - 1}`)
       }
