@@ -12,8 +12,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,woff2,webp}'],
       },
       manifest: {
-        name: 'ZDriver Prep — همراه آزمون رانندگی',
-        short_name: 'ZDriver',
+        name: 'رانندگی‌یار — همراه آزمون رانندگی',
+        short_name: 'رانندگی‌یار',
         description: 'آمادگی برای آزمون تئوری رانندگی در ایران',
         theme_color: '#4B3A8C',
         background_color: '#1F1A36',
