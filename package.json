@@ -7,6 +7,7 @@
     "dev": "vite",
     "prebuild": "node scripts/validate-source-exams.mjs --strict",
     "build": "vite build",
+    "build:test-php": "npm run validate:source-exams && vite build --mode ranandegiyar-test",
     "preview": "vite preview",
     "validate:source-exams": "node scripts/validate-source-exams.mjs --strict"
   },
