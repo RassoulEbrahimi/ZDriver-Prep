@@ -29,6 +29,8 @@ import {
   readBookmarks, writeBookmarks,
   type ExamAttemptReadItem, type ExamProgressReadItem,
 } from './data/progress/repo'
+import { isPhpBackend } from './config/backend'
+import { savePhpProgress, loadPhpProgress } from './data/progress/phpProgress'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -207,6 +209,62 @@ export default function App() {
     fetchBookmarks(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, status, user, bookmarksSynced])
+
+  // ── PHP pilot backend sync (test build only; isPhpBackend gates everything).
+  // Load the saved blob once on login and union it into local state using the
+  // same additive pattern as the Firebase hydration above; then save the full
+  // blob (debounced) whenever progress/coverage/attempts change. In production
+  // (isPhpBackend === false) both effects are inert. ──
+  const phpHydratedUidRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!isPhpBackend) return
+    if (status !== 'authed' || !user?.uid) { phpHydratedUidRef.current = null; return }
+    if (phpHydratedUidRef.current === user.uid) return
+    phpHydratedUidRef.current = user.uid
+    void loadPhpProgress().then(res => {
+      if (!res.ok) return
+      const { bookmarks, wrongQuestionIds, examProgress, examAttempts } = res.progress
+      setProgress(p => {
+        let next = p
+        if (Array.isArray(bookmarks)) {
+          const fresh = bookmarks.filter(id => !p.bookmarked.includes(id))
+          if (fresh.length) next = { ...next, bookmarked: [...next.bookmarked, ...fresh] }
+        }
+        if (Array.isArray(wrongQuestionIds)) {
+          const fresh = wrongQuestionIds.filter(id => !next.wrongQuestionIds.includes(id))
+          if (fresh.length) next = { ...next, wrongQuestionIds: [...next.wrongQuestionIds, ...fresh] }
+        }
+        return next
+      })
+      if (Array.isArray(examProgress)) setExamCoverage(examProgress as ExamProgressReadItem[])
+      if (Array.isArray(examAttempts)) setRecentAttempts(examAttempts as ExamAttemptReadItem[])
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, user])
+
+  useEffect(() => {
+    if (!isPhpBackend || status !== 'authed' || !user?.uid) return
+    if (phpHydratedUidRef.current !== user.uid) return // don't save before the initial load
+    const t = setTimeout(() => {
+      void savePhpProgress({
+        summary: {
+          totalQuestions: progress.totalQuestions,
+          answered: progress.answered,
+          correct: progress.correct,
+          wrong: progress.wrong,
+          examReadiness: progress.examReadiness,
+          bookmarkCount: progress.bookmarked.length,
+          weakCount: progress.wrongQuestionIds.length,
+        },
+        examProgress: examCoverage,
+        examAttempts: recentAttempts,
+        bookmarks: progress.bookmarked,
+        wrongQuestionIds: progress.wrongQuestionIds,
+      })
+    }, 800)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress, examCoverage, recentAttempts, status, user])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)

@@ -13,6 +13,11 @@ import {
 import { getAuthInstance, isFirebaseConfigured } from '../firebase/client'
 import { authErrorMessage } from './authErrors'
 import { ensureUserDoc } from '../data/progress/repo'
+import { isPhpBackend } from '../config/backend'
+import {
+  phpRegister, phpLogin, phpMe,
+  getToken, setToken, clearToken, PHP_RESET_DEFERRED,
+} from './phpClient'
 
 export type AuthStatus = 'loading' | 'guest' | 'authed' | 'unavailable'
 
@@ -38,7 +43,69 @@ export const AuthContext = createContext<AuthContextValue | null>(null)
 
 const UNAVAILABLE: AuthResult = { ok: false, message: 'ورود فعلاً در دسترس نیست.' }
 
+/**
+ * Picks the auth backend at build time. Defaults to Firebase, so production
+ * builds (VITE_AUTH_PROVIDER unset) are completely unaffected. The PHP provider
+ * is only mounted in the Iran-reachability test build.
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  return isPhpBackend
+    ? <PhpAuthProvider>{children}</PhpAuthProvider>
+    : <FirebaseAuthProvider>{children}</FirebaseAuthProvider>
+}
+
+// ── PHP pilot backend provider (test build only) ───────────────────────────────
+// Same AuthContextValue contract; talks to the standalone PHP/MySQL API via
+// phpClient. Token lives in sessionStorage; session is restored on mount via
+// /auth/me. No server-side revocation — signOut just drops the local token.
+function PhpAuthProvider({ children }: { children: React.ReactNode }) {
+  const [status, setStatus] = useState<AuthStatus>(() => (getToken() ? 'loading' : 'guest'))
+  const [user, setUser]     = useState<AuthUser | null>(null)
+
+  // Session restore: validate any stored token once on mount.
+  useEffect(() => {
+    const token = getToken()
+    if (!token) return
+    let alive = true
+    void phpMe(token).then(u => {
+      if (!alive) return
+      if (u) { setUser(u); setStatus('authed') }
+      else { clearToken(); setUser(null); setStatus('guest') }
+    })
+    return () => { alive = false }
+  }, [])
+
+  const signUpWithEmail = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    const r = await phpRegister(email, password)
+    if (!r.ok) return r
+    setToken(r.token); setUser(r.user); setStatus('authed')
+    return { ok: true }
+  }, [])
+
+  const signInWithEmail = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    const r = await phpLogin(email, password)
+    if (!r.ok) return r
+    setToken(r.token); setUser(r.user); setStatus('authed')
+    return { ok: true }
+  }, [])
+
+  const signOut = useCallback(async (): Promise<AuthResult> => {
+    clearToken(); setUser(null); setStatus('guest')
+    return { ok: true }
+  }, [])
+
+  // Password reset is deferred in the pilot (no email flow yet).
+  const resetPassword = useCallback(async (): Promise<AuthResult> => PHP_RESET_DEFERRED, [])
+
+  const value: AuthContextValue = {
+    status, user, available: true,
+    signUpWithEmail, signInWithEmail, signOut, resetPassword,
+  }
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+// ── Firebase provider (default / production) — logic unchanged ──────────────────
+function FirebaseAuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>(isFirebaseConfigured ? 'loading' : 'unavailable')
   const [user, setUser]     = useState<AuthUser | null>(null)
 
