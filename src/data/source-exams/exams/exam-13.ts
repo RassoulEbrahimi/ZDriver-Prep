@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 13 (آزمون 13) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
-// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q12, Q13, Q14
+// correct answers confirmed by the red-color signal.
+// Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q12, Q13, Q14, Q26, Q29
+// All 15 image assets wired (exam-13/qNN.webp).
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «پیچ به چپ» است و راننده را از وجود یک پیچ به سمت چپ در ادامهٔ مسیر آگاه می‌کند تا سرعت را کاهش دهد.",
       source: "aeinname_asli.pdf exam 13 q1",
-      imagePending: true,
+      image: { path: "exam-13/q01.webp", alt: "تابلوی هشدار پیچ به چپ" },
     },
     {
       id: "se-13-02",
@@ -31,7 +31,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «تونل» را نشان می‌دهد و راننده را از نزدیک شدن به تونل آگاه می‌کند تا با روشن کردن چراغ‌ها و رعایت احتیاط عبور کند.",
       source: "aeinname_asli.pdf exam 13 q2",
-      imagePending: true,
+      image: { path: "exam-13/q02.webp", alt: "تابلوی هشدار تونل" },
     },
     {
       id: "se-13-03",
@@ -43,7 +43,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی خدماتی «تعمیرگاه» را نشان می‌دهد و وجود محل تعمیر خودرو در ادامهٔ مسیر را به رانندگان اطلاع می‌دهد.",
       source: "aeinname_asli.pdf exam 13 q3",
-      imagePending: true,
+      image: { path: "exam-13/q03.webp", alt: "تابلوی خدماتی تعمیرگاه" },
     },
     {
       id: "se-13-04",
@@ -55,7 +55,7 @@ export const exam13: SourceExamData = {
       category: "vehicle",
       explanation: "گزینهٔ ۲ تابلوی «عبور وسایل نقلیهٔ موتوری ممنوع» است و تردد خودروهای موتوری را در آن مسیر منع می‌کند.",
       source: "aeinname_asli.pdf exam 13 q4",
-      imagePending: true,
+      image: { path: "exam-13/q04.webp", alt: "چهار تابلو — یکی ممنوعیت عبور وسایل نقلیه موتوری" },
     },
     {
       id: "se-13-05",
@@ -67,7 +67,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «کارگران مشغول کارند» را نشان می‌دهد و راننده باید با کاهش سرعت و احتیاط از محدودهٔ عملیات راه‌سازی عبور کند.",
       source: "aeinname_asli.pdf exam 13 q5",
-      imagePending: true,
+      image: { path: "exam-13/q05.webp", alt: "تابلوی هشدار کارگران مشغول کارند" },
     },
     {
       id: "se-13-06",
@@ -79,7 +79,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی انتظامی «عبور گاری ممنوع» است و تردد گاری در آن مسیر مجاز نیست.",
       source: "aeinname_asli.pdf exam 13 q6",
-      imagePending: true,
+      image: { path: "exam-13/q06.webp", alt: "تابلوی انتظامی عبور گاری ممنوع" },
     },
     {
       id: "se-13-07",
@@ -91,7 +91,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «محدودهٔ پارک آزاد» را نشان می‌دهد؛ یعنی محلی که توقف و پارک خودرو در آن مجاز است.",
       source: "aeinname_asli.pdf exam 13 q7",
-      imagePending: true,
+      image: { path: "exam-13/q07.webp", alt: "تابلوی محدوده پارک آزاد" },
     },
     {
       id: "se-13-08",
@@ -103,7 +103,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «هدایت مسیر با جداکننده» را نشان می‌دهد و جهت صحیح عبور در کنار جداکنندهٔ راه را به راننده نشان می‌دهد.",
       source: "aeinname_asli.pdf exam 13 q8",
-      imagePending: true,
+      image: { path: "exam-13/q08.webp", alt: "تابلوی هدایت مسیر با جداکننده" },
     },
     {
       id: "se-13-09",
@@ -115,7 +115,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «عبور دوچرخه‌سوار» را نشان می‌دهد و راننده را از احتمال حضور دوچرخه‌سواران در مسیر آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 13 q9",
-      imagePending: true,
+      image: { path: "exam-13/q09.webp", alt: "تابلوی هشدار عبور دوچرخه‌سوار" },
     },
     {
       id: "se-13-10",
@@ -127,7 +127,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «فقط عبور پیاده» را نشان می‌دهد؛ یعنی مسیری که تنها مخصوص تردد عابران پیاده است.",
       source: "aeinname_asli.pdf exam 13 q10",
-      imagePending: true,
+      image: { path: "exam-13/q10.webp", alt: "تابلوی فقط عبور پیاده" },
     },
     {
       id: "se-13-11",
@@ -150,7 +150,7 @@ export const exam13: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این تقاطع، ترتیب حق تقدم عبور به‌صورت سواری، دوچرخه، موتور و سپس کامیون است.",
       source: "aeinname_asli.pdf exam 13 q12",
-      imagePending: true,
+      image: { path: "exam-13/q12.webp", alt: "تقاطع با وسایل نقلیه: سواری، دوچرخه، موتور، کامیون" },
     },
     {
       id: "se-13-13",
@@ -162,7 +162,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "گزینهٔ ۲ رنگ سبز را نشان می‌دهد که در علائم عبور و مرور به معنای حرکات مجاز و راهنمای مسیر است.",
       source: "aeinname_asli.pdf exam 13 q13",
-      imagePending: true,
+      image: { path: "exam-13/q13.webp", alt: "چهار گزینه رنگ در علائم عبور و مرور" },
     },
     {
       id: "se-13-14",
@@ -174,7 +174,7 @@ export const exam13: SourceExamData = {
       category: "signs",
       explanation: "این شکل معمولاً برای تابلوهای دستوری و خدمات به کار می‌رود که اطلاعات یا دستورهای لازم را به راننده منتقل می‌کنند.",
       source: "aeinname_asli.pdf exam 13 q14",
-      imagePending: true,
+      image: { path: "exam-13/q14.webp", alt: "شکل تابلوی دستوری و خدمات" },
     },
     {
       id: "se-13-15",
@@ -307,6 +307,7 @@ export const exam13: SourceExamData = {
       category: "vehicle",
       explanation: "سیبک جزو اجزای سیستم فرمان و جلوبندی است نه موتور؛ فلایویل، سرسیلندر و میل‌لنگ از قطعات موتور محسوب می‌شوند.",
       source: "aeinname_asli.pdf exam 13 q26",
+      image: { path: "exam-13/q26.webp", alt: "اجزای خودرو: فلایویل، سرسیلندر، میل‌لنگ، سیبک" },
     },
     {
       id: "se-13-27",
@@ -340,6 +341,7 @@ export const exam13: SourceExamData = {
       category: "rules",
       explanation: "خودروهایی که دورشان خط کشیده شده دچار خطای «عدم رانندگی بین خطوط» شده‌اند؛ یعنی در مسیر مشخص خود حرکت نکرده‌اند.",
       source: "aeinname_asli.pdf exam 13 q29",
+      image: { path: "exam-13/q29.webp", alt: "تصویر خودروهایی که دورشان خط کشیده شده" },
     },
     {
       id: "se-13-30",
