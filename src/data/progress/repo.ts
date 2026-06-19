@@ -15,6 +15,8 @@ import { getDb } from '../../firebase/client'
 import {
   SCHEMA_VERSION,
   userPath, summaryPath, examProgressPath, examAttemptsPath, bookmarksPath,
+  NO_ENTITLEMENT,
+  type Entitlement,
 } from './types'
 
 /** Shared failure shape for write and read results (fail-soft, never thrown). */
@@ -334,5 +336,60 @@ export async function readRecentExamAttempts(uid: string, max = 50): Promise<Rea
     return { ok: true, items }
   } catch (e) {
     return fail(e)
+  }
+}
+
+// ── Entitlement (Phase S1 — one-time read, fail-CLOSED) ─────────────────────
+
+/**
+ * users/{uid} — one-time read of the server/admin-owned `subscription` field,
+ * mapped to a normalized {@link Entitlement}.
+ *
+ * Unlike the other reads, this NEVER returns a failure shape and NEVER throws:
+ * any problem (unauthed, Firestore unavailable, read error, missing/malformed
+ * subscription) resolves to {@link NO_ENTITLEMENT}, and a lapsed grant resolves
+ * to status 'expired'. Entitlement is therefore NEVER unlocked on error — the
+ * UI can consume the result directly without try/catch. The client cannot write
+ * `subscription` (enforced by firestore.rules); this is read-only.
+ */
+export async function readEntitlement(uid: string): Promise<Entitlement> {
+  const c = await ctx(uid)
+  if ('ok' in c) return NO_ENTITLEMENT // unauthed / unavailable / ctx error → fail closed
+  const { db, fs } = c
+  try {
+    const snap = await fs.getDoc(fs.doc(db, userPath(uid)))
+    const data = snap.exists() ? snap.data() : undefined
+    const sub = data?.subscription
+    if (!sub || typeof sub !== 'object') return NO_ENTITLEMENT
+
+    const plan: Entitlement['plan'] = sub.plan === 'full' ? 'full' : 'none'
+    const source =
+      sub.source === 'manual' || sub.source === 'gateway' ? sub.source : undefined
+
+    // expiresAt is a Firestore Timestamp; normalize defensively to ms + ISO.
+    const expiresMs =
+      sub.expiresAt && typeof sub.expiresAt.toMillis === 'function'
+        ? sub.expiresAt.toMillis()
+        : null
+    const expiresAt = expiresMs != null ? new Date(expiresMs).toISOString() : undefined
+    const notExpired = expiresMs != null && expiresMs > Date.now()
+
+    // Active only when explicitly active, the plan is full, and not past expiry.
+    if (sub.status === 'active' && plan === 'full' && notExpired) {
+      return { active: true, plan: 'full', status: 'active', expiresAt, source }
+    }
+    // Explicitly canceled.
+    if (sub.status === 'canceled') {
+      return { active: false, plan, status: 'canceled', expiresAt, source }
+    }
+    // Lapsed (status 'active' but past expiry) or explicitly 'expired'.
+    if (sub.status === 'active' || sub.status === 'expired') {
+      return { active: false, plan, status: 'expired', expiresAt, source }
+    }
+    // Unknown / malformed status → fail closed.
+    return NO_ENTITLEMENT
+  } catch (e) {
+    if (import.meta.env.DEV) console.debug('[entitlement] read failed:', e)
+    return NO_ENTITLEMENT
   }
 }

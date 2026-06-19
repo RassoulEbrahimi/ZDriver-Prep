@@ -22,6 +22,25 @@ export interface UserDoc {
   lastPracticeExamId?: number
   lastExamId?: number
   schemaVersion?: number
+  /** Server/admin-owned entitlement (clients read-only; see Subscription). */
+  subscription?: Subscription
+}
+
+/**
+ * users/{uid}.subscription — server/admin-owned full-access entitlement.
+ *
+ * Activation is manual/admin for the MVP (Firebase Console / Admin SDK); the
+ * client can READ this field but can NEVER create or modify it (enforced by
+ * firestore.rules). The client must never grant itself access.
+ */
+export interface Subscription {
+  plan: 'full'
+  status: 'active' | 'expired' | 'canceled'
+  startsAt: Timestamp
+  expiresAt: Timestamp
+  source: 'manual' | 'gateway'
+  note?: string
+  updatedAt: Timestamp
 }
 
 /** users/{uid}/summary/main — denormalized totals for cheap Home/Progress reads. */
@@ -89,6 +108,30 @@ export interface QuestionProgress {
   needsReview: boolean
   bookmarked: boolean
 }
+
+// ── Entitlement (normalized, app-level — no Firestore types) ────────────────
+//
+// The runtime shape the app consumes, derived from users/{uid}.subscription by
+// the repo's readEntitlement(). Plain JSON-friendly fields (no Timestamp) so it
+// can live in React state and be compared without pulling in Firestore types.
+
+export type EntitlementPlan = 'none' | 'full'
+export type EntitlementStatus = 'none' | 'active' | 'expired' | 'canceled'
+
+export interface Entitlement {
+  active: boolean
+  plan: EntitlementPlan
+  status: EntitlementStatus
+  /** ISO string when an expiry is known; omitted otherwise. */
+  expiresAt?: string
+  source?: 'manual' | 'gateway'
+}
+
+/**
+ * Fail-CLOSED default: missing subscription, read failure, unauthed, or
+ * Firestore unavailable. Entitlement is NEVER unlocked on error.
+ */
+export const NO_ENTITLEMENT: Entitlement = { active: false, plan: 'none', status: 'none' }
 
 // ── Path helpers (string builders only — no Firestore calls) ────────────────
 

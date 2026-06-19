@@ -4,13 +4,28 @@ rules_version = '2';
 // their own data tree under users/{uid}. Everything else is denied by default.
 // API keys are client-public; these rules are the real protection.
 //
+// Entitlement (Phase S1): the `subscription` field on users/{uid} is
+// server/admin-owned. The owner may READ it, but may NOT create or change it —
+// activation is manual/admin via the Firebase Console / Admin SDK, which bypass
+// rules. A client can therefore never grant itself full access.
+//
 // Deploy manually (not from CI): firebase deploy --only firestore:rules --project <id>
 service cloud.firestore {
   match /databases/{database}/documents {
 
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      // Owner may read their whole profile document (including subscription).
+      allow read: if request.auth != null && request.auth.uid == uid;
 
+      // Owner may create/update their profile (e.g. ensureUserDoc), but never
+      // set or modify the server-owned `subscription` field.
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && !('subscription' in request.resource.data);
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['subscription']);
+
+      // Subcollections (summary, examProgress, examAttempts, bookmarks):
+      // unchanged owner-only read/write for progress sync.
       match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
       }
