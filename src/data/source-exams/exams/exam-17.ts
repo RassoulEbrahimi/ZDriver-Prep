@@ -2,7 +2,7 @@
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
 // correct answers confirmed by the red-color signal.
 // Image-dependent: Q12, Q23, Q26
-// Assets wired: Q12, Q26. Q23 remains imagePending (no matching asset found).
+// Assets wired: Q12, Q14, Q15, Q18, Q26, Q30. Q23 remains imagePending (no matching asset found).
 
 import type { SourceExamData } from '../types'
 
@@ -163,6 +163,7 @@ export const exam17: SourceExamData = {
       category: "vehicle",
       explanation: "مبدل کاتالیست جزو سیستم اگزوز خودرو است که گازهای سمی خروجی موتور را به ترکیبات کم‌خطرتر تبدیل می‌کند.",
       source: "aeinname_asli.pdf exam 17 q14",
+      image: { path: "exam-17/q14.webp", alt: "تصویر اجزای سیستم اگزوز خودرو" },
     },
     {
       id: "se-17-15",
@@ -174,6 +175,7 @@ export const exam17: SourceExamData = {
       category: "rules",
       explanation: "شستشوی وسایل نقلیه در راه‌ها ممنوع است و باعث سد معبر، ایجاد خطر و انحراف وسایل نقلیه از مسیر می‌شود؛ بنابراین موارد ۱ و ۳ هر دو درست‌اند.",
       source: "aeinname_asli.pdf exam 17 q15",
+      image: { path: "exam-17/q15.webp", alt: "تصویر ممنوعیت شستشوی وسایل نقلیه در معابر" },
     },
     {
       id: "se-17-16",
@@ -207,6 +209,7 @@ export const exam17: SourceExamData = {
       category: "rules",
       explanation: "وسایل نقلیهٔ موتوری با انتشار گازهای سمی و ذرات معلق بیشترین سهم را در آلودگی هوای ترافیک شهری دارند.",
       source: "aeinname_asli.pdf exam 17 q18",
+      image: { path: "exam-17/q18.webp", alt: "تصویر منابع آلودگی در ترافیک شهری" },
     },
     {
       id: "se-17-19",
@@ -341,6 +344,7 @@ export const exam17: SourceExamData = {
       category: "rules",
       explanation: "این گزینه نادرست است؛ در سرعت‌های بالا زمان واکنش نسبت به خطرات افزایش نمی‌یابد بلکه فرصت واکنش کاهش می‌یابد و کنترل خودرو دشوارتر می‌شود.",
       source: "aeinname_asli.pdf exam 17 q30",
+      image: { path: "exam-17/q30.webp", alt: "تصویر پیامدهای رانندگی با سرعت زیاد" },
     },
   ],
 }
