@@ -4,7 +4,6 @@
 // content, never shows a purchase/upgrade flow, and never writes anything. The
 // label is derived from auth + the fail-closed entitlement read (useEntitlement).
 
-import React from 'react'
 import { useAuth } from '../auth/useAuth'
 import { useEntitlement } from '../auth/useEntitlement'
 
