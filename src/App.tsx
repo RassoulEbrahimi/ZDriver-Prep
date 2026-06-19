@@ -29,6 +29,9 @@ import {
   readBookmarks, writeBookmarks,
   type ExamAttemptReadItem, type ExamProgressReadItem,
 } from './data/progress/repo'
+import { isPhpBackend } from './config/backend'
+import { getToken } from './auth/phpClient'
+import { savePhpProgress, loadPhpProgress } from './data/progress/phpProgress'
 import type { ThemeMode } from './theme'
 import { applyTheme, getStoredMode, setStoredMode, subscribeSystem } from './theme'
 
@@ -207,6 +210,73 @@ export default function App() {
     fetchBookmarks(user.uid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, status, user, bookmarksSynced])
+
+  // ── PHP backend progress sync (PHP mode only; isPhpBackend gates everything).
+  // Mirrors the Firebase hydration above but against the PHP one-blob-per-user
+  // API: load once per signed-in user, union it into local state additively, then
+  // save the full blob (debounced) on changes. In default (Firebase) mode both
+  // effects are inert. localStorage stays the runtime source of truth. ──
+  // Load is attempted once per uid; saving is enabled ONLY after a successful
+  // load, so a pre-load save can never overwrite the server blob with less data.
+  const phpLoadStartedUidRef = useRef<string | null>(null)
+  const phpSaveEnabledUidRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (!isPhpBackend) return
+    if (status !== 'authed' || !user?.uid || !getToken()) {
+      phpLoadStartedUidRef.current = null
+      phpSaveEnabledUidRef.current = null
+      return
+    }
+    if (phpLoadStartedUidRef.current === user.uid) return
+    phpLoadStartedUidRef.current = user.uid
+    const uid = user.uid
+    void loadPhpProgress().then(res => {
+      if (!res.ok) return // fail-soft: leave save disabled; never wipe local data
+      const { bookmarks, wrongQuestionIds, examProgress, examAttempts } = res.progress
+      // Additive union into local progress — never shrink or overwrite local.
+      setProgress(p => {
+        let next = p
+        if (Array.isArray(wrongQuestionIds)) {
+          const fresh = wrongQuestionIds.filter(id => !next.wrongQuestionIds.includes(id))
+          if (fresh.length) next = { ...next, wrongQuestionIds: [...next.wrongQuestionIds, ...fresh] }
+        }
+        if (Array.isArray(bookmarks)) {
+          const fresh = bookmarks.filter(id => !next.bookmarked.includes(id))
+          if (fresh.length) next = { ...next, bookmarked: [...next.bookmarked, ...fresh] }
+        }
+        return next
+      })
+      // Fill coverage/attempts only if not already populated (prefer existing).
+      if (Array.isArray(examProgress)) setExamCoverage(prev => prev ?? (examProgress as ExamProgressReadItem[]))
+      if (Array.isArray(examAttempts)) setRecentAttempts(prev => prev ?? (examAttempts as ExamAttemptReadItem[]))
+      phpSaveEnabledUidRef.current = uid // enable saving only after a successful load
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, user])
+
+  useEffect(() => {
+    if (!isPhpBackend || status !== 'authed' || !user?.uid) return
+    if (phpSaveEnabledUidRef.current !== user.uid) return // don't save before the initial load
+    const t = setTimeout(() => {
+      void savePhpProgress({
+        summary: {
+          totalQuestions: progress.totalQuestions,
+          answered: progress.answered,
+          correct: progress.correct,
+          wrong: progress.wrong,
+          examReadiness: progress.examReadiness,
+          bookmarkCount: progress.bookmarked.length,
+          weakCount: progress.wrongQuestionIds.length,
+        },
+        examProgress: examCoverage,
+        examAttempts: recentAttempts,
+        bookmarks: progress.bookmarked,
+        wrongQuestionIds: progress.wrongQuestionIds,
+      })
+    }, 800)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress, examCoverage, recentAttempts, status, user])
 
   // ── PWA prompts: update toast takes priority over the install button. ──
   const [updateVisible, setUpdateVisible] = useState(false)
