@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 17 (آزمون 17) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
+// correct answers confirmed by the red-color signal.
 // Image-dependent: Q12, Q23, Q26
+// Assets wired: Q12, Q26. Q23 remains imagePending (no matching asset found).
 
 import type { SourceExamData } from '../types'
 
@@ -140,7 +140,7 @@ export const exam17: SourceExamData = {
       category: "signs",
       explanation: "خطوط مقطع (بریده‌بریده) محدودیتی ایجاد نمی‌کنند؛ سبقت، گردش، تغییر خط حرکت و دور زدن از روی آن‌ها با رعایت احتیاط بدون اشکال است.",
       source: "aeinname_asli.pdf exam 17 q12",
-      imagePending: true,
+      image: { path: "exam-17/q12.webp", alt: "خطوط مقطع یا بریده‌بریده در تصویر جاده" },
     },
     {
       id: "se-17-13",
@@ -296,7 +296,7 @@ export const exam17: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودروهای قرمز است و سایر خودروها باید منتظر بمانند.",
       source: "aeinname_asli.pdf exam 17 q26",
-      imagePending: true,
+      image: { path: "exam-17/q26.webp", alt: "نمودار تقاطع با خودروهای قرمز و آبی برای بررسی حق تقدم" },
     },
     {
       id: "se-17-27",
