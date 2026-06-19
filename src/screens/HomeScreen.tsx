@@ -6,6 +6,7 @@ import { JourneyPath }  from '../components/JourneyPath'
 import { SettingsIcon, CloseIcon, TrophyIcon, ChevLeftIcon, PlayIcon, BulbIcon, VideoIcon, BookIcon, FlagIcon, BookmarkFilledIcon, UserIcon } from '../components/Icons'
 import { VideoGallery } from '../components/VideoGallery'
 import { VideoPlayer }  from '../components/VideoPlayer'
+import { SubscriptionBadge } from '../components/SubscriptionBadge'
 import { useAuth }      from '../auth/useAuth'
 import { VIDEOS } from '../videos'
 import type { VideoEntry } from '../videos'
@@ -186,6 +187,11 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
             ))}
           </div>
         </div>
+      </div>
+
+      {/* ── Subscription status (display only — no gating/paywall, Phase S2) ── */}
+      <div style={{ padding: '14px 20px 0' }}>
+        <SubscriptionBadge />
       </div>
 
       {/* ── Guest hint: results only persist with an account ── */}
