@@ -5,16 +5,16 @@ A practical, per-release QA pass before shipping to real users.
 ## How to use
 
 - Copy this list for each release and check items against the live build:
-  **https://rassoulebrahimi.github.io/ZDriver-Prep/**
+  **https://ranandegiyar.info/**
 - Record the deployed commit SHA: `__________`
 - A release is "go" only when sections 1–8 pass. Review the Known blockers section before every wider release.
 
 ## 1. Production deploy verification
 
-- [ ] Latest `main` is merged and the **Deploy ZDriver Prep to GitHub Pages** run is green.
-- [ ] Live site loads at the Pages URL on the expected commit SHA.
+- [ ] Latest `main` is merged and the deploy run is green.
+- [ ] Live site loads at the production domain (https://ranandegiyar.info/) on the expected commit SHA.
 - [ ] `npm run build` is clean locally; no errors in the browser console on first load.
-- [ ] Base path `/ZDriver-Prep/` assets resolve — no 404s in the Network tab.
+- [ ] Root-domain assets (`/assets/...`) resolve — no 404s in the Network tab.
 
 ## 2. PWA install / update QA
 
