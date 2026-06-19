@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
 import { useAuth } from '../auth/useAuth'
+import { isPhpBackend } from '../config/backend'
+import { fa } from '../utils'
+
+// PHP backend requires >= 8 chars; Firebase keeps its existing >= 6 so default
+// (Firebase) behavior is unchanged.
+const MIN_PASSWORD_LEN = isPhpBackend ? 8 : 6
 
 interface Props {
   onClose: () => void
@@ -35,7 +41,7 @@ export function AuthSheet({ onClose }: Props) {
   async function handleSubmit() {
     reset()
     if (!validEmail(email)) { setError('ایمیل وارد شده معتبر نیست.'); return }
-    if (password.length < 6) { setError('رمز عبور باید حداقل ۶ نویسه باشد.'); return }
+    if (password.length < MIN_PASSWORD_LEN) { setError(`رمز عبور باید حداقل ${fa(MIN_PASSWORD_LEN)} نویسه باشد.`); return }
     setBusy(true)
     const res = mode === 'signup'
       ? await signUpWithEmail(email, password)
@@ -150,9 +156,11 @@ export function AuthSheet({ onClose }: Props) {
                       style={{ height: 50, fontSize: 15, opacity: busy ? 0.6 : 1 }}>
                 {busy ? 'لطفاً صبر کن…' : (mode === 'signup' ? 'ساخت حساب' : 'ورود')}
               </button>
-              <button onClick={handleReset} disabled={busy} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 44, fontSize: 13 }}>
-                فراموشی رمز عبور
-              </button>
+              {!isPhpBackend && (
+                <button onClick={handleReset} disabled={busy} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 44, fontSize: 13 }}>
+                  فراموشی رمز عبور
+                </button>
+              )}
               <button onClick={onClose} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 42, fontSize: 13, color: 'var(--ink-3)' }}>
                 بستن
               </button>
