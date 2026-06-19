@@ -2,7 +2,7 @@
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
 // correct answers confirmed by the red-color signal.
 // Image-dependent: Q12, Q23, Q26
-// Assets wired: Q12, Q14, Q15, Q18, Q26, Q30. Q23 remains imagePending (no matching asset found).
+// Assets wired: Q12, Q14, Q15, Q18, Q26, Q30. Q23 confirmed non-image; imagePending removed.
 
 import type { SourceExamData } from '../types'
 
@@ -265,7 +265,6 @@ export const exam17: SourceExamData = {
       category: "signs",
       explanation: "مثلث متساوی‌الاضلاع نشسته روی یک رأس (مثلث وارونه) صرفًا برای تابلوی «رعایت حق تقدم» به کار می‌رود.",
       source: "aeinname_asli.pdf exam 17 q23",
-      imagePending: true,
     },
     {
       id: "se-17-24",
