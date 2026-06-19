@@ -14,7 +14,7 @@ export default defineConfig({
       manifest: {
         name: 'رانندگی‌یار — همراه آزمون رانندگی',
         short_name: 'رانندگی‌یار',
-        description: 'آمادگی برای آزمون تئوری رانندگی در ایران',
+        description: 'اپلیکیشن فارسی برای تمرین سوالات آیین‌نامه رانندگی، آزمون آزمایشی، مرور اشتباهات و پیگیری پیشرفت یادگیری',
         theme_color: '#4B3A8C',
         background_color: '#1F1A36',
         display: 'standalone',
