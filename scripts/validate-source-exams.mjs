@@ -16,6 +16,13 @@ const QUESTIONS_PER_EXAM = 30
 const OPTIONS_PER_QUESTION = 4
 const VALID_CATEGORIES = ['signs', 'rules', 'safety', 'vehicle', 'firstaid']
 
+// Known source-faithful duplicate options verified against the original printed PDF.
+// These are NOT OCR errors — the duplicates exist in the actual source material.
+// Format: 'question-id|option-text'
+const SOURCE_KNOWN_DUPLICATE_OPTIONS = new Set([
+  'se-13-15|حدود ۲ متر از طول وسیله نقلیه', // options 2 and 4 are intentionally identical in the source PDF
+])
+
 const isNonEmpty = (s) => typeof s === 'string' && s.trim().length > 0
 
 /** Load SOURCE_EXAMS_DATA via Vite's SSR transform (handles TS + import.meta.glob). */
@@ -84,7 +91,7 @@ function validateSourceExams(data, { strict = false } = {}) {
         for (const o of q.options) {
           if (!isNonEmpty(o)) continue            // empties already covered by OPTION_EMPTY
           const key = o.trim()
-          if (seen.has(key) && !warned.has(key)) {
+          if (seen.has(key) && !warned.has(key) && !SOURCE_KNOWN_DUPLICATE_OPTIONS.has(`${q.id}|${key}`)) {
             warn('OPTIONS_DUP', `${q.id}: duplicate option "${key}"`)
             warned.add(key)
           }
