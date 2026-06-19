@@ -2,7 +2,7 @@
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
 // correct answers confirmed by the red-color signal.
 // Image-dependent: Q6, Q15, Q23, Q27
-// Assets wired: Q1, Q4, Q15, Q17, Q27, Q29, Q30. Q6 and Q23 remain imagePending (no matching assets found).
+// Assets wired: Q1, Q4, Q15, Q17, Q27, Q29, Q30. Q6 and Q23 confirmed non-image; imagePending removed.
 
 import type { SourceExamData } from '../types'
 
@@ -76,7 +76,6 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این تقاطع هم‌عرض، حق تقدم با وسیله‌ای است که به سمت راست گردش می‌کند.",
       source: "aeinname_asli.pdf exam 16 q6",
-      imagePending: true,
     },
     {
       id: "se-16-07",
@@ -266,7 +265,6 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "هر سه مورد درست است؛ خطوط هاشور مخصوص عبور اضطراری وسایل امدادی است، معمولاً در کناره آزادراه‌ها، بزرگراه‌ها و تونل‌ها کشیده می‌شود و حرکت روی آن‌ها ممنوع است.",
       source: "aeinname_asli.pdf exam 16 q23",
-      imagePending: true,
     },
     {
       id: "se-16-24",
