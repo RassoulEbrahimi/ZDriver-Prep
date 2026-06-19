@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 16 (آزمون 16) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
+// correct answers confirmed by the red-color signal.
 // Image-dependent: Q6, Q15, Q23, Q27
+// Assets wired: Q15, Q27. Q6 and Q23 remain imagePending (no matching assets found).
 
 import type { SourceExamData } from '../types'
 
@@ -174,7 +174,7 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودرویی است که با دایره مشخص شده است.",
       source: "aeinname_asli.pdf exam 16 q15",
-      imagePending: true,
+      image: { path: "exam-16/q15.webp", alt: "نمودار تقاطع برای تشخیص حق تقدم خودروی مشخص‌شده با دایره" },
     },
     {
       id: "se-16-16",
@@ -308,7 +308,7 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودروی ۱ است.",
       source: "aeinname_asli.pdf exam 16 q27",
-      imagePending: true,
+      image: { path: "exam-16/q27.webp", alt: "نمودار تقاطع با خودروهای ۱ و ۲ برای بررسی حق تقدم" },
     },
     {
       id: "se-16-28",
