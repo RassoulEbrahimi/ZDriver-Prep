@@ -1,6 +1,6 @@
 import type { Question, Category, Progress } from './types'
-import greenDirectionSign from './assets/questions/ir-q001-green-direction-sign.png'
-import schoolCrossingSign from './assets/questions/school-crossing-sign.png'
+import greenDirectionSign from './assets/questions/ir-q001-green-direction-sign.webp'
+import schoolCrossingSign from './assets/questions/school-crossing-sign.webp'
 
 // Category metadata only — `total` is derived from QUESTIONS below so the
 // counts can never drift out of sync as the question bank grows.
