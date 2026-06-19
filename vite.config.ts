@@ -2,8 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Production defaults to the official root domain (https://ranandegiyar.info/).
+// The legacy GitHub Pages build sets APP_BASE=/ZDriver-Prep/ to serve from the
+// project subpath; the asset base and the PWA start_url/scope all follow it.
+const base = process.env.APP_BASE ?? '/'
+
 export default defineConfig({
-  base: '/ZDriver-Prep/',
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -20,8 +25,8 @@ export default defineConfig({
         display: 'standalone',
         dir: 'rtl',
         lang: 'fa',
-        start_url: '/ZDriver-Prep/',
-        scope: '/ZDriver-Prep/',
+        start_url: base,
+        scope: base,
         icons: [
           { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
         ],
