@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 15 (آزمون 15) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
+// correct answers confirmed by the red-color signal.
 // Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, Q18, Q21, Q22, Q23, Q24, Q25, Q27, Q28, Q29, Q30
+// Assets wired: all 25 image-dependent questions wired with optimised WebP assets.
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی پیش‌آگاه‌ساز دربارهٔ وجود چراغ راهنمایی در ادامهٔ مسیر هشدار می‌دهد تا راننده برای توقف احتمالی آماده شود.",
       source: "aeinname_asli.pdf exam 15 q1",
-      imagePending: true,
+      image: { path: "exam-15/q01.webp", alt: "تابلوی پیش‌آگاه‌ساز وجود چراغ راهنمایی" },
     },
     {
       id: "se-15-02",
@@ -31,7 +31,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو نشان می‌دهد که علائم انتظامی به گروه خاصی از وسایل نقلیه (مانند کامیون) اختصاص دارد و محدودیت یا دستور تنها برای آن گروه اعمال می‌شود.",
       source: "aeinname_asli.pdf exam 15 q2",
-      imagePending: true,
+      image: { path: "exam-15/q02.webp", alt: "تابلوی اختصاص علائم انتظامی به گروه خاص وسایل نقلیه" },
     },
     {
       id: "se-15-03",
@@ -43,7 +43,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشت‌ضلعی «ایست» است و راننده باید به‌طور کامل توقف کند و پس از اطمینان از نبود خطر عبور نماید.",
       source: "aeinname_asli.pdf exam 15 q3",
-      imagePending: true,
+      image: { path: "exam-15/q03.webp", alt: "تابلوی هشت‌ضلعی ایست" },
     },
     {
       id: "se-15-04",
@@ -55,7 +55,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «سبقت برای کامیون ممنوع» را نشان می‌دهد و خودروهای باری سنگین حق سبقت گرفتن در آن مسیر را ندارند.",
       source: "aeinname_asli.pdf exam 15 q4",
-      imagePending: true,
+      image: { path: "exam-15/q04.webp", alt: "تابلوی سبقت برای کامیون ممنوع" },
     },
     {
       id: "se-15-05",
@@ -67,7 +67,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «مسیر کامیون حامل کالای خطرناک» را نشان می‌دهد و مسیر ویژهٔ تردد خودروهای حامل مواد خطرناک را مشخص می‌کند.",
       source: "aeinname_asli.pdf exam 15 q5",
-      imagePending: true,
+      image: { path: "exam-15/q05.webp", alt: "تابلوی مسیر کامیون حامل کالای خطرناک" },
     },
     {
       id: "se-15-06",
@@ -79,7 +79,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «عبور کامیون با طول بیش از ۱۰ متر ممنوع» را نشان می‌دهد و خودروهای باری طویل‌تر از ۱۰ متر حق عبور ندارند.",
       source: "aeinname_asli.pdf exam 15 q6",
-      imagePending: true,
+      image: { path: "exam-15/q06.webp", alt: "تابلوی عبور کامیون با طول بیش از ۱۰ متر ممنوع" },
     },
     {
       id: "se-15-07",
@@ -91,7 +91,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "گزینهٔ ۳ تابلوی «پایان منطقهٔ توقف ممنوع» است و نشان می‌دهد محدودیت توقف از این نقطه به بعد برداشته شده است.",
       source: "aeinname_asli.pdf exam 15 q7",
-      imagePending: true,
+      image: { path: "exam-15/q07.webp", alt: "گزینه‌های تصویری تابلوی پایان منطقه توقف ممنوع" },
     },
     {
       id: "se-15-08",
@@ -103,7 +103,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت وسایل در این شکل، ترتیب حق تقدم عبور به‌صورت زرد و سپس آبی است.",
       source: "aeinname_asli.pdf exam 15 q8",
-      imagePending: true,
+      image: { path: "exam-15/q08.webp", alt: "نمودار تقاطع با خودروهای آبی و زرد برای بررسی حق تقدم" },
     },
     {
       id: "se-15-09",
@@ -115,7 +115,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «تقاطع راه‌آهن با راه‌بند» را نشان می‌دهد و راننده را از وجود تقاطع ریلی دارای راه‌بند آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 15 q9",
-      imagePending: true,
+      image: { path: "exam-15/q09.webp", alt: "تابلوی هشدار تقاطع راه‌آهن با راه‌بند" },
     },
     {
       id: "se-15-10",
@@ -127,7 +127,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "گزینهٔ ۴ تابلوی «پایان محدودهٔ توقف ممنوع» است و نشان می‌دهد ممنوعیت توقف از این نقطه به بعد به پایان رسیده است.",
       source: "aeinname_asli.pdf exam 15 q10",
-      imagePending: true,
+      image: { path: "exam-15/q10.webp", alt: "گزینه‌های تصویری تابلوی پایان محدوده توقف ممنوع" },
     },
     {
       id: "se-15-11",
@@ -139,7 +139,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «توقف در روزهای زوج هفته ممنوع» را نشان می‌دهد و توقف خودرو در آن محل تنها در روزهای زوج مجاز نیست.",
       source: "aeinname_asli.pdf exam 15 q11",
-      imagePending: true,
+      image: { path: "exam-15/q11.webp", alt: "تابلوی توقف در روزهای زوج هفته ممنوع" },
     },
     {
       id: "se-15-12",
@@ -151,7 +151,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "گزینهٔ ۴ تابلوی «محدودهٔ توقف ممنوع در طول شبانه‌روز» است و توقف در آن محل در تمام ساعات شبانه‌روز ممنوع می‌باشد.",
       source: "aeinname_asli.pdf exam 15 q12",
-      imagePending: true,
+      image: { path: "exam-15/q12.webp", alt: "گزینه‌های تصویری تابلوی محدوده توقف ممنوع در طول شبانه‌روز" },
     },
     {
       id: "se-15-13",
@@ -163,7 +163,7 @@ export const exam15: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این تقاطع، ترتیب حق تقدم عبور به‌صورت قرمز، آبی و سپس سبز است.",
       source: "aeinname_asli.pdf exam 15 q13",
-      imagePending: true,
+      image: { path: "exam-15/q13.webp", alt: "نمودار تقاطع با خودروهای سبز، آبی و قرمز برای بررسی حق تقدم" },
     },
     {
       id: "se-15-14",
@@ -175,7 +175,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "شکل هشت‌گوشه (هشت‌ضلعی) تنها برای تابلوی «ایست (توقف)» به کار می‌رود و شکل آن حتی از پشت نیز قابل تشخیص است.",
       source: "aeinname_asli.pdf exam 15 q14",
-      imagePending: true,
+      image: { path: "exam-15/q14.webp", alt: "شکل هشت‌گوشه تابلوی ایست" },
     },
     {
       id: "se-15-15",
@@ -187,7 +187,7 @@ export const exam15: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این سه‌راه، ابتدا وسایل ۱ و ۲ به‌طور همزمان و سپس وسیلهٔ ۳ حق تقدم عبور دارند.",
       source: "aeinname_asli.pdf exam 15 q15",
-      imagePending: true,
+      image: { path: "exam-15/q15.webp", alt: "نمودار سه‌راه با خودروهای شماره‌گذاری‌شده برای بررسی حق تقدم" },
     },
     {
       id: "se-15-16",
@@ -221,7 +221,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "از میان این چهار تابلو، گزینهٔ ۴ جزو تابلوهای حاشیه‌نما نیست و مفهوم دیگری دارد.",
       source: "aeinname_asli.pdf exam 15 q18",
-      imagePending: true,
+      image: { path: "exam-15/q18.webp", alt: "گزینه‌های تصویری تابلوهای حاشیه‌نما" },
     },
     {
       id: "se-15-19",
@@ -255,7 +255,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "گزینهٔ ۲ تابلوی «خط عبور برای گریز» است که مسیر اضطراری برای توقف ایمن خودروهای فاقد کنترل (مانند کامیون با ترمز ازکارافتاده) در سرازیری را نشان می‌دهد.",
       source: "aeinname_asli.pdf exam 15 q21",
-      imagePending: true,
+      image: { path: "exam-15/q21.webp", alt: "گزینه‌های تصویری تابلوی خط عبور برای گریز" },
     },
     {
       id: "se-15-22",
@@ -267,7 +267,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "از میان این چهار تابلو، گزینهٔ ۴ دربارهٔ حق تقدم عبور نیست و مفهوم دیگری دارد.",
       source: "aeinname_asli.pdf exam 15 q22",
-      imagePending: true,
+      image: { path: "exam-15/q22.webp", alt: "گزینه‌های تصویری تابلوهای حق تقدم عبور" },
     },
     {
       id: "se-15-23",
@@ -279,7 +279,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «جریان همگرا» را نشان می‌دهد؛ یعنی پیوستن دو مسیر به یکدیگر که راننده باید با رعایت احتیاط و حق تقدم در آن ادغام شود.",
       source: "aeinname_asli.pdf exam 15 q23",
-      imagePending: true,
+      image: { path: "exam-15/q23.webp", alt: "تابلوی هشدار جریان همگرا" },
     },
     {
       id: "se-15-24",
@@ -291,7 +291,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «پایان تونل» را نشان می‌دهد و اعلام می‌کند که خودرو از تونل خارج شده است.",
       source: "aeinname_asli.pdf exam 15 q24",
-      imagePending: true,
+      image: { path: "exam-15/q24.webp", alt: "تابلوی پایان تونل" },
     },
     {
       id: "se-15-25",
@@ -303,7 +303,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «سربالایی خطرناک» را نشان می‌دهد و راننده را از وجود شیب رو به بالا در ادامهٔ مسیر آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 15 q25",
-      imagePending: true,
+      image: { path: "exam-15/q25.webp", alt: "تابلوی هشدار سربالایی خطرناک" },
     },
     {
       id: "se-15-26",
@@ -326,7 +326,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «راه از چپ باریک می‌شود» را نشان می‌دهد و راننده را از کاهش عرض راه از سمت چپ آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 15 q27",
-      imagePending: true,
+      image: { path: "exam-15/q27.webp", alt: "تابلوی هشدار راه از چپ باریک می‌شود" },
     },
     {
       id: "se-15-28",
@@ -338,7 +338,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «شانهٔ خطرناک» را نشان می‌دهد و راننده را از نامناسب بودن شانهٔ راه آگاه می‌کند تا از انحراف به آن بپرهیزد.",
       source: "aeinname_asli.pdf exam 15 q28",
-      imagePending: true,
+      image: { path: "exam-15/q28.webp", alt: "تابلوی هشدار شانهٔ خطرناک" },
     },
     {
       id: "se-15-29",
@@ -350,7 +350,7 @@ export const exam15: SourceExamData = {
       category: "signs",
       explanation: "این تابلو نشان می‌دهد که در مسیر باریک پیش رو حق تقدم عبور با شماست و وسیلهٔ نقلیهٔ مقابل باید توقف کرده و اجازهٔ عبور بدهد.",
       source: "aeinname_asli.pdf exam 15 q29",
-      imagePending: true,
+      image: { path: "exam-15/q29.webp", alt: "تابلوی حق تقدم عبور با شما" },
     },
     {
       id: "se-15-30",
@@ -362,7 +362,7 @@ export const exam15: SourceExamData = {
       category: "safety",
       explanation: "از میان این چهار تابلو، گزینهٔ ۳ بیانگر مسیر کامیون حامل کالای خطرناک نیست و مفهوم دیگری دارد.",
       source: "aeinname_asli.pdf exam 15 q30",
-      imagePending: true,
+      image: { path: "exam-15/q30.webp", alt: "گزینه‌های تصویری تابلوهای مسیر کامیون حامل کالای خطرناک" },
     },
   ],
 }
