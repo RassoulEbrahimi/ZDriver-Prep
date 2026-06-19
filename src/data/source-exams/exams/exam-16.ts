@@ -2,7 +2,7 @@
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
 // correct answers confirmed by the red-color signal.
 // Image-dependent: Q6, Q15, Q23, Q27
-// Assets wired: Q15, Q27. Q6 and Q23 remain imagePending (no matching assets found).
+// Assets wired: Q1, Q4, Q15, Q17, Q27, Q29, Q30. Q6 and Q23 remain imagePending (no matching assets found).
 
 import type { SourceExamData } from '../types'
 
@@ -19,6 +19,7 @@ export const exam16: SourceExamData = {
       category: "rules",
       explanation: "دور زدن در نزدیکی پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد و خطر تصادف را بالا می‌برد.",
       source: "aeinname_asli.pdf exam 16 q1",
+      image: { path: "exam-16/q01.webp", alt: "نمودار ممنوعیت دور زدن در نزدیکی پیچ‌ها" },
     },
     {
       id: "se-16-02",
@@ -52,6 +53,7 @@ export const exam16: SourceExamData = {
       category: "rules",
       explanation: "چراغ سبز به معنای آزاد بودن عبور یا گردش است، مگر آنکه گردش به‌وسیلهٔ علائم دیگری ممنوع شده باشد.",
       source: "aeinname_asli.pdf exam 16 q4",
+      image: { path: "exam-16/q04.webp", alt: "تصویر چراغ سبز راهنمایی" },
     },
     {
       id: "se-16-05",
@@ -197,6 +199,7 @@ export const exam16: SourceExamData = {
       category: "rules",
       explanation: "هنگام خرابی خودرو و نبود امکان انتقال آن، باید چراغ الکتریکی هشدار را در فاصلهٔ مناسبی پشت خودرو قرار داد تا رانندگان دیگر به‌موقع از خطر آگاه شوند.",
       source: "aeinname_asli.pdf exam 16 q17",
+      image: { path: "exam-16/q17.webp", alt: "نمودار فاصله قرار دادن چراغ الکتریکی اخطار پشت خودرو خراب" },
     },
     {
       id: "se-16-18",
@@ -331,6 +334,7 @@ export const exam16: SourceExamData = {
       category: "rules",
       explanation: "نگه داشتن دست چپ به‌طور افقی علامت گردش یا تغییر مسیر به چپ است و برای آگاه کردن دیگران در نبود چراغ راهنما به کار می‌رود.",
       source: "aeinname_asli.pdf exam 16 q29",
+      image: { path: "exam-16/q29.webp", alt: "تصویر راننده با دست چپ افقی برای علامت گردش به چپ" },
     },
     {
       id: "se-16-30",
@@ -342,6 +346,7 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "برای آگاه‌سازی جهت سبقت گرفتن در روز از بوق کوتاه همراه با چراغ راهنما استفاده می‌شود تا رانندهٔ جلویی از قصد سبقت آگاه شود.",
       source: "aeinname_asli.pdf exam 16 q30",
+      image: { path: "exam-16/q30.webp", alt: "تصویر علامت آگاه‌سازی برای سبقت گرفتن در روز" },
     },
   ],
 }
