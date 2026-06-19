@@ -1,8 +1,8 @@
 // Phase 4D-3-17 — Real Exam 14 (آزمون 14) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
-// correct answers confirmed by the red-color signal. Data only — image-dependent
-// questions are staged as imagePending (no image assets yet).
+// correct answers confirmed by the red-color signal.
 // Image-dependent: Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q13, Q14, Q15, Q16, Q25, Q28
+// All 17 image assets wired (exam-14/qNN.webp).
 
 import type { SourceExamData } from '../types'
 
@@ -19,7 +19,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی انتظامی «سرعت بیش از ۵۰ کیلومتر در ساعت ممنوع» است و حداکثر سرعت مجاز در آن مسیر را به ۵۰ محدود می‌کند.",
       source: "aeinname_asli.pdf exam 14 q1",
-      imagePending: true,
+      image: { path: "exam-14/q01.webp", alt: "تابلوی انتظامی حداکثر سرعت ۵۰ کیلومتر در ساعت" },
     },
     {
       id: "se-14-02",
@@ -31,7 +31,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «عبور وسایل نقلیه با وزن بیش از ۵ تن ممنوع» را نشان می‌دهد و خودروهای سنگین‌تر از ۵ تن حق عبور ندارند.",
       source: "aeinname_asli.pdf exam 14 q2",
-      imagePending: true,
+      image: { path: "exam-14/q02.webp", alt: "تابلوی محدودیت وزن بیش از ۵ تن ممنوع" },
     },
     {
       id: "se-14-03",
@@ -43,7 +43,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی خدماتی «استراحتگاه (چادر)» را نشان می‌دهد و محل مناسب برای اتراق و چادر زدن را به مسافران اطلاع می‌دهد.",
       source: "aeinname_asli.pdf exam 14 q3",
-      imagePending: true,
+      image: { path: "exam-14/q03.webp", alt: "تابلوی خدماتی استراحتگاه (چادر)" },
     },
     {
       id: "se-14-04",
@@ -55,7 +55,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «طول محدوده خطر» را نشان می‌دهد؛ یعنی فاصله‌ای که در آن خطر یا شرایط ویژه ادامه دارد و راننده باید احتیاط کند.",
       source: "aeinname_asli.pdf exam 14 q4",
-      imagePending: true,
+      image: { path: "exam-14/q04.webp", alt: "تابلوی طول محدوده خطر" },
     },
     {
       id: "se-14-05",
@@ -67,7 +67,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "از میان این چهار تابلو، گزینهٔ ۱ تنها موردی است که مفهوم تقاطع را نشان نمی‌دهد و به موضوع دیگری اشاره دارد.",
       source: "aeinname_asli.pdf exam 14 q5",
-      imagePending: true,
+      image: { path: "exam-14/q05.webp", alt: "چهار تابلو — سه تابلو تقاطع و یکی غیر تقاطع" },
     },
     {
       id: "se-14-06",
@@ -79,7 +79,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «دست‌انداز» را نشان می‌دهد و راننده را از ناهمواری سطح راه آگاه می‌کند تا سرعت را کاهش دهد.",
       source: "aeinname_asli.pdf exam 14 q6",
-      imagePending: true,
+      image: { path: "exam-14/q06.webp", alt: "تابلوی هشدار دست‌انداز" },
     },
     {
       id: "se-14-07",
@@ -91,7 +91,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «برآمدگی» را نشان می‌دهد و راننده را از وجود بلندی در سطح راه آگاه می‌کند تا با احتیاط عبور کند.",
       source: "aeinname_asli.pdf exam 14 q7",
-      imagePending: true,
+      image: { path: "exam-14/q07.webp", alt: "تابلوی هشدار برآمدگی" },
     },
     {
       id: "se-14-08",
@@ -103,7 +103,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی پیش‌آگاه‌ساز نشان می‌دهد که به تابلوی «رعایت حق تقدم» نزدیک می‌شوید تا از قبل برای رعایت حق تقدم آماده شوید.",
       source: "aeinname_asli.pdf exam 14 q8",
-      imagePending: true,
+      image: { path: "exam-14/q08.webp", alt: "تابلوی پیش‌آگاه‌ساز رعایت حق تقدم" },
     },
     {
       id: "se-14-09",
@@ -115,7 +115,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلو «ایستگاه اتوبوس» را نشان می‌دهد و محل توقف و سوار و پیاده شدن مسافران اتوبوس را مشخص می‌کند.",
       source: "aeinname_asli.pdf exam 14 q9",
-      imagePending: true,
+      image: { path: "exam-14/q09.webp", alt: "تابلوی ایستگاه اتوبوس" },
     },
     {
       id: "se-14-10",
@@ -127,7 +127,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «ریزش سنگ» را نشان می‌دهد و راننده را از احتمال ریزش سنگ از کوه در کنار جاده آگاه می‌کند.",
       source: "aeinname_asli.pdf exam 14 q10",
-      imagePending: true,
+      image: { path: "exam-14/q10.webp", alt: "تابلوی هشدار ریزش سنگ" },
     },
     {
       id: "se-14-11",
@@ -139,7 +139,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این تابلوی هشدار «عبور اطفال» را نشان می‌دهد و راننده را از احتمال حضور کودکان (مانند نزدیکی مدرسه) آگاه می‌کند تا با احتیاط بیشتری حرکت کند.",
       source: "aeinname_asli.pdf exam 14 q11",
-      imagePending: true,
+      image: { path: "exam-14/q11.webp", alt: "تابلوی هشدار عبور اطفال" },
     },
     {
       id: "se-14-12",
@@ -162,7 +162,7 @@ export const exam14: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این شکل، ترتیب حق تقدم عبور به‌صورت قرمز، زرد و سپس آبی است.",
       source: "aeinname_asli.pdf exam 14 q13",
-      imagePending: true,
+      image: { path: "exam-14/q13.webp", alt: "تقاطع با وسایل نقلیه رنگی: قرمز، زرد، آبی" },
     },
     {
       id: "se-14-14",
@@ -174,7 +174,7 @@ export const exam14: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این تقاطع، ترتیب حق تقدم عبور به‌صورت کامیون، دوچرخه و سپس سواری است.",
       source: "aeinname_asli.pdf exam 14 q14",
-      imagePending: true,
+      image: { path: "exam-14/q14.webp", alt: "تقاطع با کامیون، دوچرخه، سواری" },
     },
     {
       id: "se-14-15",
@@ -186,7 +186,7 @@ export const exam14: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این تقاطع، ترتیب حق تقدم عبور به‌صورت ۲، ۳، ۱ و سپس ۴ است.",
       source: "aeinname_asli.pdf exam 14 q15",
-      imagePending: true,
+      image: { path: "exam-14/q15.webp", alt: "تقاطع با چهار وسیله نقلیه شماره‌گذاری شده" },
     },
     {
       id: "se-14-16",
@@ -198,7 +198,7 @@ export const exam14: SourceExamData = {
       category: "rules",
       explanation: "بر پایهٔ موقعیت وسایل در این شکل، ترتیب حق تقدم عبور ابتدا ۳، سپس ۲ و بعد ۱ است.",
       source: "aeinname_asli.pdf exam 14 q16",
-      imagePending: true,
+      image: { path: "exam-14/q16.webp", alt: "تقاطع با سه وسیله نقلیه شماره‌گذاری شده" },
     },
     {
       id: "se-14-17",
@@ -298,7 +298,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این شکل به مفهوم «شروع و پایان حق تقدم مسیر» اشاره دارد و وضعیت حق تقدم در طول مسیر را برای راننده مشخص می‌کند.",
       source: "aeinname_asli.pdf exam 14 q25",
-      imagePending: true,
+      image: { path: "exam-14/q25.webp", alt: "شکل شروع و پایان حق تقدم مسیر" },
     },
     {
       id: "se-14-26",
@@ -332,7 +332,7 @@ export const exam14: SourceExamData = {
       category: "signs",
       explanation: "این شکل پارک «افقی» (موازی با لبهٔ خیابان) را نشان می‌دهد که خودروها در امتداد جدول و موازی با مسیر پارک می‌شوند.",
       source: "aeinname_asli.pdf exam 14 q28",
-      imagePending: true,
+      image: { path: "exam-14/q28.webp", alt: "شکل پارک افقی موازی با خیابان" },
     },
     {
       id: "se-14-29",
