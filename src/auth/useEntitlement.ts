@@ -13,6 +13,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from './useAuth'
 import { readEntitlement } from '../data/progress/repo'
+import { readPhpEntitlement } from '../data/progress/phpEntitlement'
+import { isPhpBackend } from '../config/backend'
 import { NO_ENTITLEMENT, type Entitlement } from '../data/progress/types'
 
 export type EntitlementStatus = 'loading' | 'ready' | 'unavailable'
@@ -54,9 +56,13 @@ export function useEntitlement(): UseEntitlement {
     }
     // Authed: one-time fail-closed read. readEntitlement never throws and never
     // unlocks on error, so no try/catch is needed here.
+    // Source switch: PHP mode reads /subscription/me.php; default Firebase mode
+    // keeps the Firestore readEntitlement(uid). Both are fail-closed and never
+    // throw, so the result can be consumed directly.
     let cancelled = false
     setStatus('loading')
-    void readEntitlement(uid).then(ent => {
+    const read = isPhpBackend ? readPhpEntitlement() : readEntitlement(uid)
+    void read.then(ent => {
       if (cancelled) return
       setEntitlement(ent)
       setStatus('ready')
