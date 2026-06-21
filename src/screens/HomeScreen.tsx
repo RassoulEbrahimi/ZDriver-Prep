@@ -97,7 +97,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
           ))}
         </div>
 
-        <div className="relative" style={{ padding: '54px 20px 28px' }}>
+        <div className="relative" style={{ padding: 'var(--zd-safe-top) 20px 28px' }}>
           {/* Top row */}
           <div className="flex justify-between items-center" style={{ marginBottom: 18 }}>
             <button onClick={onOpenAccount} aria-label="حساب کاربری" className="flex items-center"
