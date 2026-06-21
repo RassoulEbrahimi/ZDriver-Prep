@@ -13,6 +13,9 @@ interface Props {
   attempts: ExamAttemptReadItem[] | null
   /** Start the timed exam runner for a chosen exam. */
   onOpenExam: (id: number) => void
+  /** Soft gate (S4B): true when this exam requires a subscription. Optional;
+   *  when omitted nothing is locked (paywall off / default build). */
+  isLocked?: (examId: number) => boolean
   /** Back to home. */
   onExitToHome: () => void
 }
@@ -36,7 +39,7 @@ function statusChipColors(passed: boolean) {
  *  data exists, a status chip («قبول/مردود · بهترین نمره») replaces the static
  *  «رسمی» chip; supplementary keeps its identity chip and shows the status in
  *  the footer caption instead. Never-attempted cards are unchanged. */
-function ExamCard({ exam, status, onOpen }: { exam: ExamMeta; status: ExamStatus | null; onOpen: (id: number) => void }) {
+function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; status: ExamStatus | null; locked: boolean; free: boolean; onOpen: (id: number) => void }) {
   const supplementary = !exam.official
   const statusLabel = status
     ? `${status.passed ? 'قبول' : 'مردود'} · ${fa(status.best)} از ${fa(status.total)}`
@@ -66,7 +69,16 @@ function ExamCard({ exam, status, onOpen }: { exam: ExamMeta; status: ExamStatus
         }}>
           <span className="zd-num" style={{ fontSize: 18, fontWeight: 800 }}>{fa(exam.id)}</span>
         </div>
-        {supplementary ? (
+        {locked ? (
+          <span className="zd-chip" style={{
+            background: 'var(--card-2)', color: 'var(--ink-3)',
+            border: '1px solid var(--line)', whiteSpace: 'nowrap',
+          }}>🔒 اشتراک لازم</span>
+        ) : free ? (
+          <span className="zd-chip" style={{
+            background: 'var(--success-soft)', color: 'var(--success)', whiteSpace: 'nowrap',
+          }}>رایگان</span>
+        ) : supplementary ? (
           <span className="zd-chip" style={{
             background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
             color: 'var(--accent-deep)',
@@ -126,9 +138,15 @@ function ExamCard({ exam, status, onOpen }: { exam: ExamMeta; status: ExamStatus
   )
 }
 
-export function ExamCatalogScreen({ exams, attempts, onOpenExam, onExitToHome }: Props) {
+export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExitToHome }: Props) {
   const official = exams.filter(e => e.official)
   const review   = exams.filter(e => !e.official)
+
+  // Gating is "in effect" only when at least one exam is locked for this user
+  // (paywall on + non-subscriber). Then accessible cards are the free ones, so
+  // they get a «رایگان» chip; otherwise no lock/free chips are shown at all.
+  const lockedOf = (id: number) => isLocked?.(id) ?? false
+  const gating = exams.some(e => lockedOf(e.id))
 
   // Real per-exam status from loaded attempts: passed-ever + best score. The
   // stored `passed` flag and `totalQuestions` of each attempt are trusted as-is
@@ -232,7 +250,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, onExitToHome }:
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>با زمان · بدون نمایش پاسخ</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-          {official.map(exam => <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} onOpen={onOpenExam} />)}
+          {official.map(exam => { const locked = lockedOf(exam.id); return <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
         </div>
 
         {/* Supplementary review (Exam 18) */}
@@ -246,7 +264,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, onExitToHome }:
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-              {review.map(exam => <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} onOpen={onOpenExam} />)}
+              {review.map(exam => { const locked = lockedOf(exam.id); return <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
             </div>
           </>
         )}

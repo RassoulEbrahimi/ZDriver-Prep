@@ -11,6 +11,9 @@ interface Props {
   coverage: ExamProgressReadItem[] | null
   /** Open the practice runner for a chosen exam. */
   onOpenExam: (id: number) => void
+  /** Soft gate (S4B): true when this exam requires a subscription. Optional;
+   *  when omitted nothing is locked (paywall off / default build). */
+  isLocked?: (examId: number) => boolean
   /** Back to home. */
   onExitToHome: () => void
 }
@@ -35,7 +38,7 @@ function coverageLabel(answeredCount: number | undefined, questionCount: number)
  *  practiced-question data, a coverage chip («تمرین/کامل · N از M») replaces the
  *  static «پاسخ فوری» chip; supplementary keeps its identity chip and shows the
  *  coverage in the footer caption instead. Unpracticed cards are unchanged. */
-function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answeredCount: number | undefined; onOpen: (id: number) => void }) {
+function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: ExamMeta; answeredCount: number | undefined; locked: boolean; free: boolean; onOpen: (id: number) => void }) {
   const supplementary = !exam.official
   const cov = coverageLabel(answeredCount, exam.questionCount)
   const covColors = cov?.complete
@@ -68,7 +71,16 @@ function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answere
         }}>
           <span className="zd-num" style={{ fontSize: 18, fontWeight: 800 }}>{fa(exam.id)}</span>
         </div>
-        {supplementary ? (
+        {locked ? (
+          <span className="zd-chip" style={{
+            background: 'var(--card-2)', color: 'var(--ink-3)',
+            border: '1px solid var(--line)', whiteSpace: 'nowrap',
+          }}>🔒 اشتراک لازم</span>
+        ) : free ? (
+          <span className="zd-chip" style={{
+            background: 'var(--success-soft)', color: 'var(--success)', whiteSpace: 'nowrap',
+          }}>رایگان</span>
+        ) : supplementary ? (
           <span className="zd-chip" style={{
             background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
             color: 'var(--accent-deep)',
@@ -125,9 +137,14 @@ function PracticeCard({ exam, answeredCount, onOpen }: { exam: ExamMeta; answere
   )
 }
 
-export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHome }: Props) {
+export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, onExitToHome }: Props) {
   const official = exams.filter(e => e.official)
   const review   = exams.filter(e => !e.official)
+
+  // Gating "in effect" only when some exam is locked (paywall on + non-subscriber);
+  // then accessible cards get a «رایگان» chip. Otherwise no lock/free chips.
+  const lockedOf = (id: number) => isLocked?.(id) ?? false
+  const gating = exams.some(e => lockedOf(e.id))
 
   // examId → distinct practiced-question count, from the loaded cloud progress.
   // null/empty coverage → empty map → no chips anywhere (guest / not loaded).
@@ -171,7 +188,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHom
         {/* minmax(0,1fr) keeps both columns equal even if a card's content
             (e.g. a coverage chip) would otherwise refuse to shrink. */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
-          {official.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
+          {official.map(exam => { const locked = lockedOf(exam.id); return <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
         </div>
 
         {/* Supplementary review (Exam 18) */}
@@ -185,7 +202,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, onExitToHom
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
-              {review.map(exam => <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} onOpen={onOpenExam} />)}
+              {review.map(exam => { const locked = lockedOf(exam.id); return <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
             </div>
           </>
         )}
