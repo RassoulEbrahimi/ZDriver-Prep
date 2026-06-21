@@ -17,6 +17,7 @@ import { isPhpBackend } from '../config/backend'
 import {
   phpRegister, phpLogin, phpMe, phpLogout,
   getToken, setToken, clearToken, PHP_RESET_DEFERRED,
+  getCachedUser, setCachedUser, clearCachedUser,
 } from './phpClient'
 
 export type AuthStatus = 'loading' | 'guest' | 'authed' | 'unavailable'
@@ -64,15 +65,34 @@ function PhpAuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>(() => (getToken() ? 'loading' : 'guest'))
   const [user, setUser]     = useState<AuthUser | null>(null)
 
-  // Session restore: validate any stored token once on mount.
+  // Session restore: validate any stored token once on mount. A failure must be
+  // disambiguated — only a genuine 401/403 should sign the user out. A network/
+  // offline failure keeps the session alive via the cached identity, so the uid
+  // survives for entitlement offline grace instead of dropping to guest.
   useEffect(() => {
     const token = getToken()
     if (!token) return
     let alive = true
-    void phpMe(token).then(u => {
+    void phpMe(token).then(res => {
       if (!alive) return
-      if (u) { setUser(u); setStatus('authed') }
-      else { clearToken(); setUser(null); setStatus('guest') }
+      if (res.ok) {
+        // Server confirmed identity → trust it and refresh the cache.
+        setUser(res.user); setStatus('authed'); setCachedUser(res.user)
+      } else if (res.reason === 'network') {
+        // Offline/unreachable → restore the last known identity (uid+email) so
+        // an active subscriber stays signed in and entitlement grace can work.
+        const cached = getCachedUser()
+        if (cached) { setUser(cached); setStatus('authed') }
+        else { setUser(null); setStatus('guest') }
+      } else if (res.reason === 'unauthorized') {
+        // Token genuinely invalid/expired/revoked → clear everything, sign out.
+        clearToken(); clearCachedUser(); setUser(null); setStatus('guest')
+      } else {
+        // missing-token / invalid-response → fail closed to guest, but keep the
+        // token (could be a transient server glitch / captive portal); a later
+        // reload re-validates.
+        setUser(null); setStatus('guest')
+      }
     })
     return () => { alive = false }
   }, [])
@@ -80,21 +100,21 @@ function PhpAuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = useCallback(async (email: string, password: string): Promise<AuthResult> => {
     const r = await phpRegister(email, password)
     if (!r.ok) return r
-    setToken(r.token); setUser(r.user); setStatus('authed')
+    setToken(r.token); setCachedUser(r.user); setUser(r.user); setStatus('authed')
     return { ok: true }
   }, [])
 
   const signInWithEmail = useCallback(async (email: string, password: string): Promise<AuthResult> => {
     const r = await phpLogin(email, password)
     if (!r.ok) return r
-    setToken(r.token); setUser(r.user); setStatus('authed')
+    setToken(r.token); setCachedUser(r.user); setUser(r.user); setStatus('authed')
     return { ok: true }
   }, [])
 
   const signOut = useCallback(async (): Promise<AuthResult> => {
     const token = getToken()
     if (token) await phpLogout(token) // best-effort server-side revocation
-    clearToken(); setUser(null); setStatus('guest')
+    clearToken(); clearCachedUser(); setUser(null); setStatus('guest')
     return { ok: true }
   }, [])
 
