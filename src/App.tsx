@@ -23,7 +23,10 @@ import { ThemeSheet }         from './components/ThemeSheet'
 import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
+import { ManualSubscriptionSheet } from './components/ManualSubscriptionSheet'
 import { useAuth }            from './auth/useAuth'
+import { useEntitlement }     from './auth/useEntitlement'
+import { canAccessExam }      from './config/access'
 import {
   writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
   readBookmarks, writeBookmarks,
@@ -73,8 +76,18 @@ export default function App() {
   // ── Account / auth sheet (Phase 7B) ──
   const [authSheetOpen, setAuthSheetOpen] = useState(false)
 
+  // ── Soft subscription gate (S4B) — purchase sheet opened when a locked exam
+  // is tapped. Display only; gating happens at the entry handlers below. ──
+  const [purchaseSheetOpen, setPurchaseSheetOpen] = useState(false)
+
   // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
   const { status, user } = useAuth()
+
+  // ── Entitlement (S4B) — drives the exam access gate. Active only when the
+  // read is ready AND the subscription is active. Fail-closed (loading/guest/
+  // unavailable → not active → only free exams). ──
+  const { entitlement } = useEntitlement()
+  const isActiveSub = entitlement.active && entitlement.status === 'active'
 
   // ── Recent exam attempts (Phase 7J) — in-memory only, never persisted.
   // null = not loaded / unavailable / read failed; [] = loaded, no attempts yet.
@@ -394,6 +407,8 @@ export default function App() {
 
   // ── Exam-flow handlers (آزمون tab; registry-driven timed simulation) ──
   function openExam(id: number) {
+    // Soft gate (S4B): locked exam → open the purchase sheet instead of starting.
+    if (!canAccessExam(isActiveSub, id)) { setPurchaseSheetOpen(true); return }
     setExamFlowId(id)
     setExamFlowResult(null)
     setExamView('active')
@@ -489,6 +504,8 @@ export default function App() {
 
   // ── Practice-flow handlers (تمرین tab; do not touch exam/source state) ──
   function openPracticeExam(id: number) {
+    // Soft gate (S4B): locked exam → open the purchase sheet instead of starting.
+    if (!canAccessExam(isActiveSub, id)) { setPurchaseSheetOpen(true); return }
     setPracticeExamId(id)
     setPracticeView('active')
   }
@@ -593,6 +610,7 @@ export default function App() {
           exams={EXAM_REGISTRY}
           coverage={examCoverage}
           onOpenExam={openPracticeExam}
+          isLocked={(id) => !canAccessExam(isActiveSub, id)}
           onExitToHome={goHome}
         />
       )
@@ -625,6 +643,7 @@ export default function App() {
           exams={EXAM_REGISTRY}
           attempts={recentAttempts}
           onOpenExam={openExam}
+          isLocked={(id) => !canAccessExam(isActiveSub, id)}
           onExitToHome={goHome}
         />
       )
@@ -697,6 +716,9 @@ export default function App() {
       )}
       {authSheetOpen && (
         <AuthSheet onClose={() => setAuthSheetOpen(false)} />
+      )}
+      {purchaseSheetOpen && (
+        <ManualSubscriptionSheet onClose={() => setPurchaseSheetOpen(false)} />
       )}
       <UpdatePrompt onVisibleChange={setUpdateVisible} />
       <InstallPrompt hidden={updateVisible} />
