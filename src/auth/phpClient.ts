@@ -23,6 +23,34 @@ export function clearToken(): void {
   try { localStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ }
 }
 
+// ── Identity store (offline session restore) ───────────────────────────────────
+// The last successfully-authenticated user's MINIMAL identity (uid + email only),
+// so that when /auth/me fails purely because the device is offline we can keep
+// the user signed in (and, critically, keep their uid for entitlement offline
+// grace) instead of dropping to guest. Never stores the token, password, payment,
+// or any other field. Paired with the token: set together on login, cleared
+// together on logout / 401, so one account can never inherit another's identity.
+const USER_KEY = 'ry_php_user'
+
+export function setCachedUser(user: AuthUser): void {
+  try { localStorage.setItem(USER_KEY, JSON.stringify({ uid: user.uid, email: user.email })) } catch { /* ignore */ }
+}
+export function getCachedUser(): AuthUser | null {
+  try {
+    const raw = localStorage.getItem(USER_KEY)
+    if (!raw) return null
+    const v = JSON.parse(raw) as { uid?: unknown; email?: unknown }
+    if (!v || typeof v.uid !== 'string' || v.uid === '') return null
+    return { uid: v.uid, email: typeof v.email === 'string' ? v.email : null }
+  } catch {
+    try { localStorage.removeItem(USER_KEY) } catch { /* ignore */ }
+    return null
+  }
+}
+export function clearCachedUser(): void {
+  try { localStorage.removeItem(USER_KEY) } catch { /* ignore */ }
+}
+
 // ── Error mapping (Persian), mirroring the style of authErrors.ts ──────────────
 function messageForStatus(status: number, serverError?: string): string {
   switch (status) {
@@ -98,10 +126,26 @@ export async function phpLogin(email: string, password: string): Promise<PhpAuth
 }
 
 /** Validate the stored token and resolve the current user (session restore). */
-export async function phpMe(token: string): Promise<AuthUser | null> {
+export type PhpMeResult =
+  | { ok: true; user: AuthUser }
+  | { ok: false; reason: 'missing-token' | 'unauthorized' | 'network' | 'invalid-response' }
+
+/**
+ * Validate the stored token and resolve the current user (session restore).
+ * Discriminated so the caller can tell a transient offline/unreachable failure
+ * (→ keep the session via cached identity) apart from a genuine 401/403
+ * (→ sign out). Never throws.
+ */
+export async function phpMe(token: string): Promise<PhpMeResult> {
+  if (!token) return { ok: false, reason: 'missing-token' }
   const { status, data } = await apiFetch('/auth/me.php', { method: 'GET', token })
-  if (status === 200) return toAuthUser(data.user)
-  return null
+  if (status === 0 || status >= 500) return { ok: false, reason: 'network' }      // offline/CORS/server down
+  if (status === 401 || status === 403) return { ok: false, reason: 'unauthorized' }
+  if (status === 200) {
+    const user = toAuthUser(data.user)
+    return user ? { ok: true, user } : { ok: false, reason: 'invalid-response' }
+  }
+  return { ok: false, reason: 'invalid-response' }
 }
 
 /**
