@@ -1,9 +1,10 @@
-// Phase S2 — Entitlement consumption hook (read-only, non-blocking).
+// Entitlement consumption hook (read-only, non-blocking).
 //
-// Bridges auth state (useAuth) to the fail-closed Firestore read added in S1
-// (readEntitlement). It performs a SINGLE one-time read per signed-in uid — no
-// realtime listener, no writes, no localStorage. Entitlement is NEVER used to
-// unlock anything in this phase; it only feeds a status display.
+// Bridges auth state (useAuth) to the fail-closed entitlement read:
+//   - Firebase/default mode → Firestore readEntitlement(uid) (unchanged; no cache)
+//   - PHP mode → readPhpEntitlement() (discriminated result) + an offline-grace
+//     cache (S4C-1) so an active subscriber is not locked when the API is briefly
+//     unreachable. The live API is the source of truth whenever online.
 //
 // States:
 //   'loading'     — auth still resolving, or the one-time read is in flight
@@ -14,6 +15,9 @@ import { useEffect, useState } from 'react'
 import { useAuth } from './useAuth'
 import { readEntitlement } from '../data/progress/repo'
 import { readPhpEntitlement } from '../data/progress/phpEntitlement'
+import {
+  readActiveGrace, writeCachedEntitlement, clearCachedEntitlement,
+} from '../data/entitlement/entitlementCache'
 import { isPhpBackend } from '../config/backend'
 import { NO_ENTITLEMENT, type Entitlement } from '../data/progress/types'
 
@@ -48,27 +52,72 @@ export function useEntitlement(): UseEntitlement {
       setStatus('unavailable')
       return
     }
-    // Guest / signed out → free, no entitlement.
+    // Guest / signed out → free, no entitlement. (Cache is never read in guest
+    // state, so one account never inherits another's entitlement.)
     if (!uid) {
       setEntitlement(NO_ENTITLEMENT)
       setStatus('ready')
       return
     }
-    // Authed: one-time fail-closed read. readEntitlement never throws and never
-    // unlocks on error, so no try/catch is needed here.
-    // Source switch: PHP mode reads /subscription/me.php; default Firebase mode
-    // keeps the Firestore readEntitlement(uid). Both are fail-closed and never
-    // throw, so the result can be consumed directly.
+
     let cancelled = false
+
+    // ── PHP mode: offline-grace cache + discriminated live read ──────────────
+    if (isPhpBackend) {
+      // Seed synchronously from a valid active cache so a returning subscriber
+      // doesn't see a lock flash; otherwise stay 'loading' until the read lands.
+      const grace = readActiveGrace(uid)
+      if (grace) { setEntitlement(grace); setStatus('ready') } else { setStatus('loading') }
+
+      void readPhpEntitlement().then(res => {
+        if (cancelled) return
+        if (res.ok) {
+          // Definitive server answer — update cache and use it as truth.
+          setEntitlement(res.entitlement)
+          setStatus('ready')
+          if (res.entitlement.active && res.entitlement.status === 'active') {
+            writeCachedEntitlement(uid, res.entitlement)
+          } else {
+            clearCachedEntitlement(uid) // downgrade → drop any stale active cache
+          }
+        } else if (res.reason === 'network') {
+          // Transient/offline only — fall back to a valid active cache, else closed.
+          setEntitlement(readActiveGrace(uid) ?? NO_ENTITLEMENT)
+          setStatus('ready')
+        } else {
+          // missing-token / unauthorized / invalid-response → fail closed.
+          if (res.reason === 'unauthorized') clearCachedEntitlement(uid)
+          setEntitlement(NO_ENTITLEMENT)
+          setStatus('ready')
+        }
+      })
+      return () => { cancelled = true }
+    }
+
+    // ── Firebase/default mode (unchanged; no PHP cache) ──────────────────────
     setStatus('loading')
-    const read = isPhpBackend ? readPhpEntitlement() : readEntitlement(uid)
-    void read.then(ent => {
+    void readEntitlement(uid).then(ent => {
       if (cancelled) return
       setEntitlement(ent)
       setStatus('ready')
     })
     return () => { cancelled = true }
   }, [authStatus, uid, refreshTick])
+
+  // PHP mode: re-read entitlement when the app comes back online or becomes
+  // visible again (e.g. after an admin activation), so unlock appears without a
+  // manual reload. No polling, no realtime listener; listeners are cleaned up.
+  useEffect(() => {
+    if (!isPhpBackend || authStatus !== 'authed' || !uid) return
+    const bump = () => setRefreshTick(t => t + 1)
+    const onVisible = () => { if (document.visibilityState === 'visible') bump() }
+    window.addEventListener('online', bump)
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.removeEventListener('online', bump)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [authStatus, uid])
 
   return { status, entitlement, refresh: () => setRefreshTick(t => t + 1) }
 }
