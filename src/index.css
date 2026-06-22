@@ -110,6 +110,10 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  /* Suppress the browser's native pull-to-refresh / overscroll navigation at the
+     document level (Android Chrome especially). In-app scrolling is unaffected;
+     a manual Reload lives in Settings. */
+  overscroll-behavior: none;
 }
 
 body {
@@ -146,6 +150,9 @@ body {
      safe area, so content never hides behind it. */
   padding-bottom: calc(96px + env(safe-area-inset-bottom));
   scrollbar-width: none;
+  /* Keep overscroll inside the scroller: no scroll-chaining, no native
+     pull-to-refresh when overscrolling the top. */
+  overscroll-behavior-y: contain;
 }
 .zd-scroll::-webkit-scrollbar { display: none; }
 
