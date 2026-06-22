@@ -1,6 +1,6 @@
 import React from 'react'
 import type { ThemeMode } from '../theme'
-import { CheckIcon } from './Icons'
+import { CheckIcon, RefreshIcon } from './Icons'
 
 interface Props {
   mode: ThemeMode
@@ -22,11 +22,29 @@ export function ThemeSheet({ mode, onSelect, onClose }: Props) {
       <div className="zd-sheet" onClick={e => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
-        <div style={{ textAlign: 'center', marginBottom: 4 }}>
-          <div className="zd-eyebrow" style={{ color: 'var(--primary-ink)', fontWeight: 700 }}>نمایش</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>حالت نمایش</div>
-          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4, lineHeight: 1.6 }}>
-            روشن، تیره یا هماهنگ با دستگاه
+        <div style={{ position: 'relative', marginBottom: 4 }}>
+          {/* Icon-only manual reload (Android + iOS). Reloads the app normally. */}
+          <button
+            onClick={() => window.location.reload()}
+            aria-label="نوسازی برنامه"
+            title="نوسازی برنامه"
+            style={{
+              position: 'absolute', top: 0, insetInlineStart: 0,
+              width: 40, height: 40, borderRadius: 12,
+              border: '1px solid var(--line)', background: 'var(--card-2)',
+              color: 'var(--ink-2)', display: 'grid', placeItems: 'center',
+              cursor: 'pointer', fontFamily: 'var(--font)',
+            }}
+          >
+            <RefreshIcon size={18} stroke={2} />
+          </button>
+
+          <div style={{ textAlign: 'center' }}>
+            <div className="zd-eyebrow" style={{ color: 'var(--primary-ink)', fontWeight: 700 }}>نمایش</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>حالت نمایش</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4, lineHeight: 1.6 }}>
+              روشن، تیره یا هماهنگ با دستگاه
+            </div>
           </div>
         </div>
 
