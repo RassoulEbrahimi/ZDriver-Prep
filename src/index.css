@@ -124,12 +124,18 @@ body {
 
 .zd-app {
   width: 100%;
-  /* Lock to the DYNAMIC viewport so the absolutely/fixed-positioned bottom nav
-     is never pushed below the visible area after reload / pull-to-refresh /
-     update activation. (Old `height:100%` resolved to the LARGE viewport under
-     viewport-fit=cover, cropping the nav.) `100vh` is the fallback. */
+  /* Pin the shell to the REAL visible viewport height. `.zd-app` is
+     overflow:hidden, so if its height ever resolves TALLER than the visible
+     area — which `100dvh`/`100vh` do on Android right after a reload /
+     pull-to-refresh / update activation, while the dynamic toolbar is still
+     settling — the bottom of the inner scroller (content + padding) and the
+     runner action buttons get pushed below the fold and clipped, and the fixed
+     bottom nav overlaps the last content. `--zd-app-h` is the exact visible
+     height measured in JS (viewportHeight.ts); `100svh` (smallest viewport,
+     never taller than visible) is the no-JS fallback, `100vh` the legacy one. */
   height: 100vh;
-  height: 100dvh;
+  height: 100svh;
+  height: var(--zd-app-h, 100svh);
   direction: rtl;
   font-family: var(--font);
   color: var(--ink);

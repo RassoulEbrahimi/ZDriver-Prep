@@ -77,7 +77,7 @@ export function SourceExamQuestionScreen({ examNo, questions, categories, onFini
   }
 
   return (
-    <div className="zd-scroll" style={{ background: 'var(--bg-deeper)', paddingBottom: 24 }}>
+    <div className="zd-scroll" style={{ background: 'var(--bg-deeper)', paddingBottom: 'calc(24px + env(safe-area-inset-bottom))' }}>
       {/* Header */}
       <div style={{
         padding: '54px 20px 16px',

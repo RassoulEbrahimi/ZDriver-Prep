@@ -105,7 +105,7 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   }
 
   return (
-    <div className="zd-scroll" style={{ background: 'var(--bg-deeper)', paddingBottom: 24 }}>
+    <div className="zd-scroll" style={{ background: 'var(--bg-deeper)', paddingBottom: 'calc(24px + env(safe-area-inset-bottom))' }}>
       {/* Header */}
       <div style={{
         padding: 'var(--zd-safe-top) 20px 16px',
