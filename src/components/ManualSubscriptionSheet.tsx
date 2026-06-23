@@ -106,19 +106,6 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
             </div>
           )}
 
-          {/* IBAN + copy. */}
-          {manualPayment.iban && (
-            <div style={rowStyle}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={labelStyle}>شماره شبا</div>
-                <div style={{ ...valueStyle, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis' }}>{manualPayment.iban}</div>
-              </div>
-              <button style={copyBtn} onClick={() => copy('iban', manualPayment.iban)}>
-                {copied === 'iban' ? 'کپی شد' : 'کپی'}
-              </button>
-            </div>
-          )}
-
           {/* Account holder. */}
           {manualPayment.accountHolder && (
             <div style={rowStyle}>

@@ -10,7 +10,6 @@ const env = import.meta.env
 export interface ManualPaymentConfig {
   priceToman: string    // raw env string ('' when unset)
   cardNumber: string
-  iban: string
   accountHolder: string
   whatsappUrl: string
   telegramUrl: string
@@ -19,7 +18,6 @@ export interface ManualPaymentConfig {
 export const manualPayment: ManualPaymentConfig = {
   priceToman:    (env.VITE_SUBSCRIPTION_PRICE_TOMAN ?? '').trim(),
   cardNumber:    (env.VITE_PAYMENT_CARD_NUMBER ?? '').trim(),
-  iban:          (env.VITE_PAYMENT_IBAN ?? '').trim(),
   accountHolder: (env.VITE_PAYMENT_ACCOUNT_HOLDER ?? '').trim(),
   whatsappUrl:   (env.VITE_SUPPORT_WHATSAPP_URL ?? '').trim(),
   telegramUrl:   (env.VITE_SUPPORT_TELEGRAM_URL ?? '').trim(),

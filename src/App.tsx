@@ -24,6 +24,7 @@ import { UpdatePrompt }       from './components/UpdatePrompt'
 import { InstallPrompt }      from './components/InstallPrompt'
 import { AuthSheet }          from './components/AuthSheet'
 import { ManualSubscriptionSheet } from './components/ManualSubscriptionSheet'
+import { SignupPromptSheet }       from './components/SignupPromptSheet'
 import { useAuth }            from './auth/useAuth'
 import { useEntitlement }     from './auth/useEntitlement'
 import { canAccessExam }      from './config/access'
@@ -76,9 +77,12 @@ export default function App() {
   // ── Account / auth sheet (Phase 7B) ──
   const [authSheetOpen, setAuthSheetOpen] = useState(false)
 
-  // ── Soft subscription gate (S4B) — purchase sheet opened when a locked exam
-  // is tapped. Display only; gating happens at the entry handlers below. ──
+  // ── Soft subscription gate (S4B) — a sheet opened when a locked exam is tapped.
+  // Display only; gating happens at the entry handlers below. Guests get a simple
+  // signup encouragement (NO payment details); authenticated non-subscribers get
+  // the purchase sheet. ──
   const [purchaseSheetOpen, setPurchaseSheetOpen] = useState(false)
+  const [signupPromptOpen,  setSignupPromptOpen]  = useState(false)
 
   // ── Auth state (Phase 7G) — read once; used to mirror Practice progress to cloud. ──
   const { status, user } = useAuth()
@@ -405,10 +409,19 @@ export default function App() {
     setTab('home')
   }
 
+  // Locked-exam gate (UI polish): a signed-out user is encouraged to create an
+  // account (no payment details shown); an authenticated non-subscriber / expired
+  // user gets the manual purchase sheet. Active subscribers never reach here
+  // because canAccessExam() returns true for them at the call sites below.
+  function promptForLockedExam() {
+    if (status === 'authed') setPurchaseSheetOpen(true)
+    else setSignupPromptOpen(true)
+  }
+
   // ── Exam-flow handlers (آزمون tab; registry-driven timed simulation) ──
   function openExam(id: number) {
-    // Soft gate (S4B): locked exam → open the purchase sheet instead of starting.
-    if (!canAccessExam(isActiveSub, id)) { setPurchaseSheetOpen(true); return }
+    // Soft gate (S4B): locked exam → guest-signup or purchase sheet, never start.
+    if (!canAccessExam(isActiveSub, id)) { promptForLockedExam(); return }
     setExamFlowId(id)
     setExamFlowResult(null)
     setExamView('active')
@@ -504,8 +517,8 @@ export default function App() {
 
   // ── Practice-flow handlers (تمرین tab; do not touch exam/source state) ──
   function openPracticeExam(id: number) {
-    // Soft gate (S4B): locked exam → open the purchase sheet instead of starting.
-    if (!canAccessExam(isActiveSub, id)) { setPurchaseSheetOpen(true); return }
+    // Soft gate (S4B): locked exam → guest-signup or purchase sheet, never start.
+    if (!canAccessExam(isActiveSub, id)) { promptForLockedExam(); return }
     setPracticeExamId(id)
     setPracticeView('active')
   }
@@ -716,6 +729,12 @@ export default function App() {
       )}
       {authSheetOpen && (
         <AuthSheet onClose={() => setAuthSheetOpen(false)} />
+      )}
+      {signupPromptOpen && (
+        <SignupPromptSheet
+          onSignup={() => { setSignupPromptOpen(false); setAuthSheetOpen(true) }}
+          onClose={() => setSignupPromptOpen(false)}
+        />
       )}
       {purchaseSheetOpen && (
         <ManualSubscriptionSheet onClose={() => setPurchaseSheetOpen(false)} />
