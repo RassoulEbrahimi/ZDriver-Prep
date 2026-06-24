@@ -118,7 +118,10 @@ export function InstallPrompt({ hidden = false }: Props) {
       <div
         style={{
           position: 'absolute',
-          bottom: 96, left: 16, zIndex: 55,
+          // Sit above the floating tab bar (bottom:20 + height:64) PLUS the bottom
+          // safe area, so the pill never overlaps the nav on devices with a home
+          // indicator. Mirrors the .zd-scroll bottom padding reservation.
+          bottom: 'calc(96px + env(safe-area-inset-bottom))', left: 16, zIndex: 55,
           display: 'flex', alignItems: 'center', gap: 6,
           padding: 6, paddingInlineStart: 14,
           borderRadius: 999,
