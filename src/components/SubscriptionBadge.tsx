@@ -7,6 +7,12 @@ import { useState } from 'react'
 import { useAuth } from '../auth/useAuth'
 import { useEntitlement } from '../auth/useEntitlement'
 import { ManualSubscriptionSheet } from './ManualSubscriptionSheet'
+import { SignupPromptSheet } from './SignupPromptSheet'
+
+interface Props {
+  /** Open the auth (login / sign-up) sheet — used by the guest signup prompt. */
+  onOpenAccount?: () => void
+}
 
 /** Format an ISO expiry to a Jalali date with Persian digits; '' on any problem. */
 function formatExpiry(iso?: string): string {
@@ -20,10 +26,18 @@ function formatExpiry(iso?: string): string {
   }
 }
 
-export function SubscriptionBadge() {
+export function SubscriptionBadge({ onOpenAccount }: Props = {}) {
   const { status: authStatus } = useAuth()
   const { status, entitlement } = useEntitlement()
   const [purchaseOpen, setPurchaseOpen] = useState(false)
+  const [signupOpen, setSignupOpen]     = useState(false)
+
+  // Guests are encouraged to create an account first (NO payment details);
+  // authenticated non-subscribers / expired users get the manual purchase sheet.
+  function openUpgrade() {
+    if (authStatus === 'authed') setPurchaseOpen(true)
+    else setSignupOpen(true)
+  }
 
   // Resolve { label, dot } for the current state. `dot` is a theme token used
   // for a small status dot; tone stays calm (no pressure, no purchase copy).
@@ -92,7 +106,7 @@ export function SubscriptionBadge() {
 
       {actionable && (
         <button
-          onClick={() => setPurchaseOpen(true)}
+          onClick={openUpgrade}
           style={{
             height: 32,
             padding: '0 14px',
@@ -110,6 +124,12 @@ export function SubscriptionBadge() {
         </button>
       )}
 
+      {signupOpen && (
+        <SignupPromptSheet
+          onSignup={() => { setSignupOpen(false); onOpenAccount?.() }}
+          onClose={() => setSignupOpen(false)}
+        />
+      )}
       {purchaseOpen && <ManualSubscriptionSheet onClose={() => setPurchaseOpen(false)} />}
     </div>
   )

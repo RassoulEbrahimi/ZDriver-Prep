@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import type { ExamMeta } from '../types'
 import type { ExamProgressReadItem } from '../data/progress/repo'
-import { ChevRightIcon, ChevLeftIcon, BookIcon, BulbIcon, RefreshIcon } from '../components/Icons'
+import { ChevRightIcon, ChevLeftIcon, BookIcon, BulbIcon, RefreshIcon, LockIcon } from '../components/Icons'
 import { fa } from '../utils'
 
 interface Props {
@@ -72,10 +72,19 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
           <span className="zd-num" style={{ fontSize: 18, fontWeight: 800 }}>{fa(exam.id)}</span>
         </div>
         {locked ? (
-          <span className="zd-chip" style={{
-            background: 'var(--card-2)', color: 'var(--ink-3)',
-            border: '1px solid var(--line)', whiteSpace: 'nowrap',
-          }}>🔒 اشتراک لازم</span>
+          <span
+            role="img"
+            aria-label="برای دسترسی، اشتراک لازم است"
+            title="برای دسترسی، اشتراک لازم است"
+            style={{
+              width: 28, height: 28, borderRadius: 9, flexShrink: 0,
+              background: 'var(--card-2)', color: 'var(--ink-3)',
+              border: '1px solid var(--line)',
+              display: 'grid', placeItems: 'center',
+            }}
+          >
+            <LockIcon size={14} stroke={2} />
+          </span>
         ) : free ? (
           <span className="zd-chip" style={{
             background: 'var(--success-soft)', color: 'var(--success)', whiteSpace: 'nowrap',
@@ -205,6 +214,16 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
               {review.map(exam => { const locked = lockedOf(exam.id); return <PracticeCard key={exam.id} exam={exam} answeredCount={countByExam.get(exam.id)} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
             </div>
           </>
+        )}
+
+        {/* Lock legend — only when some card is locked (paywall on, non-subscriber). */}
+        {gating && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center',
+            marginTop: 16, fontSize: 12, color: 'var(--ink-3)', fontWeight: 600,
+          }}>
+            🔒 برای دسترسی، اشتراک لازم است.
+          </div>
         )}
 
         {/* footnote */}
