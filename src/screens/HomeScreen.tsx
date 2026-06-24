@@ -191,7 +191,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
 
       {/* ── Subscription status (display only — no gating/paywall, Phase S2) ── */}
       <div style={{ padding: '14px 20px 0' }}>
-        <SubscriptionBadge />
+        <SubscriptionBadge onOpenAccount={onOpenAccount} />
       </div>
 
       {/* ── Guest hint: results only persist with an account ── */}
