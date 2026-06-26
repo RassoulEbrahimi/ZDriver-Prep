@@ -130,10 +130,14 @@ export function MistakesScreen({ progress, questions, categories, onStartReview 
 
           {items.length === 0 && (
             <div className="zd-card text-center" style={{ padding: 28 }}>
-              <div style={{ fontSize: 36, marginBottom: 6 }}>🎉</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>هنوز اشتباهی ثبت نشده</div>
+              <div style={{ fontSize: 36, marginBottom: 6 }}>{tab === 'wrong' ? '🎉' : '🔖'}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>
+                {tab === 'wrong' ? 'هنوز اشتباهی ثبت نشده' : 'هنوز سؤالی نشان نشده'}
+              </div>
               <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 4 }}>
-                به تمرین ادامه بده تا نکات ضعف مشخص شوند.
+                {tab === 'wrong'
+                  ? 'به تمرین ادامه بده تا نکات ضعف مشخص شوند.'
+                  : 'سؤال‌ها را هنگام تمرین نشان کن تا بعداً این‌جا مرور کنی.'}
               </div>
             </div>
           )}
