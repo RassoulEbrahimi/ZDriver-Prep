@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../auth/useAuth'
-import { manualPayment, hasPrice, supportUrl, formatPriceToman } from '../config/manualPayment'
+import { manualPayment, hasPrice, formatPriceToman } from '../config/manualPayment'
 
 interface Props {
   onClose: () => void
@@ -39,11 +39,18 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
     }
   }
 
-  function openSupport() {
-    if (supportUrl) {
-      try { window.open(supportUrl, '_blank', 'noopener,noreferrer') } catch { /* ignore */ }
-    }
+  function openUrl(url: string) {
+    try { window.open(url, '_blank', 'noopener,noreferrer') } catch { /* ignore */ }
   }
+
+  // Support channels: a real env URL renders as an active link; otherwise a
+  // clearly-temporary placeholder (NOT a working link) so the user always sees a
+  // destination and is never misled into tapping a dead handle.
+  const supportChannels = [
+    { id: 'telegram', label: 'پشتیبانی تلگرام', value: manualPayment.telegramUrl, placeholder: 'https://t.me/...' },
+    { id: 'whatsapp', label: 'پشتیبانی واتساپ', value: manualPayment.whatsappUrl, placeholder: 'https://wa.me/...' },
+  ]
+  const anyActiveSupport = supportChannels.some(c => c.value !== '')
 
   const rowStyle: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: 10,
@@ -128,13 +135,56 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
           <button onClick={() => copy('msg', supportMessage)} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50, fontSize: 14.5 }}>
             {copied === 'msg' ? 'پیام کپی شد' : 'کپی پیام فعال‌سازی'}
           </button>
-          {supportUrl && (
-            <button onClick={openSupport} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46, fontSize: 14 }}>
-              ارسال برای پشتیبانی
-            </button>
-          )}
+          {/* Support contact — active env links, or clearly-temporary placeholders. */}
+          <div style={{ marginTop: 2 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-2)', marginBottom: 8, textAlign: 'center' }}>
+              ارسال رسید به پشتیبانی
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {supportChannels.map(ch => (
+                ch.value ? (
+                  <button
+                    key={ch.id}
+                    onClick={() => openUrl(ch.value)}
+                    className="zd-btn zd-btn-ghost zd-btn-block"
+                    style={{ height: 46, fontSize: 14, justifyContent: 'space-between' }}
+                  >
+                    <span>{ch.label}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>باز کردن</span>
+                  </button>
+                ) : (
+                  <div
+                    key={ch.id}
+                    aria-disabled="true"
+                    title="این نشانی هنوز فعال نیست؛ به‌زودی اعلام می‌شود."
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '10px 12px', borderRadius: 12,
+                      background: 'var(--card-2)', border: '1px dashed var(--line-2)', opacity: 0.9,
+                    }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-3)' }}>{ch.label}</div>
+                      <div style={{ fontSize: 11, color: 'var(--ink-4)', direction: 'ltr', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {ch.placeholder}
+                      </div>
+                    </div>
+                    <span style={{
+                      flexShrink: 0, fontSize: 10.5, fontWeight: 700, color: 'var(--ink-3)',
+                      background: 'var(--bg-deeper)', borderRadius: 999, padding: '3px 9px',
+                    }}>
+                      به‌زودی
+                    </span>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+
           <div style={{ fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.8, textAlign: 'center', marginTop: 2 }}>
-            پیام فعال‌سازی را همراه تصویر رسید واریز برای پشتیبانی بفرستید. فعال‌سازی به‌صورت دستی انجام می‌شود.
+            {anyActiveSupport
+              ? 'پیام فعال‌سازی را همراه تصویر رسید واریز برای پشتیبانی بفرستید. فعال‌سازی به‌صورت دستی انجام می‌شود.'
+              : 'نشانی پشتیبانی هنوز نهایی نشده؛ فعلاً پیام فعال‌سازی را کپی و نگه‌داری کنید. فعال‌سازی به‌صورت دستی انجام می‌شود.'}
           </div>
           <button onClick={onClose} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 42, fontSize: 13, color: 'var(--ink-3)' }}>
             بستن
