@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import type { Question, Category, Progress, SourceExamQuestion } from '../types'
 import {
-  ChevRightIcon, MoreIcon, CheckIcon, CloseIcon, BulbIcon, ImageIcon,
+  ChevRightIcon, CheckIcon, CloseIcon, BulbIcon, ImageIcon,
   BookmarkIcon, BookmarkFilledIcon, RefreshIcon, AwardIcon,
 } from '../components/Icons'
 import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
@@ -161,7 +161,7 @@ export function PracticeExamQuestionScreen({
               }}>مرور تکمیلی · غیررسمی</span>
             )}
           </div>
-          <button className="zd-icon-btn" aria-label="بیشتر"><MoreIcon size={18} /></button>
+          <div style={{ width: 40 }} />
         </div>
 
         <div style={{ marginTop: 8 }}>

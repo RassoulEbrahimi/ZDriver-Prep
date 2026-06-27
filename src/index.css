@@ -30,7 +30,7 @@
   --card-2:      #FBF9F5;
   --ink:         #1F1A36;
   --ink-2:       #4A4566;
-  --ink-3:       #7E7896;
+  --ink-3:       #615B7C; /* darkened for WCAG AA on --card/--bg (was #7E7896) */
   --ink-4:       #B5B0C4;
   --line:        #E8E3D9;
   --line-2:      #D9D3C5;
@@ -83,7 +83,7 @@
   --card-2:      #25223E;
   --ink:         #F1EEFA;
   --ink-2:       #C6C0DE;
-  --ink-3:       #8B85A8;
+  --ink-3:       #9D97BC; /* lightened for WCAG AA on dark --card/--bg (was #8B85A8) */
   --ink-4:       #5D5878;
   --line:        #2B2848;
   --line-2:      #38345A;
@@ -105,6 +105,14 @@
 
 /* ── Base ────────────────────────────────────────────────────── */
 * { box-sizing: border-box; }
+
+/* Keyboard-only focus ring (a11y). Touch/mouse interaction is unaffected because
+   :focus-visible matches only keyboard focus; non-focusable elements never match. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+[data-theme="dark"] :focus-visible { outline-color: var(--accent); }
 
 html, body, #root {
   height: 100%;
