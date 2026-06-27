@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { ImageIcon } from './Icons'
 
 interface Props {
@@ -11,16 +11,25 @@ interface Props {
 /**
  * Image area for image-dependent questions. Until real images exist (Phase 4C/4D),
  * this shows a clean striped placeholder; pass `src` later to render the real image
- * with no other changes to the question screen.
+ * with no other changes to the question screen. If a real image fails to load
+ * (offline / 404), it falls back to the same striped placeholder instead of a
+ * broken-image icon, so the layout is preserved.
  */
 export function QuestionImagePlaceholder({ src, alt = 'تصویر مربوط به سؤال' }: Props) {
-  if (src) {
+  // Reset on every src change so navigating between questions retries the new
+  // image before deciding it failed.
+  const [failed, setFailed] = useState(false)
+  useEffect(() => { setFailed(false) }, [src])
+
+  if (src && !failed) {
     // Exam images are part of the question — never crop. Render the full image,
     // fit to the card width with automatic height; the page may scroll if tall.
     return (
       <img
         src={src}
         alt={alt}
+        decoding="async"
+        onError={() => setFailed(true)}
         style={{
           display: 'block',
           width: '100%',

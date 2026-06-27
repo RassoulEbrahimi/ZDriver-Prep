@@ -28,7 +28,7 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
 
   return (
     <div className="zd-scroll">
-      <div style={{ position: 'relative', overflow: 'hidden', paddingTop: 60, paddingBottom: 28 }}>
+      <div style={{ position: 'relative', overflow: 'hidden', paddingTop: 'calc(var(--zd-safe-top) + 42px)', paddingBottom: 28 }}>
         <div style={{
           position: 'absolute', inset: 0,
           background: passed
