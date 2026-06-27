@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../auth/useAuth'
 import { isPhpBackend } from '../config/backend'
 import { fa } from '../utils'
@@ -77,9 +77,15 @@ export function AuthSheet({ onClose }: Props) {
     color: active ? '#fff' : 'var(--ink-3)',
   })
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" onClick={e => e.stopPropagation()}>
+      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="حساب کاربری" onClick={e => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         {/* ── Unavailable ── */}

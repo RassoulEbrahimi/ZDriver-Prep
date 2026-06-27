@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { UserIcon } from './Icons'
 
 interface Props {
@@ -15,9 +15,14 @@ interface Props {
  * shared zd-sheet styling (Light/Dark/RTL automatic).
  */
 export function SignupPromptSheet({ onSignup, onClose }: Props) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="ساخت حساب" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         <div style={{ textAlign: 'center', marginBottom: 4 }}>

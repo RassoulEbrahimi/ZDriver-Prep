@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../auth/useAuth'
 import { manualPayment, hasPrice, supportUrl, formatPriceToman } from '../config/manualPayment'
 
@@ -58,9 +58,15 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
     fontFamily: 'var(--font)', fontSize: 12.5, fontWeight: 700,
   }
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" onClick={e => e.stopPropagation()}>
+      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="خرید اشتراک" onClick={e => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
