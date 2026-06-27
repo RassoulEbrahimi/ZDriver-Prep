@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import type { SourceExamResult } from '../types'
 import { ProgressRing } from '../components/ProgressRing'
 import { StatCard } from '../components/StatCard'
-import { AwardIcon, CloseIcon, CheckIcon, FlagIcon, RefreshIcon } from '../components/Icons'
+import { AwardIcon, CloseIcon, CheckIcon, FlagIcon, RefreshIcon, ChevRightIcon, BulbIcon, ImageIcon } from '../components/Icons'
+import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
 import { fa } from '../utils'
 import { getExamMeta } from '../data/examRegistry'
+
+const OPT_LETTERS = ['الف', 'ب', 'ج', 'د']
 
 interface Props {
   result: SourceExamResult
@@ -25,6 +28,15 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
   const passed = correct >= pass
   const pct    = Math.round((correct / total) * 100)
   const wrong  = total - correct
+
+  // ── Session-only answer-sheet review (read-only). Everything derives from the
+  // in-memory `result`; tapping a square shows that question with the user's
+  // original answer, the correct answer, and the explanation. It never writes
+  // progress, mistakes, bookmarks, scoring, cloud data, or the result itself. ──
+  const [reviewIndex, setReviewIndex] = useState<number | null>(null)
+  if (reviewIndex !== null) {
+    return <ExamAnswerReview result={result} index={reviewIndex} onBack={() => setReviewIndex(null)} />
+  }
 
   return (
     <div className="zd-scroll">
@@ -92,6 +104,43 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
           <StatCard label="پاسخ اشتباه" value={fa(wrong)} color="var(--danger)" icon={CloseIcon} />
         </div>
 
+        {/* Answer sheet — one square per question; tap to review (read-only) */}
+        <div className="zd-card" style={{ padding: 16, marginTop: 12 }}>
+          <div className="zd-eyebrow" style={{ marginBottom: 12 }}>پاسخ‌برگ</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+            {result.exam.map((q, i) => {
+              const ua = result.answers[i]
+              const ok = ua === q.answer
+              const label = `سؤال ${fa(i + 1)} — ${ok ? 'پاسخ درست' : ua !== null ? 'پاسخ نادرست' : 'بدون پاسخ'}؛ برای بازبینی لمس کنید`
+              return (
+                <button
+                  key={q.id}
+                  onClick={() => setReviewIndex(i)}
+                  aria-label={label}
+                  title={label}
+                  className="zd-num"
+                  style={{
+                    aspectRatio: '1', borderRadius: 10, border: 'none', cursor: 'pointer',
+                    fontFamily: 'var(--font)', fontWeight: 800, fontSize: 14, color: '#fff',
+                    background: ok ? 'var(--success)' : 'var(--danger)',
+                    display: 'grid', placeItems: 'center',
+                  }}
+                >
+                  {fa(i + 1)}
+                </button>
+              )
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 11.5, color: 'var(--ink-3)', justifyContent: 'center' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--success)' }} /> درست
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--danger)' }} /> نادرست یا بی‌پاسخ
+            </span>
+          </div>
+        </div>
+
         {/* Actions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
           <button onClick={onReviewWrong} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 52 }}>
@@ -106,6 +155,119 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Read-only review of a single finished-exam question (answer-sheet tap target).
+ * Pure display: shows the user's original answer, the correct answer, and the
+ * explanation from the in-memory result. No re-answering, no progress/mistakes/
+ * bookmark/cloud writes — nothing here mutates state beyond returning to the sheet.
+ */
+function ExamAnswerReview({ result, index, onBack }: { result: SourceExamResult; index: number; onBack: () => void }) {
+  const total   = result.exam.length
+  const q       = result.exam[index]
+  const userAns = result.answers[index]
+  const answered = userAns !== null
+  const isCorrect = userAns === q.answer
+
+  function optClass(i: number): string {
+    if (i === q.answer) return 'zd-option is-correct'
+    if (answered && i === userAns) return 'zd-option is-wrong'
+    return 'zd-option'
+  }
+
+  return (
+    <div className="zd-scroll" style={{ background: 'var(--bg-deeper)' }}>
+      {/* Header */}
+      <div style={{
+        padding: 'var(--zd-safe-top) 20px 16px',
+        background: 'linear-gradient(180deg, var(--card) 0%, var(--bg-deeper) 100%)',
+        borderBottom: '1px solid var(--line)',
+      }}>
+        <div className="zd-header-row">
+          <button className="zd-icon-btn" onClick={onBack} aria-label="بازگشت به پاسخ‌برگ"><ChevRightIcon size={18} /></button>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-2)' }}>
+            بازبینی · سؤال {fa(index + 1)} از {fa(total)}
+          </div>
+          <div style={{ width: 40 }} />
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <span className="zd-chip" style={{
+            background: isCorrect ? 'var(--success-soft)' : 'var(--danger-soft)',
+            color: isCorrect ? 'var(--success)' : 'var(--danger)',
+          }}>
+            {isCorrect
+              ? (<><CheckIcon size={13} stroke={2.4} /> پاسخ تو درست بود</>)
+              : answered
+                ? (<><CloseIcon size={13} stroke={2.4} /> پاسخ تو نادرست بود</>)
+                : 'به این سؤال پاسخ ندادی'}
+          </span>
+        </div>
+      </div>
+
+      {/* Question card (read-only) */}
+      <div style={{ padding: 16 }}>
+        <div className="zd-card" style={{ padding: 20 }}>
+          {q.hasImage && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+              <span className="zd-chip zd-chip-neutral"><ImageIcon size={13} stroke={2} /> سؤال تصویری</span>
+            </div>
+          )}
+          {q.hasImage && <QuestionImagePlaceholder src={q.image} />}
+
+          <div style={{ fontSize: 17, lineHeight: 1.65, fontWeight: 600, color: 'var(--ink)' }}>{q.text}</div>
+
+          {/* Options — read-only, correct in green, the user's wrong pick in red */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
+            {q.options.map((opt, i) => (
+              <div key={i} className={optClass(i)} style={{ cursor: 'default' }}>
+                <div className="zd-opt-letter">{OPT_LETTERS[i] ?? fa(i + 1)}</div>
+                <div className="zd-opt-text">{opt}</div>
+                <div className="zd-opt-mark">
+                  {i === q.answer && <CheckIcon size={22} color="var(--success)" stroke={2.4} />}
+                  {answered && i === userAns && i !== q.answer && <CloseIcon size={22} color="var(--danger)" stroke={2.4} />}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Explicit answer summary */}
+          <div style={{ marginTop: 16, fontSize: 13, lineHeight: 1.9, color: 'var(--ink-2)' }}>
+            <div>
+              پاسخ تو:{' '}
+              <span style={{ fontWeight: 700, color: answered ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'var(--ink-3)' }}>
+                {userAns !== null ? q.options[userAns] : 'بدون پاسخ'}
+              </span>
+            </div>
+            <div>
+              پاسخ درست:{' '}
+              <span style={{ fontWeight: 700, color: 'var(--success)' }}>{q.options[q.answer]}</span>
+            </div>
+          </div>
+
+          {/* Explanation */}
+          {q.explanation && (
+            <div style={{
+              marginTop: 16, padding: 14, background: 'var(--primary-soft)', borderRadius: 14,
+              border: '1px solid color-mix(in oklab, var(--primary) 20%, transparent)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: 'var(--primary)', color: '#fff', display: 'grid', placeItems: 'center' }}>
+                  <BulbIcon size={16} stroke={2} />
+                </div>
+                <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--primary-ink)' }}>توضیح</div>
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.65 }}>{q.explanation}</div>
+            </div>
+          )}
+        </div>
+
+        <button onClick={onBack} className="zd-btn zd-btn-outline zd-btn-block" style={{ marginTop: 16, height: 50 }}>
+          <ChevRightIcon size={18} /> بازگشت به پاسخ‌برگ
+        </button>
       </div>
     </div>
   )
