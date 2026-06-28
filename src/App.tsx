@@ -128,11 +128,17 @@ export default function App() {
 
   // Fail-soft fetch of recent attempts: on success store them, on failure leave
   // recentAttempts as null (the Progress screen shows a quiet fallback). Never throws.
+  // Exam attempts are append-only (no delete feature), so an EMPTY result never
+  // overwrites attempts we already have — this keeps a transient/empty read (or a
+  // second hydration source) from blanking Home's ring when data is present.
   function fetchRecentAttempts(uid: string) {
     if (attemptsLoadingRef.current) return
     attemptsLoadingRef.current = true
     void readRecentExamAttempts(uid)
-      .then(res => { if (res.ok) setRecentAttempts(res.items) })
+      .then(res => {
+        if (!res.ok) return
+        setRecentAttempts(prev => (res.items.length === 0 && prev && prev.length > 0) ? prev : res.items)
+      })
       .catch(() => undefined)
       .finally(() => { attemptsLoadingRef.current = false })
   }
@@ -191,11 +197,11 @@ export default function App() {
     }
     if (hydratedUidRef.current === user.uid) return
     hydratedUidRef.current = user.uid
-    // PHP mode hydrates attempts/coverage/bookmarks from the one-blob loadPhpProgress
-    // read below. The Firestore reads here target the wrong store for a PHP user and
-    // race with / overwrite that data (leaving Home's ring empty until a tab change
-    // re-triggers a read), so they run in Firebase mode only.
-    if (isPhpBackend) return
+    // Cloud reads run in BOTH backends. In PHP mode exam attempts/coverage are
+    // persisted to (and read from) Firestore via the repo — the PHP blob carries
+    // bookmarks/wrong-ids but NOT attempts — so these reads are the source of the
+    // exam results shown on Home/Progress. (PR #113 gated them, which blanked
+    // attempts in PHP mode; reverted here. loadPhpProgress still unions its data.)
     fetchExamProgress(user.uid)
     fetchRecentAttempts(user.uid)
     fetchBookmarks(user.uid)
@@ -208,7 +214,6 @@ export default function App() {
   // not blank the exam stats for the whole session. Runs at most once per
   // visit; the in-flight guard in fetchRecentAttempts prevents overlapping calls.
   useEffect(() => {
-    if (isPhpBackend) return // PHP mode hydrates attempts via loadPhpProgress
     if ((tab !== 'progress' && tab !== 'home' && tab !== 'exam') || status !== 'authed' || !user?.uid) return
     if (recentAttempts !== null) return
     fetchRecentAttempts(user.uid)
@@ -219,7 +224,6 @@ export default function App() {
   // runs only while the data is still missing; the in-flight guard prevents
   // overlap with the login fetch, and the wrong-id union it performs is idempotent.
   useEffect(() => {
-    if (isPhpBackend) return // PHP mode hydrates coverage via loadPhpProgress
     if (tab !== 'practice' || status !== 'authed' || !user?.uid) return
     if (examCoverage !== null) return
     fetchExamProgress(user.uid)
@@ -229,7 +233,6 @@ export default function App() {
   // Same retry for the bookmark read (Phase 7O) on the tabs where bookmarks
   // are shown, while the cloud list has not been read successfully this session.
   useEffect(() => {
-    if (isPhpBackend) return // PHP mode hydrates bookmarks via loadPhpProgress
     if ((tab !== 'home' && tab !== 'mistakes' && tab !== 'progress') || status !== 'authed' || !user?.uid) return
     if (bookmarksSynced) return
     fetchBookmarks(user.uid)
