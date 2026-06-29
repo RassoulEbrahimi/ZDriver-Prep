@@ -274,9 +274,16 @@ export default function App() {
         }
         return next
       })
-      // Fill coverage/attempts only if not already populated (prefer existing).
-      if (Array.isArray(examProgress)) setExamCoverage(prev => prev ?? (examProgress as ExamProgressReadItem[]))
-      if (Array.isArray(examAttempts)) setRecentAttempts(prev => prev ?? (examAttempts as ExamAttemptReadItem[]))
+      // Fill coverage/attempts from the blob when local is still empty. Use a
+      // length check (not `?? `) so a prior EMPTY read ([]) — e.g. the Firestore
+      // attempt read returning nothing for a PHP uid — doesn't block the blob's
+      // real attempts from hydrating. Existing non-empty data is preferred.
+      if (Array.isArray(examProgress) && examProgress.length > 0) {
+        setExamCoverage(prev => (prev && prev.length > 0) ? prev : (examProgress as ExamProgressReadItem[]))
+      }
+      if (Array.isArray(examAttempts) && examAttempts.length > 0) {
+        setRecentAttempts(prev => (prev && prev.length > 0) ? prev : (examAttempts as ExamAttemptReadItem[]))
+      }
       phpSaveEnabledUidRef.current = uid // enable saving only after a successful load
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -445,7 +452,26 @@ export default function App() {
     recordWrong(wrongIds)
     setExamFlowResult(result)
     setExamView('result')
+    recordAttempt(result)
     mirrorExamAttempt(result, wrongIds)
+  }
+
+  // Add the finished attempt to the in-memory recentAttempts list immediately, so
+  // Home/Progress reflect it without a reload AND — in PHP mode — the debounced
+  // blob save below persists it into progress.examAttempts (the PHP backend only
+  // stored bookmarks/wrong-ids before, so scores never survived a reload). Newest
+  // first, matching the read order. Firestore stays a best-effort mirror only.
+  function recordAttempt(result: SourceExamResult) {
+    const meta = getExamMeta(result.examNo)
+    const passThreshold = meta?.passThreshold ?? Math.ceil(result.total * 26 / 30)
+    const item: ExamAttemptReadItem = {
+      examId: result.examNo,
+      score: result.correct,
+      totalQuestions: result.total,
+      passed: result.correct >= passThreshold,
+      finishedAtMillis: Date.now(),
+    }
+    setRecentAttempts(prev => [item, ...(prev ?? [])])
   }
 
   // Mirror one finished exam attempt to Firestore (Phase 7H). Best-effort: only
