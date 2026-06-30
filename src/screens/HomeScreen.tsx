@@ -57,6 +57,9 @@ const pillBtn: React.CSSProperties = {
 
 export function HomeScreen({ progress, categories, attempts, onContinue, onPickCategory, onPractice, onExam, onReviewMistakes, onOpenSettings, onOpenAccount }: Props) {
   const hasMistakes = progress.wrongQuestionIds.length > 0
+  // Any real activity yet? Drives the hero CTA copy: «ادامه دادن» (resume) only
+  // makes sense once there's something to resume; a brand-new user sees «شروع تمرین».
+  const hasActivity = hasMistakes || progress.bookmarked.length > 0 || (attempts !== null && attempts.length > 0)
 
   const { status, user } = useAuth()
   const authed = status === 'authed' && !!user
@@ -111,7 +114,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                 backdropFilter: 'blur(10px)',
               }}>{authed ? avatarChar : <UserIcon size={18} color="#fff" />}</div>
               <div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)' }}>{authed ? 'حساب من' : 'سلام،'}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.82)' }}>{authed ? 'حساب من' : 'سلام،'}</div>
                 {authed ? (
                   <div style={{ fontSize: 13, color: '#fff', fontWeight: 700, maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', direction: 'ltr', textAlign: 'right' }}>
                     {user?.email}
@@ -119,7 +122,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                 ) : (
                   <>
                     <div style={{ fontSize: 15, color: '#fff', fontWeight: 700 }}>مهمان</div>
-                    <div style={{ fontSize: 10.5, color: 'var(--accent-warm)', fontWeight: 600, marginTop: 1 }}>ورود / ثبت‌نام</div>
+                    <div style={{ fontSize: 11.5, color: 'var(--accent-warm)', fontWeight: 700, marginTop: 1 }}>ورود / ثبت‌نام</div>
                   </>
                 )}
               </div>
@@ -142,12 +145,12 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                   <div className="zd-num" style={{ fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1 }}>
                     {fa(readiness)}<span style={{ fontSize: 14, marginRight: 2 }}>٪</span>
                   </div>
-                  <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>بر اساس بهترین آزمون</div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.88)', marginTop: 2 }}>بر اساس بهترین آزمون</div>
                 </>
               ) : (
                 <>
                   <div style={{ fontSize: 22, fontWeight: 800, color: 'rgba(255,255,255,0.85)', lineHeight: 1 }}>—</div>
-                  <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.75)', marginTop: 4, lineHeight: 1.5, padding: '0 10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.88)', marginTop: 4, lineHeight: 1.5, padding: '0 8px', textAlign: 'center' }}>
                     هنوز آزمونی ثبت نشده
                   </div>
                 </>
@@ -158,13 +161,13 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
               <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 6 }}>
                 مسیر آزمون رانندگی
               </div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 1.55 }}>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.55 }}>
                 ۱۷ آزمون رسمی + مرور تکمیلی
               </div>
               <button className="zd-btn zd-btn-accent" style={{ marginTop: 12, height: 42, padding: '0 18px', fontSize: 14 }}
                       onClick={onContinue}>
                 <PlayIcon size={14} stroke={2.4} />
-                ادامه دادن
+                {hasActivity ? 'ادامه دادن' : 'شروع تمرین'}
               </button>
             </div>
           </div>
@@ -182,7 +185,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                   <Icon size={14} stroke={2.2} />
                   <div className="zd-num" style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{value}</div>
                 </div>
-                <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.7)' }}>{label}</div>
+                <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.82)' }}>{label}</div>
               </div>
             ))}
           </div>
