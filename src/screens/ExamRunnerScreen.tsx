@@ -180,10 +180,10 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
           {/* Options — selection only, NO correctness reveal in exam mode */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
             {q.options.map((opt, i) => (
-              <div key={i} className={`zd-option${selected === i ? ' is-selected' : ''}`} onClick={() => setSelected(i)}>
+              <button type="button" key={i} className={`zd-option${selected === i ? ' is-selected' : ''}`} onClick={() => setSelected(i)}>
                 <div className="zd-opt-letter">{OPT_LETTERS[i] ?? fa(i + 1)}</div>
                 <div className="zd-opt-text">{opt}</div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
