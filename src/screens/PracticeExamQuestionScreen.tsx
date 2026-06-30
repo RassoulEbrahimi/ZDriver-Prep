@@ -196,7 +196,7 @@ export function PracticeExamQuestionScreen({
               <button onClick={() => onToggleBookmark(q.id)} aria-label="نشان‌گذاری" style={{
                 background: progress.bookmarked.includes(q.id) ? 'color-mix(in oklab, var(--accent) 18%, transparent)' : 'transparent',
                 border: 'none', cursor: 'pointer',
-                width: 34, height: 34, borderRadius: 11,
+                width: 44, height: 44, borderRadius: 13,
                 display: 'grid', placeItems: 'center',
                 color: progress.bookmarked.includes(q.id) ? 'var(--accent-deep)' : 'var(--ink-3)',
               }}>

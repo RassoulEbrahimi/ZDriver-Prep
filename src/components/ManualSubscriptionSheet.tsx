@@ -60,7 +60,7 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
   const labelStyle: React.CSSProperties = { fontSize: 11.5, color: 'var(--ink-3)', marginBottom: 3 }
   const valueStyle: React.CSSProperties = { fontSize: 14.5, fontWeight: 700, color: 'var(--ink)', direction: 'ltr', textAlign: 'left' }
   const copyBtn: React.CSSProperties = {
-    flexShrink: 0, height: 34, padding: '0 12px', borderRadius: 10, cursor: 'pointer',
+    flexShrink: 0, height: 44, padding: '0 14px', borderRadius: 12, cursor: 'pointer',
     border: '1px solid var(--line)', background: 'var(--card)', color: 'var(--primary)',
     fontFamily: 'var(--font)', fontSize: 12.5, fontWeight: 700,
   }
