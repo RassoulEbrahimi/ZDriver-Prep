@@ -108,6 +108,7 @@ export function SubscriptionBadge({ onOpenAccount }: Props = {}) {
         <button
           onClick={openUpgrade}
           style={{
+            position: 'relative',
             height: 32,
             padding: '0 14px',
             borderRadius: 999,
@@ -121,6 +122,10 @@ export function SubscriptionBadge({ onOpenAccount }: Props = {}) {
           }}
         >
           خرید اشتراک
+          {/* Invisible hit-area expansion to ~44px tall (32px pill + 6px each side)
+              so the touch target meets the minimum without growing the visible pill
+              or affecting the row layout (absolutely positioned = out of flow). */}
+          <span aria-hidden="true" style={{ position: 'absolute', inset: -6, borderRadius: 999 }} />
         </button>
       )}
 
