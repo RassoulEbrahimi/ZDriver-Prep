@@ -447,6 +447,14 @@ body {
   padding: 10px 22px calc(22px + env(safe-area-inset-bottom));
   box-shadow: 0 -12px 40px rgba(0,0,0,0.30);
   animation: zd-sheet-up .35s cubic-bezier(.2,.9,.3,1) both;
+  /* Cap the sheet to the visible backdrop (which is sized to the real viewport
+     via --zd-app-h on .zd-app) minus the notch/status-bar safe area and a small
+     gap, so a tall sheet — or one pushed up by the on-screen keyboard — can never
+     clip above the fold. Anything beyond the cap scrolls inside the sheet; the
+     contain keeps that scroll from chaining to the backdrop/page underneath. */
+  max-height: calc(100% - env(safe-area-inset-top) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .zd-sheet-grip {
   width: 40px; height: 5px; border-radius: 999px;
