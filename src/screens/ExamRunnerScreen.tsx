@@ -44,6 +44,12 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   // discarding the attempt immediately. The timer keeps running underneath.
   const [confirmExit, setConfirmExit] = useState(false)
 
+  // Early-finish confirmation (M6): the پایان flag opens a sheet instead of
+  // submitting immediately, so an accidental tap can't end the exam. The natural
+  // last-question finish and the timer auto-submit stay direct. Timer keeps
+  // running underneath; finish() is still guarded by didFinishRef.
+  const [confirmFinish, setConfirmFinish] = useState(false)
+
   // Finish guard — the exam finalizes at most once per runner instance
   // (protects against timer-expiry racing a manual finish tap).
   const didFinishRef = useRef(false)
@@ -72,6 +78,12 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
   const cat = q ? catMap[q.cat] : undefined
   const isLast = idx === total - 1
   const lowTime = timeLeft < 60
+
+  // Answered tally for the finish-confirm sheet: committed answers, but use the
+  // live `selected` for the current question (not yet committed to `answers`).
+  // Read-only — never affects scoring.
+  const answeredCount = answers.filter((a, i) => (i === idx ? selected !== null : a !== null)).length
+  const unansweredCount = total - answeredCount
 
   function commit(): (number | null)[] {
     const updated = [...answers]
@@ -122,7 +134,7 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
             <ClockIcon size={16} stroke={2.2} />
             <span className="zd-num" style={{ fontSize: 15, letterSpacing: 0.5 }}>{formatTime(timeLeft)}</span>
           </div>
-          <button className="zd-icon-btn" onClick={() => finish(answers)} aria-label="پایان"><FlagIcon size={18} /></button>
+          <button className="zd-icon-btn" onClick={() => setConfirmFinish(true)} aria-label="پایان"><FlagIcon size={18} /></button>
         </div>
 
         <div style={{ marginTop: 16 }}>
@@ -225,6 +237,50 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
               <button onClick={onExit} className="zd-btn zd-btn-outline zd-btn-block"
                 style={{ height: 46, color: 'var(--danger)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
                 خروج از آزمون
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Early-finish confirmation sheet (M6). Opening it does not submit; only the
+          primary action calls finish(answers) — the same path as before. The timer
+          keeps running underneath and an expiry-driven finish is still guarded. */}
+      {confirmFinish && (
+        <div className="zd-backdrop" onClick={() => setConfirmFinish(false)}>
+          <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="پایان آزمون" onClick={e => e.stopPropagation()}>
+            <div className="zd-sheet-grip" />
+
+            <div style={{ textAlign: 'center', marginBottom: 4 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+                پایان آزمون؟
+              </div>
+              <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
+                آزمون با پاسخ‌های فعلی ثبت و نمره‌دهی می‌شود. سؤال‌های بی‌پاسخ نادرست محاسبه می‌شوند.
+              </div>
+            </div>
+
+            {/* Answered tally (read-only) */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              marginTop: 14, padding: '10px 14px', borderRadius: 12,
+              background: 'var(--card-2)', border: '1px solid var(--line)',
+              fontSize: 13, fontWeight: 700, color: 'var(--ink-2)',
+            }}>
+              <span className="zd-num">به {fa(answeredCount)} از {fa(total)} سؤال پاسخ داده‌ای</span>
+              {unansweredCount > 0 && (
+                <span className="zd-chip zd-chip-danger zd-num" style={{ whiteSpace: 'nowrap' }}>
+                  {fa(unansweredCount)} بی‌پاسخ
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              <button onClick={() => finish(answers)} className="zd-btn zd-btn-accent zd-btn-block" style={{ height: 50 }}>
+                <FlagIcon size={18} stroke={2.1} /> پایان و مشاهده نتیجه
+              </button>
+              <button onClick={() => setConfirmFinish(false)} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46 }}>
+                ادامه آزمون
               </button>
             </div>
           </div>
