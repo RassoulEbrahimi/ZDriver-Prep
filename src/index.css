@@ -279,7 +279,12 @@ body {
   border: 1px solid var(--line);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
 }
+/* Invisible hit-area expansion to ~44x44 (the 40px box + 2px on each side) so the
+   tap target meets the touch minimum without changing the visual box or the flow
+   width — header spacers and centered titles stay exactly as-is. */
+.zd-icon-btn::after { content: ''; position: absolute; inset: -2px; border-radius: 16px; }
 .zd-icon-btn:active { transform: scale(0.95); }
 .zd-icon-btn.is-active { background: var(--accent); color: #fff; border-color: transparent; }
 
