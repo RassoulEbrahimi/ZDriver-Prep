@@ -161,7 +161,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
               <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 6 }}>
                 مسیر آزمون رانندگی
               </div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.55 }}>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.92)', lineHeight: 1.55 }}>
                 ۱۷ آزمون رسمی + مرور تکمیلی
               </div>
               <button className="zd-btn zd-btn-accent" style={{ marginTop: 12, height: 42, padding: '0 18px', fontSize: 14 }}
@@ -173,7 +173,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
           </div>
 
           {/* Mini stats */}
-          <div className="flex" style={{ gap: 8, marginTop: 20 }}>
+          <div className="flex" style={{ gap: 10, marginTop: 20 }}>
             {miniStats.map(({ icon: Icon, value, label }, i) => (
               <div key={i} className="flex-1" style={{
                 borderRadius: 16, padding: '10px 12px',
@@ -183,9 +183,9 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
               }}>
                 <div className="flex items-center" style={{ gap: 6, color: 'var(--accent-warm)', marginBottom: 4 }}>
                   <Icon size={14} stroke={2.2} />
-                  <div className="zd-num" style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{value}</div>
+                  <div className="zd-num" style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>{value}</div>
                 </div>
-                <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.82)' }}>{label}</div>
+                <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.9)' }}>{label}</div>
               </div>
             ))}
           </div>
@@ -257,7 +257,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
           {/* تمرین */}
           <button onClick={onPractice} className="zd-card" style={{
-            padding: 16, border: 'none', cursor: 'pointer', textAlign: 'right',
+            padding: '16px 16px 20px', border: 'none', cursor: 'pointer', textAlign: 'right',
             fontFamily: 'var(--font)', borderRadius: 18, background: 'var(--card)',
             display: 'flex', flexDirection: 'column', gap: 10, minHeight: 136,
           }}>
@@ -281,7 +281,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
 
           {/* آزمون */}
           <button onClick={onExam} className="zd-card" style={{
-            padding: 16, border: 'none', cursor: 'pointer', textAlign: 'right',
+            padding: '16px 16px 20px', border: 'none', cursor: 'pointer', textAlign: 'right',
             fontFamily: 'var(--font)', borderRadius: 18, background: 'var(--card)',
             display: 'flex', flexDirection: 'column', gap: 10, minHeight: 136,
           }}>
@@ -314,7 +314,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
         }}>
           <div style={{
             width: 36, height: 36, borderRadius: 12,
-            background: 'color-mix(in oklab, var(--accent) 22%, transparent)',
+            background: 'color-mix(in oklab, var(--accent) 30%, transparent)',
             color: 'var(--accent-deep)',
             display: 'grid', placeItems: 'center', flexShrink: 0,
           }}>

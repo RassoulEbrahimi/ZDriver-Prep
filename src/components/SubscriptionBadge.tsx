@@ -51,7 +51,7 @@ export function SubscriptionBadge({ onOpenAccount }: Props = {}) {
   } else if (entitlement.active && entitlement.status === 'active') {
     const until = formatExpiry(entitlement.expiresAt)
     label = until ? `اشتراک کامل فعال است — تا ${until}` : 'اشتراک کامل فعال است'
-    dot = 'var(--primary)'
+    dot = 'var(--success)'
   } else if (entitlement.status === 'expired') {
     label = 'اشتراک پایان یافته'
     dot = 'var(--danger)'
