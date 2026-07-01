@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 import type { ThemeMode } from '../theme'
 import { CheckIcon, RefreshIcon } from './Icons'
+import { useDialog } from '../hooks/useDialog'
 
 interface Props {
   mode: ThemeMode
@@ -17,14 +18,11 @@ const OPTIONS: { mode: ThemeMode; label: string; desc: string; emoji: string }[]
 /** Bottom-sheet theme selector (سیستم / روشن / تیره). Selecting a mode applies
  *  and persists it immediately; the sheet stays open so the change is visible. */
 export function ThemeSheet({ mode, onSelect, onClose }: Props) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useDialog(sheetRef, onClose)
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="حالت نمایش" onClick={e => e.stopPropagation()}>
+      <div ref={sheetRef} className="zd-sheet" role="dialog" aria-modal="true" aria-label="حالت نمایش" onClick={e => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         <div style={{ position: 'relative', marginBottom: 4 }}>

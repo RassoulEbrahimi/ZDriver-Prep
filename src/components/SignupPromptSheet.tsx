@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 import { UserIcon } from './Icons'
+import { useDialog } from '../hooks/useDialog'
 
 interface Props {
   /** Open the auth (login / sign-up) sheet. */
@@ -15,14 +16,11 @@ interface Props {
  * shared zd-sheet styling (Light/Dark/RTL automatic).
  */
 export function SignupPromptSheet({ onSignup, onClose }: Props) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useDialog(sheetRef, onClose)
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="ساخت حساب" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+      <div ref={sheetRef} className="zd-sheet" role="dialog" aria-modal="true" aria-label="ساخت حساب" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         <div style={{ textAlign: 'center', marginBottom: 4 }}>

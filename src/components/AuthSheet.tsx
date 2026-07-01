@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { useAuth } from '../auth/useAuth'
 import { isPhpBackend } from '../config/backend'
 import { fa } from '../utils'
+import { useDialog } from '../hooks/useDialog'
 
 // PHP backend requires >= 8 chars; Firebase keeps its existing >= 6 so default
 // (Firebase) behavior is unchanged.
@@ -77,15 +78,12 @@ export function AuthSheet({ onClose }: Props) {
     color: active ? '#fff' : 'var(--ink-3)',
   })
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useDialog(sheetRef, onClose)
 
   return (
     <div className="zd-backdrop" onClick={onClose}>
-      <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="حساب کاربری" onClick={e => e.stopPropagation()}>
+      <div ref={sheetRef} className="zd-sheet" role="dialog" aria-modal="true" aria-label="حساب کاربری" onClick={e => e.stopPropagation()}>
         <div className="zd-sheet-grip" />
 
         {/* ── Unavailable ── */}
