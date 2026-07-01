@@ -28,7 +28,7 @@ function coverageLabel(answeredCount: number | undefined, questionCount: number)
   const n = Math.min(answeredCount, questionCount)
   const complete = n >= questionCount
   return {
-    text: complete ? 'کامل' : `${fa(n)} از ${fa(questionCount)}`,
+    text: complete ? 'کامل' : `${fa(n)}/${fa(questionCount)}`,
     complete,
   }
 }
@@ -43,7 +43,7 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
   const cov = coverageLabel(answeredCount, exam.questionCount)
   const covColors = cov?.complete
     ? { background: 'var(--success-soft)', color: 'var(--success)' }
-    : { background: 'var(--primary-soft)', color: 'var(--primary)' }
+    : { background: 'var(--primary-soft)', color: 'var(--chip-info-ink)' }
   return (
     <button
       onClick={() => onOpen(exam.id)}
@@ -97,16 +97,15 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
         ) : cov ? (
+          // Real per-exam practice progress (distinct answered / total). Only shown
+          // when the loaded coverage has data; unpracticed cards show no badge (the
+          // repeated «پاسخ فوری» chip is dropped — the section header already says it).
           <span className="zd-chip zd-num" style={{ ...covColors, minWidth: 0, maxWidth: '100%' }}>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {cov.text}
             </span>
           </span>
-        ) : (
-          <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
-            پاسخ فوری
-          </span>
-        )}
+        ) : null}
       </div>
 
       {/* title + meta */}
@@ -136,7 +135,7 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
             {cov.text}
           </span>
         ) : (
-          <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--primary)' }}>
+          <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--chip-info-ink)' }}>
             {supplementary ? 'مرور آزاد' : 'شروع تمرین'}
           </span>
         )}
@@ -181,7 +180,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
             یک آزمون را برای تمرین انتخاب کن. در حالت تمرین، بدون محدودیت زمان، پاسخ درست را بلافاصله می‌بینی.
           </div>
           <div style={{ marginTop: 12 }}>
-            <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+            <span className="zd-chip" style={{ background: 'var(--primary-soft)', color: 'var(--chip-info-ink)' }}>
               <BulbIcon size={13} stroke={2} /> پاسخ فوری · بدون زمان
             </span>
           </div>
@@ -235,7 +234,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
           <div style={{
             width: 30, height: 30, borderRadius: 10, flexShrink: 0,
             background: 'color-mix(in oklab, var(--primary) 16%, transparent)',
-            color: 'var(--primary)', display: 'grid', placeItems: 'center',
+            color: 'var(--chip-info-ink)', display: 'grid', placeItems: 'center',
           }}>
             <BulbIcon size={16} />
           </div>
