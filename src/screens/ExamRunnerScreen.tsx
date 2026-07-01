@@ -4,6 +4,7 @@ import { CloseIcon, FlagIcon, ClockIcon, ImageIcon, ChevRightIcon, ChevLeftIcon,
 import { QuestionImagePlaceholder } from '../components/QuestionImagePlaceholder'
 import { fa, formatTime } from '../utils'
 import { getExamMeta, loadExamQuestions } from '../data/examRegistry'
+import { useDialog } from '../hooks/useDialog'
 
 interface Props {
   examId: number
@@ -215,77 +216,114 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
         </div>
       </div>
 
-      {/* Exit confirmation sheet */}
+      {/* Exit confirmation sheet — child component so useDialog mounts (and
+          captures the trigger / traps focus) only while the sheet is open. */}
       {confirmExit && (
-        <div className="zd-backdrop" onClick={() => setConfirmExit(false)}>
-          <div className="zd-sheet" onClick={e => e.stopPropagation()}>
-            <div className="zd-sheet-grip" />
-
-            <div style={{ textAlign: 'center', marginBottom: 4 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
-                خروج از آزمون؟
-              </div>
-              <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
-                اگر الان خارج شوی، این آزمون نیمه‌کاره رها می‌شود و پاسخ‌هایت ثبت نمی‌شود.
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <button onClick={() => setConfirmExit(false)} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50 }}>
-                ادامه آزمون
-              </button>
-              <button onClick={onExit} className="zd-btn zd-btn-outline zd-btn-block"
-                style={{ height: 46, color: 'var(--danger)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
-                خروج از آزمون
-              </button>
-            </div>
-          </div>
-        </div>
+        <ExitConfirmSheet onContinue={() => setConfirmExit(false)} onExit={onExit} />
       )}
 
       {/* Early-finish confirmation sheet (M6). Opening it does not submit; only the
           primary action calls finish(answers) — the same path as before. The timer
           keeps running underneath and an expiry-driven finish is still guarded. */}
       {confirmFinish && (
-        <div className="zd-backdrop" onClick={() => setConfirmFinish(false)}>
-          <div className="zd-sheet" role="dialog" aria-modal="true" aria-label="پایان آزمون" onClick={e => e.stopPropagation()}>
-            <div className="zd-sheet-grip" />
+        <FinishConfirmSheet
+          answeredCount={answeredCount}
+          total={total}
+          unansweredCount={unansweredCount}
+          onCancel={() => setConfirmFinish(false)}
+          onConfirm={() => finish(answers)}
+        />
+      )}
+    </div>
+  )
+}
 
-            <div style={{ textAlign: 'center', marginBottom: 4 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
-                پایان آزمون؟
-              </div>
-              <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
-                آزمون با پاسخ‌های فعلی ثبت و نمره‌دهی می‌شود. سؤال‌های بی‌پاسخ نادرست محاسبه می‌شوند.
-              </div>
-            </div>
+/**
+ * Exit-confirmation bottom sheet. Rendered only while open, so useDialog captures
+ * the trigger (the خروج button) at open time and restores focus to it on close.
+ * Escape / backdrop dismiss the sheet (continue the exam); «خروج از آزمون» leaves.
+ * Visual design and text are unchanged from the previous inline version.
+ */
+function ExitConfirmSheet({ onContinue, onExit }: { onContinue: () => void; onExit: () => void }) {
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useDialog(sheetRef, onContinue)
+  return (
+    <div className="zd-backdrop" onClick={onContinue}>
+      <div ref={sheetRef} className="zd-sheet" role="dialog" aria-modal="true" aria-label="خروج از آزمون" onClick={e => e.stopPropagation()}>
+        <div className="zd-sheet-grip" />
 
-            {/* Answered tally (read-only) */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              marginTop: 14, padding: '10px 14px', borderRadius: 12,
-              background: 'var(--card-2)', border: '1px solid var(--line)',
-              fontSize: 13, fontWeight: 700, color: 'var(--ink-2)',
-            }}>
-              <span className="zd-num">به {fa(answeredCount)} از {fa(total)} سؤال پاسخ داده‌ای</span>
-              {unansweredCount > 0 && (
-                <span className="zd-chip zd-chip-danger zd-num" style={{ whiteSpace: 'nowrap' }}>
-                  {fa(unansweredCount)} بی‌پاسخ
-                </span>
-              )}
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <button onClick={() => finish(answers)} className="zd-btn zd-btn-accent zd-btn-block" style={{ height: 50 }}>
-                <FlagIcon size={18} stroke={2.1} /> پایان و مشاهده نتیجه
-              </button>
-              <button onClick={() => setConfirmFinish(false)} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46 }}>
-                ادامه آزمون
-              </button>
-            </div>
+        <div style={{ textAlign: 'center', marginBottom: 4 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+            خروج از آزمون؟
+          </div>
+          <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
+            اگر الان خارج شوی، این آزمون نیمه‌کاره رها می‌شود و پاسخ‌هایت ثبت نمی‌شود.
           </div>
         </div>
-      )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+          <button onClick={onContinue} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50 }}>
+            ادامه آزمون
+          </button>
+          <button onClick={onExit} className="zd-btn zd-btn-outline zd-btn-block"
+            style={{ height: 46, color: 'var(--danger)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
+            خروج از آزمون
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Early-finish confirmation bottom sheet. Rendered only while open, so useDialog
+ * captures the trigger (the پایان flag) at open time and restores focus to it on
+ * close. Escape / backdrop dismiss (continue); «پایان و مشاهده نتیجه» submits via
+ * the parent's onConfirm — which is the same finish(answers) path as before.
+ */
+function FinishConfirmSheet({ answeredCount, total, unansweredCount, onCancel, onConfirm }: {
+  answeredCount: number; total: number; unansweredCount: number; onCancel: () => void; onConfirm: () => void
+}) {
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useDialog(sheetRef, onCancel)
+  return (
+    <div className="zd-backdrop" onClick={onCancel}>
+      <div ref={sheetRef} className="zd-sheet" role="dialog" aria-modal="true" aria-label="پایان آزمون" onClick={e => e.stopPropagation()}>
+        <div className="zd-sheet-grip" />
+
+        <div style={{ textAlign: 'center', marginBottom: 4 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
+            پایان آزمون؟
+          </div>
+          <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 8, lineHeight: 1.7 }}>
+            آزمون با پاسخ‌های فعلی ثبت و نمره‌دهی می‌شود. سؤال‌های بی‌پاسخ نادرست محاسبه می‌شوند.
+          </div>
+        </div>
+
+        {/* Answered tally (read-only) */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          marginTop: 14, padding: '10px 14px', borderRadius: 12,
+          background: 'var(--card-2)', border: '1px solid var(--line)',
+          fontSize: 13, fontWeight: 700, color: 'var(--ink-2)',
+        }}>
+          <span className="zd-num">به {fa(answeredCount)} از {fa(total)} سؤال پاسخ داده‌ای</span>
+          {unansweredCount > 0 && (
+            <span className="zd-chip zd-chip-danger zd-num" style={{ whiteSpace: 'nowrap' }}>
+              {fa(unansweredCount)} بی‌پاسخ
+            </span>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+          <button onClick={onConfirm} className="zd-btn zd-btn-accent zd-btn-block" style={{ height: 50 }}>
+            <FlagIcon size={18} stroke={2.1} /> پایان و مشاهده نتیجه
+          </button>
+          <button onClick={onCancel} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46 }}>
+            ادامه آزمون
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
