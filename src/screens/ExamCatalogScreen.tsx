@@ -41,15 +41,19 @@ function statusChipColors(passed: boolean) {
  *  the footer caption instead. Never-attempted cards are unchanged. */
 function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; status: ExamStatus | null; locked: boolean; free: boolean; onOpen: (id: number) => void }) {
   const supplementary = !exam.official
-  const statusLabel = status
-    ? `${status.passed ? 'قبول' : 'مردود'} · ${fa(status.best)} از ${fa(status.total)}`
-    : null
+  // Compact result pieces: status word + a short slash score («۲۴/۳۰») so a long
+  // single badge can't stretch the card past its grid column on small screens.
+  const statusText = status ? (status.passed ? 'قبول' : 'مردود') : null
+  const scoreText  = status ? `${fa(status.best)}/${fa(status.total)}` : null
+  const statusLabel = status ? `${statusText} · ${scoreText}` : null
   return (
     <button
       onClick={() => onOpen(exam.id)}
       className="zd-card"
       style={{
-        width: '100%', textAlign: 'right', cursor: 'pointer',
+        // minWidth 0 lets the card shrink inside its grid column (grid items
+        // default to min-width:auto, so a nowrap badge would otherwise widen it).
+        width: '100%', minWidth: 0, textAlign: 'right', cursor: 'pointer',
         border: supplementary
           ? '1px solid color-mix(in oklab, var(--accent) 32%, transparent)'
           : 'none',
@@ -94,10 +98,17 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
           }}>
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
-        ) : status && statusLabel ? (
-          <span className="zd-chip zd-num" style={{ ...statusChipColors(status.passed), whiteSpace: 'nowrap' }}>
-            {statusLabel}
-          </span>
+        ) : status ? (
+          // Two compact badges (status + slash score) that wrap/stack instead of
+          // one long nowrap badge; minWidth:0 lets them shrink within the column.
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-end', minWidth: 0 }}>
+            <span className="zd-chip" style={{ ...statusChipColors(status.passed), whiteSpace: 'nowrap' }}>
+              {statusText}
+            </span>
+            <span className="zd-chip zd-num" style={{ ...statusChipColors(status.passed), whiteSpace: 'nowrap' }}>
+              {scoreText}
+            </span>
+          </div>
         ) : (
           <span className="zd-chip" style={{
             background: 'color-mix(in oklab, var(--accent) 14%, transparent)',
@@ -258,7 +269,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
           <div className="zd-h2">آزمون‌های آیین‌نامه</div>
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>با زمان · بدون نمایش پاسخ</div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
           {official.map(exam => { const locked = lockedOf(exam.id); return <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
         </div>
 
@@ -272,7 +283,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
                 color: 'var(--accent-deep)',
               }}>غیررسمی</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
               {review.map(exam => { const locked = lockedOf(exam.id); return <ExamCard key={exam.id} exam={exam} status={statusByExam.get(exam.id) ?? null} locked={locked} free={gating && !locked} onOpen={onOpenExam} /> })}
             </div>
           </>
