@@ -254,7 +254,7 @@ body {
 }
 
 /* ── Type scale ──────────────────────────────────────────────── */
-.zd-h1     { font-size: 28px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); margin: 0; line-height: 1.2; }
+.zd-h1     { font-size: 28px; font-weight: 800; letter-spacing: normal; color: var(--ink); margin: 0; line-height: 1.2; }
 .zd-h2     { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.3; }
 .zd-h3     { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0; }
 .zd-eyebrow{ font-size: 12px; font-weight: 600; color: var(--ink-3); letter-spacing: 0.04em; }
@@ -473,13 +473,17 @@ body {
 }
 .zd-dice-roll { animation: zd-dice-roll .55s cubic-bezier(.3,1.3,.5,1) both; }
 
-/* Respect users who prefer reduced motion. */
+/* Respect users who prefer reduced motion. Collapse animations and transitions
+   to near-instant everywhere (the final visual state is preserved) — this covers
+   the sheet/backdrop slide-ups, fades, the pop, the dice roll, the fullscreen
+   overlay/video slide-up, the progress-bar fill, the readiness-ring stroke
+   (inline transition), and every button/option/tab micro-transition. Users
+   without the preference are completely unaffected. */
 @media (prefers-reduced-motion: reduce) {
-  .zd-fade-up,
-  .zd-pop,
-  .zd-backdrop,
-  .zd-sheet,
-  .zd-dice-roll {
-    animation: none !important;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
