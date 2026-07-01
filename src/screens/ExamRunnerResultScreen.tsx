@@ -111,7 +111,8 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
             {result.exam.map((q, i) => {
               const ua = result.answers[i]
               const ok = ua === q.answer
-              const label = `سؤال ${fa(i + 1)} — ${ok ? 'پاسخ درست' : ua !== null ? 'پاسخ نادرست' : 'بدون پاسخ'}؛ برای بازبینی لمس کنید`
+              const answered = ua !== null
+              const label = `سؤال ${fa(i + 1)} — ${ok ? 'پاسخ درست' : answered ? 'پاسخ نادرست' : 'بدون پاسخ'}؛ برای بازبینی لمس کنید`
               return (
                 <button
                   key={q.id}
@@ -120,12 +121,26 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
                   title={label}
                   className="zd-num"
                   style={{
+                    position: 'relative',
                     aspectRatio: '1', borderRadius: 10, border: 'none', cursor: 'pointer',
                     fontFamily: 'var(--font)', fontWeight: 800, fontSize: 14, color: '#fff',
                     background: ok ? 'var(--success)' : 'var(--danger)',
                     display: 'grid', placeItems: 'center',
                   }}
                 >
+                  {/* Non-color status cue in the top-start corner: check (correct),
+                      cross (wrong), dash (unanswered). aria-hidden — the button's
+                      aria-label already states the status in words. */}
+                  <span aria-hidden="true" style={{
+                    position: 'absolute', top: 3, insetInlineStart: 3,
+                    display: 'grid', placeItems: 'center', opacity: 0.92,
+                  }}>
+                    {ok
+                      ? <CheckIcon size={9} color="#fff" stroke={3} />
+                      : answered
+                        ? <CloseIcon size={9} color="#fff" stroke={3} />
+                        : <span style={{ display: 'block', width: 6, height: 2, borderRadius: 1, background: '#fff' }} />}
+                  </span>
                   {fa(i + 1)}
                 </button>
               )

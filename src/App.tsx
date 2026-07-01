@@ -743,13 +743,15 @@ export default function App() {
     return null
   }
 
-  // Hide the floating BottomNav during any active question runner so a stray tap
-  // can't navigate away mid-question — matching the timed exam runner's focus
-  // mode. Catalogs, lists, result/completion screens, Progress, and overlay
-  // sheets keep the nav. (Practice completion card lives inside practiceView
-  // 'active', so the nav stays hidden there too; that screen has its own buttons.)
+  // Hide the floating BottomNav during any active question runner — and on the
+  // timed-exam RESULT / answer-sheet screen — so a stray tap can't navigate away
+  // and the result review is a focused, full-screen experience (that screen has
+  // its own actions to leave). Catalogs, Home, Progress, the Mistakes list, the
+  // source-exam result/completion screens, and overlay sheets keep the nav.
+  // (Practice completion lives inside practiceView 'active', so the nav stays
+  // hidden there too; that screen has its own buttons.)
   const showTabBar = !(
-    (tab === 'exam'     && examView === 'active') ||
+    (tab === 'exam'     && (examView === 'active' || examView === 'result')) ||
     (tab === 'source'   && sourceView === 'active') ||
     (tab === 'practice' && practiceView === 'active') ||
     (tab === 'mistakes' && reviewSession !== null)
