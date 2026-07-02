@@ -126,6 +126,11 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
               </div>
             </div>
           )}
+
+          {/* Trust reassurance: links this personal-name card to the official app. */}
+          <div style={{ fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.8, textAlign: 'center', padding: '0 2px' }}>
+            این شماره کارت، روش پرداخت فعلی رانندگی‌یار است. پس از ارسال رسید در تلگرام، اشتراک شما بررسی و فعال می‌شود.
+          </div>
         </div>
 
         {/* Actions. */}
@@ -138,9 +143,7 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
           </button>
 
           <div style={{ fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.8, textAlign: 'center', marginTop: 2 }}>
-            بعد از واریز، لطفاً رسید پرداخت را در تلگرام برای پشتیبانی ارسال کنید.
-            <br />
-            برای فعال‌سازی سریع‌تر، ایمیل حساب کاربری داخل برنامه را هم ارسال کنید.
+            ابتدا متن پیام پشتیبانی را کپی کنید، سپس آن را در گفتگوی تلگرام بفرستید و تصویر رسید پرداخت را هم ضمیمه کنید.
           </div>
           <button onClick={onClose} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 42, fontSize: 13, color: 'var(--ink-3)' }}>
             بستن
