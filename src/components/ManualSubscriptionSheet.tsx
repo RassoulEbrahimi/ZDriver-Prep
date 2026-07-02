@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useAuth } from '../auth/useAuth'
-import { manualPayment, hasPrice, formatPriceToman } from '../config/manualPayment'
+import { manualPayment, hasPrice, formatPriceToman, formatPriceNumber } from '../config/manualPayment'
 import { useDialog } from '../hooks/useDialog'
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
  * S3A — Manual bank-transfer subscription purchase sheet. Display + copy only:
  * no payment gateway, no automatic activation, no backend calls. Persian RTL
  * bottom sheet reusing the existing zd-sheet styling (Light/Dark/RTL automatic).
+ * Telegram is the only support channel (WhatsApp rejected for launch).
  */
 export function ManualSubscriptionSheet({ onClose }: Props) {
   const { status, user } = useAuth()
@@ -18,14 +19,22 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
   const email = authed ? (user?.email ?? null) : null
 
   const priceText = formatPriceToman(manualPayment.priceToman)
+  const priceNumber = formatPriceNumber(manualPayment.priceToman)
 
   // Prepared support message the user sends to support alongside the receipt.
   const supportMessage = [
-    'سلام، من هزینه اشتراک رانندگی‌یار را واریز کردم. لطفاً اشتراک حساب من را فعال کنید.',
-    `ایمیل حساب: ${email ?? '—'}`,
-    'پلن: اشتراک کامل',
-    ...(priceText ? [`مبلغ: ${priceText}`] : []),
-    'رسید واریز را ارسال کردم.',
+    'سلام، من پرداخت اشتراک رانندگی‌یار را انجام دادم.',
+    '',
+    'ایمیل حساب کاربری:',
+    email ?? '—',
+    '',
+    'مبلغ پرداختی:',
+    priceNumber ? `${priceNumber} تومان` : '—',
+    '',
+    'نوع اشتراک:',
+    'اشتراک یک‌ساله رانندگی‌یار',
+    '',
+    'رسید پرداخت را در همین پیام ارسال می‌کنم.',
   ].join('\n')
 
   // Per-key "copied" feedback. Best-effort clipboard; never throws.
@@ -43,15 +52,6 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
   function openUrl(url: string) {
     try { window.open(url, '_blank', 'noopener,noreferrer') } catch { /* ignore */ }
   }
-
-  // Support channels: a real env URL renders as an active link; otherwise a
-  // clearly-temporary placeholder (NOT a working link) so the user always sees a
-  // destination and is never misled into tapping a dead handle.
-  const supportChannels = [
-    { id: 'telegram', label: 'پشتیبانی تلگرام', value: manualPayment.telegramUrl, placeholder: 'https://t.me/...' },
-    { id: 'whatsapp', label: 'پشتیبانی واتساپ', value: manualPayment.whatsappUrl, placeholder: 'https://wa.me/...' },
-  ]
-  const anyActiveSupport = supportChannels.some(c => c.value !== '')
 
   const rowStyle: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: 10,
@@ -130,59 +130,17 @@ export function ManualSubscriptionSheet({ onClose }: Props) {
 
         {/* Actions. */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-          <button onClick={() => copy('msg', supportMessage)} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50, fontSize: 14.5 }}>
-            {copied === 'msg' ? 'پیام کپی شد' : 'کپی پیام فعال‌سازی'}
+          <button onClick={() => openUrl(manualPayment.telegramUrl)} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 50, fontSize: 14.5 }}>
+            ارسال رسید در تلگرام
           </button>
-          {/* Support contact — active env links, or clearly-temporary placeholders. */}
-          <div style={{ marginTop: 2 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-2)', marginBottom: 8, textAlign: 'center' }}>
-              ارسال رسید به پشتیبانی
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {supportChannels.map(ch => (
-                ch.value ? (
-                  <button
-                    key={ch.id}
-                    onClick={() => openUrl(ch.value)}
-                    className="zd-btn zd-btn-ghost zd-btn-block"
-                    style={{ height: 46, fontSize: 14, justifyContent: 'space-between' }}
-                  >
-                    <span>{ch.label}</span>
-                    <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>باز کردن</span>
-                  </button>
-                ) : (
-                  <div
-                    key={ch.id}
-                    aria-disabled="true"
-                    title="این نشانی هنوز فعال نیست؛ به‌زودی اعلام می‌شود."
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '10px 12px', borderRadius: 12,
-                      background: 'var(--card-2)', border: '1px dashed var(--line-2)', opacity: 0.9,
-                    }}
-                  >
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-3)' }}>{ch.label}</div>
-                      <div style={{ fontSize: 11, color: 'var(--ink-4)', direction: 'ltr', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {ch.placeholder}
-                      </div>
-                    </div>
-                    <span style={{
-                      flexShrink: 0, fontSize: 10.5, fontWeight: 700, color: 'var(--ink-3)',
-                      background: 'var(--bg-deeper)', borderRadius: 999, padding: '3px 9px',
-                    }}>
-                      به‌زودی
-                    </span>
-                  </div>
-                )
-              ))}
-            </div>
-          </div>
+          <button onClick={() => copy('msg', supportMessage)} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 46, fontSize: 14 }}>
+            {copied === 'msg' ? 'متن پیام کپی شد' : 'کپی متن پیام پشتیبانی'}
+          </button>
 
           <div style={{ fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.8, textAlign: 'center', marginTop: 2 }}>
-            {anyActiveSupport
-              ? 'پیام فعال‌سازی را همراه تصویر رسید واریز برای پشتیبانی بفرستید. فعال‌سازی به‌صورت دستی انجام می‌شود.'
-              : 'نشانی پشتیبانی هنوز نهایی نشده؛ فعلاً پیام فعال‌سازی را کپی و نگه‌داری کنید. فعال‌سازی به‌صورت دستی انجام می‌شود.'}
+            بعد از واریز، لطفاً رسید پرداخت را در تلگرام برای پشتیبانی ارسال کنید.
+            <br />
+            برای فعال‌سازی سریع‌تر، ایمیل حساب کاربری داخل برنامه را هم ارسال کنید.
           </div>
           <button onClick={onClose} className="zd-btn zd-btn-ghost zd-btn-block" style={{ height: 42, fontSize: 13, color: 'var(--ink-3)' }}>
             بستن

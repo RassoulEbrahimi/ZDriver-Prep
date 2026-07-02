@@ -7,11 +7,15 @@
 
 const env = import.meta.env
 
+// Telegram is the only support channel (WhatsApp rejected for launch). Falls
+// back to the official support handle so the receipt flow works even when
+// VITE_SUPPORT_TELEGRAM_URL is unset.
+const DEFAULT_TELEGRAM_URL = 'https://t.me/RanandegiYarSupport'
+
 export interface ManualPaymentConfig {
   priceToman: string    // raw env string ('' when unset)
   cardNumber: string
   accountHolder: string
-  whatsappUrl: string
   telegramUrl: string
 }
 
@@ -19,23 +23,31 @@ export const manualPayment: ManualPaymentConfig = {
   priceToman:    (env.VITE_SUBSCRIPTION_PRICE_TOMAN ?? '').trim(),
   cardNumber:    (env.VITE_PAYMENT_CARD_NUMBER ?? '').trim(),
   accountHolder: (env.VITE_PAYMENT_ACCOUNT_HOLDER ?? '').trim(),
-  whatsappUrl:   (env.VITE_SUPPORT_WHATSAPP_URL ?? '').trim(),
-  telegramUrl:   (env.VITE_SUPPORT_TELEGRAM_URL ?? '').trim(),
+  telegramUrl:   (env.VITE_SUPPORT_TELEGRAM_URL ?? '').trim() || DEFAULT_TELEGRAM_URL,
 }
 
 /** True when a subscription price has been configured. */
 export const hasPrice = manualPayment.priceToman !== ''
 
-/** First available support link (WhatsApp preferred), or '' when none configured. */
-export const supportUrl = manualPayment.whatsappUrl || manualPayment.telegramUrl || ''
+/** Support link for sending the payment receipt (always set — env override or default). */
+export const supportUrl = manualPayment.telegramUrl
+
+/**
+ * Grouped price number (Persian digits), no 'تومان' suffix. A non-numeric
+ * custom string is returned as-is; an empty value yields ''.
+ */
+export function formatPriceNumber(raw: string): string {
+  if (!raw) return ''
+  const digits = raw.replace(/[^\d]/g, '')
+  if (digits === '') return raw
+  return Number(digits).toLocaleString('fa-IR')
+}
 
 /**
  * Human-readable price. A numeric value is grouped with Persian digits + 'تومان';
  * a non-numeric custom string is shown as-is; an empty value yields ''.
  */
 export function formatPriceToman(raw: string): string {
-  if (!raw) return ''
-  const digits = raw.replace(/[^\d]/g, '')
-  if (digits === '') return raw
-  return `${Number(digits).toLocaleString('fa-IR')} تومان`
+  const number = formatPriceNumber(raw)
+  return number ? `${number} تومان` : ''
 }
