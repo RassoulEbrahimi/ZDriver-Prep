@@ -143,7 +143,11 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        {supplementary && status && statusLabel ? (
+        {locked ? (
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-3)' }}>
+            نیاز به اشتراک
+          </span>
+        ) : supplementary && status && statusLabel ? (
           <span className="zd-num" style={{ fontSize: 11.5, fontWeight: 700, color: statusChipColors(status.passed).color, whiteSpace: 'nowrap' }}>
             {statusLabel}
           </span>
@@ -295,7 +299,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
             display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center',
             marginTop: 16, fontSize: 12, color: 'var(--ink-3)', fontWeight: 600,
           }}>
-            🔒 برای دسترسی، اشتراک لازم است.
+            <LockIcon size={13} stroke={2} /> برای دسترسی، اشتراک لازم است.
           </div>
         )}
 

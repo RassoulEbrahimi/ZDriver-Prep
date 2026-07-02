@@ -127,7 +127,11 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderTop: '1px solid var(--line)', paddingTop: 10,
       }}>
-        {supplementary && cov ? (
+        {locked ? (
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--ink-3)' }}>
+            نیاز به اشتراک
+          </span>
+        ) : supplementary && cov ? (
           <span className="zd-num" style={{
             fontSize: 11.5, fontWeight: 700, color: covColors.color,
             whiteSpace: 'nowrap', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis',
@@ -221,7 +225,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
             display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center',
             marginTop: 16, fontSize: 12, color: 'var(--ink-3)', fontWeight: 600,
           }}>
-            🔒 برای دسترسی، اشتراک لازم است.
+            <LockIcon size={13} stroke={2} /> برای دسترسی، اشتراک لازم است.
           </div>
         )}
 

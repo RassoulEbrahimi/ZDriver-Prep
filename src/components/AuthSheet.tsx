@@ -17,7 +17,7 @@ type Mode = 'login' | 'signup'
 const inputStyle: React.CSSProperties = {
   width: '100%', height: 48, borderRadius: 12, padding: '0 14px',
   background: 'var(--card-2)', border: '1px solid var(--line)',
-  color: 'var(--ink)', fontFamily: 'var(--font)', fontSize: 15,
+  color: 'var(--ink)', fontFamily: 'var(--font)', fontSize: 16,
   outline: 'none', direction: 'ltr', textAlign: 'left',
 }
 
