@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  M6A-2 — Dev-only social capture viewer (batch 01).
+
+  Standalone Vite dev entry, served ONLY by `npm run dev` at
+  /marketing/capture/index.html. It is NOT a `vite build` input, so it never
+  ships in dist/ or the production bundle. Not imported by the app.
+
+  For manual visual review of the real QuestionCard in both states. No Playwright,
+  no screenshot generation.
+-->
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Capture Viewer — Social Batch 01 (dev only)</title>
+    <!-- Same pre-paint theme boot as the app, so colors/vars match exactly. -->
+    <script>
+      (function () {
+        try {
+          var m = localStorage.getItem('zd-theme');
+          if (m !== 'light' && m !== 'dark' && m !== 'system') m = 'system';
+          var dark = m === 'dark' || (m === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>
