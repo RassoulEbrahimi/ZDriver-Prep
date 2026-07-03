@@ -565,11 +565,68 @@ export default function App() {
     setPracticeView('catalog')
   }
 
+  // examCoverage items we create/update carry the actual answered ids (not just
+  // the derived count) so a reload can seed dedup correctly. Firestore-sourced
+  // items never have this field (its read projection only exposes the count);
+  // PHP-blob-sourced items do, once they round-trip through our own writes below.
+  type CoverageItem = ExamProgressReadItem & { answeredQuestionIds?: string[] }
+
+  // Per-exam set of question ids already counted into examCoverage this session,
+  // so re-answering the same question never double-increments answeredCount.
+  // Lazily seeded (on first touch per exam) from any already-hydrated coverage —
+  // e.g. after a PHP blob reload — so a question counted in a previous session is
+  // never double-counted just because this ref started out empty on mount.
+  const practiceAnsweredIdsRef = useRef<Map<number, Set<string>>>(new Map())
+
+  // Add the answered question to the in-memory examCoverage immediately, so the
+  // Practice catalog badge updates without a reload AND — in PHP mode — the
+  // debounced blob save persists it into progress.examProgress (mirrors the
+  // recordAttempt fix: the PHP backend has no other route to real practice
+  // data, since examCoverage was previously only ever populated from a
+  // Firestore read that a PHP-mode uid never has rows for).
+  function recordPracticeAnswer(examId: number, a: { questionId: string; correct: boolean }) {
+    let seen = practiceAnsweredIdsRef.current.get(examId)
+    if (!seen) {
+      const hydrated = examCoverage?.find(it => it.examId === examId) as CoverageItem | undefined
+      seen = new Set(hydrated?.answeredQuestionIds ?? [])
+      practiceAnsweredIdsRef.current.set(examId, seen)
+    }
+    if (seen.has(a.questionId)) return // already counted (this session or a prior hydration)
+    seen.add(a.questionId)
+    setExamCoverage(prev => {
+      const list = prev ?? []
+      const idx = list.findIndex(it => it.examId === examId)
+      if (idx === -1) {
+        const item: CoverageItem = {
+          examId,
+          wrongQuestionIds: a.correct ? [] : [a.questionId],
+          answeredCount: 1,
+          answeredQuestionIds: [a.questionId],
+        }
+        return [...list, item]
+      }
+      const existing = list[idx] as CoverageItem
+      const knownIds = existing.answeredQuestionIds ?? []
+      const answeredQuestionIds = knownIds.includes(a.questionId) ? knownIds : [...knownIds, a.questionId]
+      const wrongQuestionIds = a.correct || existing.wrongQuestionIds.includes(a.questionId)
+        ? existing.wrongQuestionIds
+        : [...existing.wrongQuestionIds, a.questionId]
+      const updated: CoverageItem = {
+        ...existing,
+        answeredCount: answeredQuestionIds.length,
+        wrongQuestionIds,
+        answeredQuestionIds,
+      }
+      return [...list.slice(0, idx), updated, ...list.slice(idx + 1)]
+    })
+  }
+
   // Mirror one answered Practice question to Firestore (Phase 7G). Best-effort:
   // only when authed, fire-and-forget, never awaited, never blocks the UI. The
   // localStorage Progress above stays the runtime source of truth.
   function mirrorPracticeAnswer(a: { questionId: string; correct: boolean; index: number; official: boolean }) {
     if (status !== 'authed' || !user?.uid || practiceExamId == null) return
+    recordPracticeAnswer(practiceExamId, a)
     void writeExamProgress(user.uid, {
       examId: practiceExamId,
       official: a.official,

@@ -28,7 +28,7 @@ function coverageLabel(answeredCount: number | undefined, questionCount: number)
   const n = Math.min(answeredCount, questionCount)
   const complete = n >= questionCount
   return {
-    text: complete ? 'کامل' : `${fa(n)}/${fa(questionCount)}`,
+    text: complete ? 'کامل' : `${fa(questionCount)}/${fa(n)}`,
     complete,
   }
 }
