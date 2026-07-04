@@ -1,8 +1,15 @@
-// M6A-2 — Dev-only social capture viewer for batch 01.
+// M6A-2/3 — Dev-only social capture viewer for batch 01.
 //
 // Renders the REAL <QuestionCard> (the same component users see in the app) for
 // each of the 30 approved batch-01 questions, in both the "unanswered" and
-// "revealed" states, inside a stable phone-like frame for manual visual review.
+// "revealed" states.
+//
+// Two modes, selected by the URL:
+//   • Review mode (default) — interactive: toolbar, prev/next, state toggle, and a
+//     phone-like frame for manual eyeballing (M6A-2).
+//   • Capture mode (?capture=1) — a clean, full-bleed 9:16 canvas with no toolbar
+//     and no bezel, dark/brand theme pinned, for deterministic screenshots by the
+//     Playwright script (M6A-3). Exposes a stable `data-capture-root` hook.
 //
 // Data flow (all read-only, no app state touched):
 //   manifest.json  -> ordered list of the 30 question ids to review
@@ -13,9 +20,9 @@
 //   unanswered -> submitted=false, selected=null
 //   revealed   -> submitted=true,  selected=question.answer, showExplanation=true
 //
-// No Playwright, no screenshot generation, no production imports.
+// No Playwright imports here, no screenshot logic here — this file only renders.
 
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import { QuestionCard } from '../../src/components/QuestionCard'
 import { SOURCE_EXAMS_DATA } from '../../src/data/source-exams'
 import { toSourceExamQuestion } from '../../src/data/source-exams/adapter'
@@ -56,18 +63,92 @@ const QUESTION_BY_ID: Map<string, SourceExamQuestion> = (() => {
   return map
 })()
 
-function readParams(): { id: string | null; state: CaptureState } {
+function readParams(): { id: string | null; state: CaptureState; capture: boolean } {
   const p = new URLSearchParams(window.location.search)
   const id = p.get('id')
   const state: CaptureState = p.get('state') === 'revealed' ? 'revealed' : 'unanswered'
-  return { id, state }
+  const capture = p.get('capture') === '1'
+  return { id, state, capture }
 }
 
+function questionProps(question: SourceExamQuestion, state: CaptureState) {
+  return {
+    question: { ...question, catLabel: CAT_LABEL[question.cat] ?? question.cat },
+    selected: state === 'revealed' ? question.answer : null,
+    submitted: state === 'revealed',
+  }
+}
+
+/** URL-driven dispatcher: capture mode renders the clean canvas, otherwise the
+ *  interactive review UI. Capture mode is intentionally non-interactive — the
+ *  Playwright script controls everything via the URL. */
 export function CaptureViewer() {
   const initial = readParams()
-  // Default to the first manifest item when no id is given.
-  const [id, setId] = useState<string | null>(initial.id ?? (VIDEOS[0]?.question_id ?? null))
-  const [state, setState] = useState<CaptureState>(initial.state)
+  if (initial.capture) return <CaptureCanvas id={initial.id} state={initial.state} />
+  return <ReviewViewer initialId={initial.id} initialState={initial.state} />
+}
+
+// ---------------------------------------------------------------------------
+// Capture mode (M6A-3): clean full-bleed 9:16 canvas for screenshots.
+// ---------------------------------------------------------------------------
+function CaptureCanvas({ id, state }: { id: string | null; state: CaptureState }) {
+  const measureRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
+  const question = id ? QUESTION_BY_ID.get(id) : undefined
+
+  // Pin the dark/brand theme so every asset is consistent regardless of the
+  // machine's saved theme or prefers-color-scheme. Restored on unmount.
+  useEffect(() => {
+    const root = document.documentElement
+    const prev = root.getAttribute('data-theme')
+    root.setAttribute('data-theme', 'dark')
+    return () => { if (prev) root.setAttribute('data-theme', prev) }
+  }, [])
+
+  // Fit-to-height: scale the card DOWN (never up) so the whole frame is always
+  // visible within the fixed 9:16 canvas and never clipped. offsetHeight is the
+  // natural (untransformed) layout height, so this stays stable under the scale.
+  // Recomputes on image/font reflow via ResizeObserver.
+  useLayoutEffect(() => {
+    const el = measureRef.current
+    if (!el) return
+    const compute = () => {
+      const natural = el.offsetHeight
+      setScale(natural > 0 ? Math.min(1, window.innerHeight / natural) : 1)
+    }
+    compute()
+    const ro = new ResizeObserver(compute)
+    ro.observe(el)
+    window.addEventListener('resize', compute)
+    return () => { ro.disconnect(); window.removeEventListener('resize', compute) }
+  }, [id, state])
+
+  if (!question) {
+    return (
+      <div data-capture-root style={captureRootStyle}>
+        <div style={{ color: 'var(--ink, #eee)', fontSize: 16 }}>شناسهٔ نامعتبر: {id ?? '—'}</div>
+      </div>
+    )
+  }
+
+  const props = questionProps(question, state)
+  return (
+    <div data-capture-root style={captureRootStyle}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+        <div ref={measureRef} style={captureCardWrapStyle} className="zd-scope">
+          <QuestionCard {...props} onSelect={() => { /* capture: non-interactive */ }} showExplanation />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Review mode (M6A-2): interactive viewer for manual visual review.
+// ---------------------------------------------------------------------------
+function ReviewViewer({ initialId, initialState }: { initialId: string | null; initialState: CaptureState }) {
+  const [id, setId] = useState<string | null>(initialId ?? (VIDEOS[0]?.question_id ?? null))
+  const [state, setState] = useState<CaptureState>(initialState)
 
   // Keep the URL in sync so the current frame is always copy-pasteable.
   const syncUrl = useCallback((nextId: string | null, nextState: CaptureState) => {
@@ -96,9 +177,7 @@ export function CaptureViewer() {
     })
   }, [id, syncUrl])
 
-  // Props that drive QuestionCard's two states.
-  const submitted = state === 'revealed'
-  const selected = state === 'revealed' && question ? question.answer : null
+  const props = question ? questionProps(question, state) : null
 
   return (
     <div style={outerStyle}>
@@ -128,14 +207,8 @@ export function CaptureViewer() {
       {/* ---- Phone-like frame (the review surface) ---- */}
       <div style={frameShellStyle}>
         <div style={frameStyle} className="zd-scope">
-          {question ? (
-            <QuestionCard
-              question={{ ...question, catLabel: CAT_LABEL[question.cat] ?? question.cat }}
-              selected={selected}
-              onSelect={() => { /* review-only: selection is driven by state, not clicks */ }}
-              submitted={submitted}
-              showExplanation
-            />
+          {question && props ? (
+            <QuestionCard {...props} onSelect={() => { /* review-only: selection is driven by state, not clicks */ }} showExplanation />
           ) : (
             <div style={errorStyle}>
               <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>شناسهٔ نامعتبر</div>
@@ -157,7 +230,28 @@ export function CaptureViewer() {
   )
 }
 
-// ---- Inline styles (self-contained; app CSS vars still apply via index.css) ----
+// ---- Capture-mode styles ----
+// Full-viewport 9:16 canvas (360x640 CSS px @ DSF 3 => 1080x1920 screenshot).
+const captureRootStyle: React.CSSProperties = {
+  position: 'fixed',
+  inset: 0,
+  width: '100vw',
+  height: '100vh',
+  background: 'var(--bg, #1f1a36)',
+  color: 'var(--ink, #eee)',
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontFamily: 'inherit',
+}
+const captureCardWrapStyle: React.CSSProperties = {
+  width: 360,
+  boxSizing: 'border-box',
+  padding: '18px 14px',
+}
+
+// ---- Review-mode styles (self-contained; app CSS vars still apply via index.css) ----
 const outerStyle: React.CSSProperties = {
   minHeight: '100vh',
   background: 'var(--bg-deeper, #14122a)',
