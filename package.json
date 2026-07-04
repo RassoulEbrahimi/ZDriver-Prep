@@ -8,7 +8,8 @@
     "prebuild": "node scripts/validate-source-exams.mjs --strict",
     "build": "vite build",
     "preview": "vite preview",
-    "validate:source-exams": "node scripts/validate-source-exams.mjs --strict"
+    "validate:source-exams": "node scripts/validate-source-exams.mjs --strict",
+    "capture:batch-01": "node marketing/capture/shoot.mjs"
   },
   "dependencies": {
     "firebase": "^12.14.0",
@@ -20,6 +21,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "playwright": "^1.48.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
