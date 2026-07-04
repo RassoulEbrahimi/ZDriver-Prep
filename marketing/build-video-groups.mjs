@@ -5,6 +5,7 @@
 //   • video-groups.json        — 10 groups, machine-readable (source of truth)
 //   • video-groups.csv         — one row per group (spreadsheet, UTF-8 BOM)
 //   • elevenlabs-scripts.csv   — one row per voice clip (60 rows, UTF-8 BOM)
+//   • voiceover-review.csv     — one row per question (30 rows): old vs improved
 //   • capcut-timeline-guide.md — human step-by-step CapCut instructions
 //
 // It does NOT generate MP4 video or MP3 audio, adds no dependencies, no ffmpeg,
@@ -108,11 +109,65 @@ if (errors.length) {
 // ---------------------------------------------------------------------------
 // Build per-question + per-group records.
 // ---------------------------------------------------------------------------
+// Strip trailing sentence punctuation from a phrase so it can be wrapped in
+// «…» inside a larger spoken sentence without an awkward doubled ending.
+function stripTrailingPunct(s) {
+  return String(s ?? '').trim().replace(/[.!؟،:؛]+$/, '').trim()
+}
+
+// Turn the table-oriented `short_explanation` into a clean, natural SPOKEN
+// explanation of one or two COMPLETE sentences. Meaning comes straight from the
+// app data — nothing is invented. Removes anything that reads badly aloud:
+// "=", ellipses, markdown, and mid-sentence semicolons (→ real sentence breaks).
+function cleanExplanation(text) {
+  let s = String(text ?? '')
+  s = s.replace(/[*_`#~]/g, '')          // strip markdown
+  s = s.replace(/\s*=\s*/g, ' ')         // no equals signs in speech
+  s = s.replace(/…/g, ' ')          // remove … (ellipsis char)
+  s = s.replace(/\.{3,}/g, ' ')          // remove literal ...
+  s = s.replace(/[؛;]/g, '. ')           // semicolons → sentence break
+  s = s.replace(/\s{2,}/g, ' ').trim()   // collapse whitespace
+  s = s.replace(/\s+([.،؟!])/g, '$1')    // no space before punctuation
+  s = s.replace(/\.\s*\./g, '.').trim()  // no doubled periods
+  if (!/[.!؟]$/.test(s)) s += '.'        // ensure a complete-sentence ending
+  return s
+}
+
+// "Which option is WRONG?" style questions: the correct choice is a FALSE
+// statement, so revealing it as گزینه صحیح، would mislead. Detect by the negative
+// wording in the QUESTION text (not the answer/explanation).
+function isNegativeQuestion(v) {
+  return /نادرست|غلط|اشتباه/.test(v.question || '')
+}
+
+// Explanation clip: reveal the answer first, then one complete explanation.
+//   positive → گزینه صحیح، «<correct_answer>» است. <explanation>
+//   negative → گزینه نادرست، «<correct_answer>» است. <why it is not allowed>
+function buildExplanationVoice(v) {
+  const answer = stripTrailingPunct(v.correct_answer)
+  let body = cleanExplanation(v.short_explanation)
+  if (isNegativeQuestion(v)) {
+    // The prefix already says the option is wrong, so drop a redundant leading
+    // "این گزینه نادرست/غلط/اشتباه است." — but only if real text remains.
+    const trimmed = body.replace(/^این گزینه (?:نادرست|غلط|اشتباه) است\.\s*/, '')
+    if (trimmed.length >= 20) body = trimmed
+    return `گزینه نادرست، «${answer}» است. ${body}`
+  }
+  return `گزینه صحیح، «${answer}» است. ${body}`
+}
+
+// Question clip: short, natural framing of the existing question text.
+function buildQuestionVoice(v) {
+  return v.category === 'signs'
+    ? `این تابلو را می‌شناسی؟ ${v.question}`
+    : `به این سؤال آیین‌نامه جواب بده: ${v.question}`
+}
+
 function buildQuestion(id) {
   const v = byId.get(id)
   const isImage = v.category === 'signs' // batch-01: all signs are image-backed, all others text-only
-  const questionVoice = v.question
-  const explanationVoice = `پاسخ درست: ${v.correct_answer}. ${v.short_explanation}`
+  const questionVoice = buildQuestionVoice(v)
+  const explanationVoice = buildExplanationVoice(v)
   return {
     question_id: id,
     category: v.category,
@@ -213,7 +268,29 @@ for (const g of groups) {
 writeFileSync(join(BATCH_DIR, 'elevenlabs-scripts.csv'), csvRows(clipRows), 'utf8')
 
 // ---------------------------------------------------------------------------
-// 4) capcut-timeline-guide.md
+// 4) voiceover-review.csv (one row per question; 30 rows) — old vs improved,
+//    so a human can eyeball the spoken explanation before recording.
+// ---------------------------------------------------------------------------
+const REVIEW_COLS = [
+  'video_group_id', 'question_id', 'category', 'question', 'correct_answer',
+  'old_short_explanation', 'improved_explanation_voice_text', 'question_voice_text',
+  'suggested_question_filename', 'suggested_explanation_filename',
+]
+const reviewRows = [REVIEW_COLS]
+for (const g of groups) {
+  for (const q of g.questions) {
+    const v = byId.get(q.question_id)
+    reviewRows.push([
+      g.video_group_id, q.question_id, q.category, v.question, v.correct_answer,
+      v.short_explanation, q.explanation_voice_text, q.question_voice_text,
+      `${q.question_id}_question.mp3`, `${q.question_id}_explanation.mp3`,
+    ])
+  }
+}
+writeFileSync(join(BATCH_DIR, 'voiceover-review.csv'), csvRows(reviewRows), 'utf8')
+
+// ---------------------------------------------------------------------------
+// 5) capcut-timeline-guide.md
 // ---------------------------------------------------------------------------
 const guide = `# CapCut Timeline Guide — Social Batch 01
 
@@ -268,6 +345,6 @@ writeFileSync(join(BATCH_DIR, 'capcut-timeline-guide.md'), guide, 'utf8')
 // ---------------------------------------------------------------------------
 console.log(`✓ ${groups.length} video groups, ${grouped.length} questions, ${clipRows.length - 1} ElevenLabs clips.`)
 console.log('Wrote:')
-for (const f of ['video-groups.json', 'video-groups.csv', 'elevenlabs-scripts.csv', 'capcut-timeline-guide.md']) {
+for (const f of ['video-groups.json', 'video-groups.csv', 'elevenlabs-scripts.csv', 'voiceover-review.csv', 'capcut-timeline-guide.md']) {
   console.log('  marketing/social-batch-01/' + f)
 }
