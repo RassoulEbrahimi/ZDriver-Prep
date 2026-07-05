@@ -28,7 +28,10 @@ function coverageLabel(answeredCount: number | undefined, questionCount: number)
   const n = Math.min(answeredCount, questionCount)
   const complete = n >= questionCount
   return {
-    text: complete ? 'کامل' : `${fa(questionCount)}/${fa(n)}`,
+    // Answered first, total second: digits+slash render as one LTR run under
+    // bidi, so this displays as «۳/۳۰» (answered on the left), matching the
+    // Persian score convention and ExamCatalogScreen's best/total chip.
+    text: complete ? 'کامل' : `${fa(n)}/${fa(questionCount)}`,
     complete,
   }
 }
@@ -42,7 +45,7 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
   const supplementary = !exam.official
   const cov = coverageLabel(answeredCount, exam.questionCount)
   const covColors = cov?.complete
-    ? { background: 'var(--success-soft)', color: 'var(--success)' }
+    ? { background: 'var(--success-soft)', color: 'var(--success-ink)' }
     : { background: 'var(--primary-soft)', color: 'var(--chip-info-ink)' }
   return (
     <button
@@ -66,7 +69,7 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
         <div style={{
           width: 46, height: 46, borderRadius: 14,
           background: supplementary ? 'color-mix(in oklab, var(--accent) 16%, transparent)' : 'var(--primary-soft)',
-          color: supplementary ? 'var(--accent-deep)' : 'var(--primary)',
+          color: supplementary ? 'var(--accent-deep-text)' : 'var(--chip-info-ink)',
           display: 'grid', placeItems: 'center', flexShrink: 0,
         }}>
           <span className="zd-num" style={{ fontSize: 18, fontWeight: 800 }}>{fa(exam.id)}</span>
@@ -87,12 +90,12 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
           </span>
         ) : free ? (
           <span className="zd-chip" style={{
-            background: 'var(--success-soft)', color: 'var(--success)', whiteSpace: 'nowrap',
+            background: 'var(--success-soft)', color: 'var(--success-ink)', whiteSpace: 'nowrap',
           }}>رایگان</span>
         ) : supplementary ? (
           <span className="zd-chip" style={{
             background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-            color: 'var(--accent-deep)',
+            color: 'var(--accent-deep-text)',
           }}>
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
@@ -139,11 +142,11 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
             {cov.text}
           </span>
         ) : (
-          <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep)' : 'var(--chip-info-ink)' }}>
+          <span style={{ fontSize: 11.5, fontWeight: 600, color: supplementary ? 'var(--accent-deep-text)' : 'var(--chip-info-ink)' }}>
             {supplementary ? 'مرور آزاد' : 'شروع تمرین'}
           </span>
         )}
-        <ChevLeftIcon size={16} color="var(--ink-4)" stroke={2.4} />
+        <ChevLeftIcon size={16} color="var(--ink-3)" stroke={2.4} />
       </div>
     </button>
   )
@@ -172,7 +175,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
             <ChevRightIcon size={18} />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 700, color: 'var(--ink-2)' }}>
-            <BookIcon size={16} color="var(--primary)" stroke={2} />
+            <BookIcon size={16} color="var(--chip-info-ink)" stroke={2} />
             <span className="zd-num">{fa(exams.length)} آزمون</span>
           </div>
           <div style={{ width: 40 }} />
@@ -210,7 +213,7 @@ export function PracticeCatalogScreen({ exams, coverage, onOpenExam, isLocked, o
               <div className="zd-h2">مرور تکمیلی</div>
               <span className="zd-chip" style={{
                 background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-                color: 'var(--accent-deep)',
+                color: 'var(--accent-deep-text)',
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
