@@ -145,12 +145,12 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                   <div className="zd-num" style={{ fontSize: 26, fontWeight: 800, color: '#fff', lineHeight: 1 }}>
                     {fa(readiness)}<span style={{ fontSize: 14, marginRight: 2 }}>٪</span>
                   </div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.88)', marginTop: 2 }}>بر اساس بهترین آزمون</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.88)', marginTop: 2, textAlign: 'center', lineHeight: 1.4 }}>بر اساس بهترین آزمون</div>
                 </>
               ) : (
                 <>
                   <div style={{ fontSize: 22, fontWeight: 800, color: 'rgba(255,255,255,0.85)', lineHeight: 1 }}>—</div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.88)', marginTop: 4, lineHeight: 1.5, padding: '0 8px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.88)', marginTop: 4, lineHeight: 1.5, padding: '0 8px', textAlign: 'center' }}>
                     هنوز آزمونی ثبت نشده
                   </div>
                 </>
@@ -164,7 +164,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.92)', lineHeight: 1.55 }}>
                 ۱۷ آزمون رسمی + مرور تکمیلی
               </div>
-              <button className="zd-btn zd-btn-accent" style={{ marginTop: 12, height: 42, padding: '0 18px', fontSize: 14 }}
+              <button className="zd-btn zd-btn-accent" style={{ marginTop: 12, height: 44, padding: '0 18px', fontSize: 14 }}
                       onClick={onContinue}>
                 <PlayIcon size={14} stroke={2.4} />
                 {hasActivity ? 'ادامه دادن' : 'شروع تمرین'}
@@ -185,7 +185,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                   <Icon size={14} stroke={2.2} />
                   <div className="zd-num" style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>{value}</div>
                 </div>
-                <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.9)' }}>{label}</div>
+                <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.9)' }}>{label}</div>
               </div>
             ))}
           </div>
@@ -209,7 +209,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
             <div style={{ flex: 1, fontSize: 13, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.6 }}>
               برای ذخیرهٔ نتیجه‌ها وارد حساب شو
             </div>
-            <ChevLeftIcon size={16} color="var(--primary)" stroke={2.4} />
+            <ChevLeftIcon size={16} color="var(--chip-info-ink)" stroke={2.4} />
           </button>
         </div>
       )}
@@ -263,7 +263,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
           }}>
             <div style={{
               width: 46, height: 46, borderRadius: 14,
-              background: 'var(--primary-soft)', color: 'var(--primary)',
+              background: 'var(--primary-soft)', color: 'var(--chip-info-ink)',
               display: 'grid', placeItems: 'center',
             }}>
               <BookIcon size={24} stroke={1.9} />
@@ -274,7 +274,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                 یادگیری، پاسخ فوری، بدون زمان
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--primary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--chip-info-ink)' }}>
               شروع <ChevLeftIcon size={15} stroke={2.4} />
             </div>
           </button>
@@ -298,7 +298,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
                 شبیه‌سازی واقعی، با زمان، نتیجه در پایان
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--accent-deep)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: 'var(--accent-deep-text)' }}>
               شروع <ChevLeftIcon size={15} stroke={2.4} />
             </div>
           </button>
@@ -321,7 +321,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
             <BulbIcon size={18} />
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-deep)' }}>نکتهٔ روز</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-deep-text)' }}>نکتهٔ روز</div>
             <div style={{ fontSize: 13.5, color: 'var(--ink-2)', marginTop: 4, lineHeight: 1.6 }}>
               {tipOfTheDay()}
             </div>
@@ -333,7 +333,7 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
       <div style={{ padding: '24px 20px 8px' }}>
         <div className="flex justify-between items-baseline" style={{ marginBottom: 4 }}>
           <div className="zd-h2">مسیر یادگیری</div>
-          <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>۵ موضوع</div>
+          <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>{fa(categories.length)} موضوع</div>
         </div>
         <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 4 }}>
           هر گره یک موضوع است — برای ورود لمس کن

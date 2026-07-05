@@ -45,7 +45,7 @@ export function SubscriptionBadge({ onOpenAccount }: Props = {}) {
   let dot = 'var(--ink-4)'
 
   if (status === 'loading') {
-    label = 'بررسی اشتراک...'
+    label = 'بررسی اشتراک…'
   } else if (status === 'unavailable') {
     label = 'وضعیت اشتراک در دسترس نیست'
   } else if (entitlement.active && entitlement.status === 'active') {
