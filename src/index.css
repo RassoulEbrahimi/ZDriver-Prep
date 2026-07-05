@@ -33,6 +33,12 @@
 
   --success:     #4F9F73;
   --success-soft:#E3F1E8;
+  /* Text-grade green for small labels/chips on --success-soft or --card. Raw
+     --success is only 2.7:1 on light --success-soft; this mix reads 5.0:1 on
+     the chip bg and 5.8:1 on white while keeping the success hue. Dark mode
+     overrides it with a lifted green (below). Keep --success itself for
+     fills/icons/borders — do not use it for small text. */
+  --success-ink: color-mix(in oklab, var(--success) 65%, var(--ink));
   --danger:      #C76B6B;
   --danger-soft: #FBE7E5;
   --warn:        #D6A24A;
@@ -104,6 +110,7 @@
   --chip-info-ink:#C0B4EA; /* light lavender: readable on dark --primary-soft/--card */
   --accent-deep-text: var(--accent-deep); /* 4.8:1+ on dark --card as-is */
   --success-soft:#1F3A2D;
+  --success-ink: #7CC49A; /* 6.0:1 on dark --success-soft, 8.0:1 on dark --card */
   --danger-soft: #3A2024;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.25);
   --shadow-md: 0 2px 4px rgba(0,0,0,0.25), 0 12px 28px rgba(0,0,0,0.35);
