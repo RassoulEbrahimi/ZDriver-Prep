@@ -11,7 +11,8 @@ dist/
 # Local-only: source PDF (aeinname_asli.pdf) and extraction drafts — never commit.
 _local/
 
-# M6B: manual video/audio outputs (CapCut exports, ElevenLabs clips) — never commit.
+# M6B: manual video/audio outputs (CapCut exports, ElevenLabs clips, SFX, mixes) — never commit.
 # Screenshots (marketing/social-batch-01/screenshots/) ARE tracked; media is not.
 marketing/social-batch-01/videos/
 marketing/social-batch-01/audio/
+marketing/social-batch-01/audio-mix/
