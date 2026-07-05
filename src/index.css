@@ -108,7 +108,11 @@
   --line-2:      #38345A;
   --primary-soft:#2A2552;
   --chip-info-ink:#C0B4EA; /* light lavender: readable on dark --primary-soft/--card */
-  --accent-deep-text: var(--accent-deep); /* 4.8:1+ on dark --card as-is */
+  /* Lifted 25% toward white: plain --accent-deep is only ~3.6:1 on the 16%
+     accent-tinted dark chips (Practice supplementary/«غیررسمی»). This mix reads
+     ≥4.77:1 on every accent-tinted dark surface in all three palettes while
+     keeping the warm hue; it tracks palette switches automatically. */
+  --accent-deep-text: color-mix(in oklab, var(--accent-deep) 75%, #fff);
   --success-soft:#1F3A2D;
   --success-ink: #7CC49A; /* 6.0:1 on dark --success-soft, 8.0:1 on dark --card */
   --danger-soft: #3A2024;
