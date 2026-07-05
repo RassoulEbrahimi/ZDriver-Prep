@@ -31,7 +31,12 @@ const PATH_D = buildPath()
 export function JourneyPath({ categories, onPick }: Props) {
   return (
     <div className="relative w-full" style={{ height: H }}>
+      {/* preserveAspectRatio="none" stretches the path horizontally with the
+          container, so the calc() node positions below stay centered on it at
+          any screen width (default centering left nodes ~30px off the path on
+          a 400px-wide phone). Height is fixed, so only x scales. */}
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H}
+           preserveAspectRatio="none"
            className="absolute inset-0">
         <defs>
           <linearGradient id="journey-grad" x1="0" y1="0" x2="0" y2="1">
@@ -56,9 +61,12 @@ export function JourneyPath({ categories, onPick }: Props) {
             {/* Category node button */}
             <button
               onClick={() => onPick(cat)}
+              aria-label={cat.title}
               style={{
                 position: 'absolute',
-                right: `${((W - p.x - 35) / W) * 100}%`,
+                // Percentage locates the node CENTER on the stretched path;
+                // the -35px pulls back half the fixed 70px button width.
+                right: `calc(${((W - p.x) / W) * 100}% - 35px)`,
                 top: p.y - 35,
                 width: 70, height: 70,
                 borderRadius: 24,
@@ -82,11 +90,13 @@ export function JourneyPath({ categories, onPick }: Props) {
               </div>
             </button>
 
-            {/* Label beside node */}
+            {/* Label beside node — anchored just past the node's far edge (same
+                percentage system as the node itself, +45px = half node + gap) so
+                the text sits next to the emoji instead of running under it. */}
             <div style={{
               position: 'absolute',
               top: p.y - 16,
-              [isLeft ? 'left' : 'right']: 12,
+              [isLeft ? 'left' : 'right']: `calc(${((isLeft ? p.x : W - p.x) / W) * 100}% + 45px)`,
               width: 130,
               textAlign: isLeft ? 'left' : 'right',
               direction: 'rtl',
