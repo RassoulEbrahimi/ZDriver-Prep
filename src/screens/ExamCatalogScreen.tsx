@@ -30,8 +30,8 @@ interface ExamStatus {
 
 function statusChipColors(passed: boolean) {
   return passed
-    ? { background: 'var(--success-soft)', color: 'var(--success)' }
-    : { background: 'var(--danger-soft)',  color: 'var(--danger)' }
+    ? { background: 'var(--success-soft)', color: 'var(--success-ink)' }
+    : { background: 'var(--danger-soft)',  color: 'var(--danger-ink)' }
 }
 
 /** Single exam card. Exam framing: shows question count + duration. Exam 18
@@ -68,7 +68,7 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
         <div style={{
           width: 46, height: 46, borderRadius: 14,
           background: supplementary ? 'color-mix(in oklab, var(--accent) 16%, transparent)' : 'var(--primary-soft)',
-          color: supplementary ? 'var(--accent-deep)' : 'var(--primary)',
+          color: supplementary ? 'var(--accent-deep-text)' : 'var(--chip-info-ink)',
           display: 'grid', placeItems: 'center', flexShrink: 0,
         }}>
           <span className="zd-num" style={{ fontSize: 18, fontWeight: 800 }}>{fa(exam.id)}</span>
@@ -94,7 +94,7 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
         ) : supplementary ? (
           <span className="zd-chip" style={{
             background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-            color: 'var(--accent-deep)',
+            color: 'var(--accent-deep-text)',
           }}>
             <RefreshIcon size={12} stroke={2} /> مرور تکمیلی
           </span>
@@ -109,14 +109,11 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
               {scoreText}
             </span>
           </div>
-        ) : (
-          <span className="zd-chip" style={{
-            background: 'color-mix(in oklab, var(--accent) 14%, transparent)',
-            color: 'var(--accent-deep)',
-          }}>
-            <TrophyIcon size={12} stroke={2} /> رسمی
-          </span>
-        )}
+        ) : null}
+        {/* No fallback chip: an unattempted, unlocked official card shows only
+            its medallion — «رسمی» now lives once in the section header, and the
+            top-right slot is reserved for real state (lock/free/status). Same
+            pattern the Practice catalog already ships. */}
       </div>
 
       {/* title + meta */}
@@ -152,11 +149,11 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
             {statusLabel}
           </span>
         ) : (
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent-deep)' }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent-deep-text)' }}>
             {supplementary ? 'مرور تکمیلی' : 'شروع آزمون'}
           </span>
         )}
-        <ChevLeftIcon size={16} color="var(--accent-deep)" stroke={2.4} />
+        <ChevLeftIcon size={16} color="var(--accent-deep-text)" stroke={2.4} />
       </div>
     </button>
   )
@@ -225,7 +222,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
           <div style={{ marginTop: 12 }}>
             <span className="zd-chip" style={{
               background: 'color-mix(in oklab, var(--accent) 14%, transparent)',
-              color: 'var(--accent-deep)',
+              color: 'var(--accent-deep-text)',
             }}>
               <ClockIcon size={13} stroke={2} /> با زمان · نتیجه در پایان
             </span>
@@ -261,16 +258,26 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
           }}>🎲</div>
           <div style={{ position: 'relative', flex: 1 }}>
             <div style={{ fontSize: 17, fontWeight: 800 }}>شروع آزمون شانسی</div>
-            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.82)', marginTop: 4, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.9)', marginTop: 4, lineHeight: 1.5 }}>
               یکی از {fa(official.length)} آزمون رسمی به‌صورت تصادفی انتخاب می‌شود
             </div>
           </div>
           <ChevLeftIcon size={20} color="rgba(255,255,255,0.9)" stroke={2.4} />
         </button>
 
-        {/* Official exams 1..17 */}
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', margin: '8px 2px 12px' }}>
-          <div className="zd-h2">آزمون‌های آیین‌نامه</div>
+        {/* Official exams 1..17 — «رسمی» stated once here (mirrors the
+            «غیررسمی» chip on the supplementary section) instead of repeating
+            on all 17 cards. */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', margin: '8px 2px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+            <div className="zd-h2">آزمون‌های آیین‌نامه</div>
+            <span className="zd-chip" style={{
+              background: 'color-mix(in oklab, var(--accent) 14%, transparent)',
+              color: 'var(--accent-deep-text)', whiteSpace: 'nowrap',
+            }}>
+              <TrophyIcon size={12} stroke={2} /> رسمی
+            </span>
+          </div>
           <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>با زمان · بدون نمایش پاسخ</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
@@ -284,7 +291,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
               <div className="zd-h2">مرور تکمیلی</div>
               <span className="zd-chip" style={{
                 background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-                color: 'var(--accent-deep)',
+                color: 'var(--accent-deep-text)',
               }}>غیررسمی</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
@@ -335,7 +342,7 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
               display: 'grid', placeItems: 'center', fontSize: 38,
               boxShadow: '0 12px 26px color-mix(in oklab, var(--accent) 35%, transparent)',
             }}>🎲</div>
-            <div className="zd-eyebrow" style={{ color: 'var(--accent-deep)', fontWeight: 700 }}>آزمون شانسی</div>
+            <div className="zd-eyebrow" style={{ color: 'var(--accent-deep-text)', fontWeight: 700 }}>آزمون شانسی</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)', marginTop: 4 }}>
               آزمون {fa(randomPick)} برای تو انتخاب شد
             </div>
