@@ -175,7 +175,9 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <span className="zd-chip" style={{
               background: `color-mix(in oklab, ${cat?.color ?? 'var(--primary)'} 14%, transparent)`,
-              color: cat?.color ?? 'var(--primary)',
+              // 55% toward --tint-ink: AA for all five category colors in both
+              // themes on the 14% tint (see --tint-ink in index.css).
+              color: `color-mix(in oklab, ${cat?.color ?? 'var(--primary)'} 55%, var(--tint-ink))`,
             }}>
               {cat?.emoji} {cat?.title}
             </span>
