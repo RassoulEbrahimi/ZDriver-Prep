@@ -85,7 +85,9 @@ export function MistakesScreen({ progress, questions, categories, onStartReview 
                 <div className="flex justify-between items-center" style={{ marginBottom: 10 }}>
                   <span className="zd-chip" style={{
                     background: `color-mix(in oklab, ${cat?.color ?? 'var(--primary)'} 14%, transparent)`,
-                    color: cat?.color ?? 'var(--primary)',
+                    // 55% cat color toward --tint-ink: AA on the 14% tint for all
+                    // five category colors in both themes (see --tint-ink note).
+                    color: `color-mix(in oklab, ${cat?.color ?? 'var(--primary)'} 55%, var(--tint-ink))`,
                   }}>
                     {cat?.emoji} {cat?.title}
                   </span>
@@ -97,12 +99,17 @@ export function MistakesScreen({ progress, questions, categories, onStartReview 
                   {q.text}
                 </div>
 
+                {/* flex-start (not center): most answers wrap to 2 lines here, and a
+                    row-centered icon floats between the lines; top-aligned with a
+                    2px nudge it sits on the first line like a list marker. */}
                 <div style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
+                  display: 'flex', alignItems: 'flex-start', gap: 8,
                   fontSize: 13, padding: '8px 10px',
                   background: 'var(--success-soft)', borderRadius: 10,
                 }}>
-                  <CheckIcon size={16} stroke={2.4} color="var(--success)" />
+                  <span style={{ marginTop: 2, flexShrink: 0, display: 'inline-flex' }} aria-hidden="true">
+                    <CheckIcon size={16} stroke={2.4} color="var(--success-ink)" />
+                  </span>
                   <span style={{ color: 'var(--ink-2)' }}>پاسخ درست: </span>
                   <span style={{ color: 'var(--ink)', fontWeight: 700 }}>{correctText}</span>
                 </div>
@@ -121,7 +128,7 @@ export function MistakesScreen({ progress, questions, categories, onStartReview 
                 <div className="flex" style={{ gap: 8, marginTop: 10 }}>
                   <button onClick={() => onStartReview([q.id])} className="zd-btn zd-btn-ghost" style={{ flex: 1, padding: '10px 14px', fontSize: 13 }}>دوباره امتحان کن</button>
                   {q.explanation && (
-                    <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
+                    <button onClick={() => setOpenId(id => id === q.id ? null : q.id)} aria-expanded={openId === q.id} className="zd-btn zd-btn-outline" style={{ padding: '10px 14px', fontSize: 13 }}>توضیح</button>
                   )}
                 </div>
               </div>
