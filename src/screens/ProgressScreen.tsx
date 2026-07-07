@@ -311,7 +311,10 @@ export function ProgressScreen({
                     <div style={{
                       width: 38, height: 38, borderRadius: 12, flexShrink: 0,
                       background: `color-mix(in oklab, ${e.cat.color} 14%, transparent)`,
-                      color: e.cat.color, display: 'grid', placeItems: 'center',
+                      // 55% toward --tint-ink keeps the glyph identifiable in dark
+                      // mode (raw cat colors drop to 1.6:1 there). Bar fill below
+                      // stays raw by design — it is a fill, not a foreground.
+                      color: `color-mix(in oklab, ${e.cat.color} 55%, var(--tint-ink))`, display: 'grid', placeItems: 'center',
                       fontWeight: 800, fontSize: 18,
                     }}>{e.cat.emoji}</div>
                     <div className="flex-1 min-w-0">
