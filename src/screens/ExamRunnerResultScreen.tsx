@@ -253,13 +253,13 @@ function ExamAnswerReview({ result, index, onBack }: { result: SourceExamResult;
           <div style={{ marginTop: 16, fontSize: 13, lineHeight: 1.9, color: 'var(--ink-2)' }}>
             <div>
               پاسخ تو:{' '}
-              <span style={{ fontWeight: 700, color: answered ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'var(--ink-3)' }}>
+              <span style={{ fontWeight: 700, color: answered ? (isCorrect ? 'var(--success-ink)' : 'var(--danger-ink)') : 'var(--ink-3)' }}>
                 {userAns !== null ? q.options[userAns] : 'بدون پاسخ'}
               </span>
             </div>
             <div>
               پاسخ درست:{' '}
-              <span style={{ fontWeight: 700, color: 'var(--success)' }}>{q.options[q.answer]}</span>
+              <span style={{ fontWeight: 700, color: 'var(--success-ink)' }}>{q.options[q.answer]}</span>
             </div>
           </div>
 
@@ -273,7 +273,7 @@ function ExamAnswerReview({ result, index, onBack }: { result: SourceExamResult;
                 <div style={{ width: 26, height: 26, borderRadius: 8, background: 'var(--primary)', color: '#fff', display: 'grid', placeItems: 'center' }}>
                   <BulbIcon size={16} stroke={2} />
                 </div>
-                <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--primary-ink)' }}>توضیح</div>
+                <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--chip-info-ink)' }}>توضیح</div>
               </div>
               <div style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.65 }}>{q.explanation}</div>
             </div>
