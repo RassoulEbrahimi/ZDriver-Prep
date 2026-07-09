@@ -157,7 +157,7 @@ export function PracticeExamQuestionScreen({
             {!official && !review && (
               <span className="zd-chip" style={{
                 background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-                color: 'var(--accent-deep)',
+                color: 'var(--accent-deep-text)',
               }}>مرور تکمیلی · غیررسمی</span>
             )}
           </div>
@@ -195,12 +195,13 @@ export function PracticeExamQuestionScreen({
                   <ImageIcon size={13} stroke={2} /> سؤال تصویری
                 </span>
               )}
-              <button onClick={() => onToggleBookmark(q.id)} aria-label="نشان‌گذاری" style={{
+              <button onClick={() => onToggleBookmark(q.id)} aria-label="نشان‌گذاری"
+                aria-pressed={progress.bookmarked.includes(q.id)} style={{
                 background: progress.bookmarked.includes(q.id) ? 'color-mix(in oklab, var(--accent) 18%, transparent)' : 'transparent',
                 border: 'none', cursor: 'pointer',
                 width: 44, height: 44, borderRadius: 13,
                 display: 'grid', placeItems: 'center',
-                color: progress.bookmarked.includes(q.id) ? 'var(--accent-deep)' : 'var(--ink-3)',
+                color: progress.bookmarked.includes(q.id) ? 'var(--accent-deep-text)' : 'var(--ink-3)',
               }}>
                 {progress.bookmarked.includes(q.id) ? <BookmarkFilledIcon size={19} /> : <BookmarkIcon size={19} />}
               </button>
@@ -245,7 +246,9 @@ export function PracticeExamQuestionScreen({
                 }}>
                   {isCorrect ? <CheckIcon size={16} stroke={2.6} /> : <BulbIcon size={16} stroke={2} />}
                 </div>
-                <div style={{ fontWeight: 700, fontSize: 14, color: isCorrect ? 'var(--success)' : 'var(--primary-ink)' }}>
+                {/* --primary-ink is not dark-overridden (≈1.05:1 on dark --primary-soft);
+                    the ink tokens read ≥4.9:1 in both themes. */}
+                <div style={{ fontWeight: 700, fontSize: 14, color: isCorrect ? 'var(--success-ink)' : 'var(--chip-info-ink)' }}>
                   {isCorrect ? 'پاسخ درست' : 'توضیح'}
                 </div>
               </div>

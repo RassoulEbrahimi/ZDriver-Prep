@@ -274,8 +274,8 @@ body {
   background: var(--primary-soft);
   color: var(--primary-ink);
 }
-.zd-chip-success { background: var(--success-soft); color: var(--success); }
-.zd-chip-danger  { background: var(--danger-soft);  color: var(--danger); }
+.zd-chip-success { background: var(--success-soft); color: var(--success-ink); }
+.zd-chip-danger  { background: var(--danger-soft);  color: var(--danger-ink); }
 .zd-chip-neutral { background: var(--bg-deeper);    color: var(--ink-2); }
 
 /* ── Progress bar ────────────────────────────────────────────── */
@@ -399,6 +399,9 @@ body {
 }
 .zd-option:active { transform: scale(0.99); }
 .zd-option.is-selected { border-color: var(--primary); background: var(--primary-soft); }
+/* Dark: --primary reads only ~1.8:1 against the dark card, so the selected
+   border nearly vanishes; lift it to the readable lavender. Light unchanged. */
+[data-theme="dark"] .zd-option.is-selected { border-color: var(--chip-info-ink); }
 .zd-option.is-correct  { border-color: var(--success); background: var(--success-soft); color: var(--ink); }
 .zd-option.is-wrong    { border-color: var(--danger);  background: var(--danger-soft);  color: var(--ink); }
 
@@ -414,8 +417,11 @@ body {
   font-family: var(--font);
 }
 .zd-option.is-selected .zd-opt-letter { background: var(--primary); color: #fff; }
-.zd-option.is-correct  .zd-opt-letter { background: var(--success); color: #fff; }
-.zd-option.is-wrong    .zd-opt-letter { background: var(--danger);  color: #fff; }
+/* Reveal-state fills darkened 25% toward #1F1A36 so the white letter reads
+   ≥4.5:1 (raw --success/--danger give only 3.2/3.4). Fixed mix target — not
+   var(--ink) — because these fills are intentionally theme-invariant. */
+.zd-option.is-correct  .zd-opt-letter { background: color-mix(in oklab, var(--success) 75%, #1F1A36); color: #fff; }
+.zd-option.is-wrong    .zd-opt-letter { background: color-mix(in oklab, var(--danger) 75%, #1F1A36);  color: #fff; }
 
 .zd-opt-text { flex: 1; font-size: 15px; line-height: 1.5; }
 .zd-opt-mark { width: 22px; height: 22px; flex-shrink: 0; opacity: 0; transition: opacity .2s; }

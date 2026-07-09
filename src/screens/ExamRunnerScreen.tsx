@@ -127,10 +127,10 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
       }}>
         <div className="zd-header-row">
           <button className="zd-icon-btn" onClick={() => setConfirmExit(true)} aria-label="خروج"><CloseIcon size={18} /></button>
-          <div style={{
+          <div role="timer" aria-label={`زمان باقی‌مانده ${formatTime(timeLeft)}`} style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 12,
             background: lowTime ? 'var(--danger-soft)' : 'var(--primary-soft)',
-            color: lowTime ? 'var(--danger)' : 'var(--ink)', fontWeight: 700,
+            color: lowTime ? 'var(--danger-ink)' : 'var(--ink)', fontWeight: 700,
           }}>
             <ClockIcon size={16} stroke={2.2} />
             <span className="zd-num" style={{ fontSize: 15, letterSpacing: 0.5 }}>{formatTime(timeLeft)}</span>
@@ -159,7 +159,9 @@ export function ExamRunnerScreen({ examId, fallbackPool, categories, onFinish, o
               return (
                 <div key={i} style={{
                   flex: 1, height: 6, borderRadius: 999,
-                  background: current ? 'var(--primary)' : answered ? 'var(--primary-soft)' : 'var(--line)',
+                  // --chip-info-ink = --primary in light (identical rendering) but a
+                  // readable lavender in dark, where raw --primary is ~1.7:1 vs --line.
+                  background: current ? 'var(--chip-info-ink)' : answered ? 'var(--primary-soft)' : 'var(--line)',
                   border: answered && !current ? '1px solid color-mix(in oklab, var(--primary) 35%, transparent)' : 'none',
                   transition: 'background .2s',
                 }} />
@@ -268,7 +270,7 @@ function ExitConfirmSheet({ onContinue, onExit }: { onContinue: () => void; onEx
             ادامه آزمون
           </button>
           <button onClick={onExit} className="zd-btn zd-btn-outline zd-btn-block"
-            style={{ height: 46, color: 'var(--danger)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
+            style={{ height: 46, color: 'var(--danger-ink)', borderColor: 'color-mix(in oklab, var(--danger) 45%, transparent)' }}>
             خروج از آزمون
           </button>
         </div>
