@@ -209,6 +209,16 @@ body {
 }
 .zd-scroll::-webkit-scrollbar { display: none; }
 
+/* ── Video gallery grid ──────────────────────────────────────── */
+/* With an odd card count the trailing card would sit alone at the row start;
+   span it across both columns and center it at normal single-column width
+   (50% minus half the 12px gap). Even counts are unaffected. */
+.zd-video-grid > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - 6px);
+}
+
 /* ── Press feedback utility ──────────────────────────────────── */
 /* Tap acknowledgement for custom-styled tappables (hero pills, video cards)
    that don't use .zd-btn/.zd-icon-btn — same scale language as those. */
