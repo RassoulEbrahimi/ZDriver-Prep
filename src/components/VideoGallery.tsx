@@ -37,22 +37,26 @@ export function VideoGallery({ videos, onSelect, onClose }: Props) {
         </button>
       </div>
 
-      {/* 2-column grid */}
+      {/* 2-column grid — 3 columns squeezed 9:16 cards to ~103px on a 375px
+          screen (unreadable titles, oversized play overlay); 2 gives ~157px. */}
       <div style={{
         padding: '16px 20px 32px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
+        gridTemplateColumns: 'repeat(2, 1fr)',
         gap: 12,
       }}>
         {videos.map(v => (
           <button
             key={v.id}
             onClick={() => onSelect(v)}
+            className="zd-press"
             style={{
-              all: 'unset',
+              // explicit button resets (not `all: unset`, which would override
+              // the .zd-press :active transform at inline-style specificity)
+              border: 'none', padding: 0, margin: 0, textAlign: 'right',
               cursor: 'pointer',
               display: 'block',
-              borderRadius: 16,
+              borderRadius: 'var(--radius)',
               overflow: 'hidden',
               background: 'var(--card)',
               boxShadow: 'var(--shadow-sm)',
@@ -82,6 +86,8 @@ export function VideoGallery({ videos, onSelect, onClose }: Props) {
                 <img
                   src={v.poster}
                   alt={v.title}
+                  loading="lazy"
+                  decoding="async"
                   onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />

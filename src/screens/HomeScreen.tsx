@@ -128,10 +128,10 @@ export function HomeScreen({ progress, categories, attempts, onContinue, onPickC
               </div>
             </button>
             <div className="flex" style={{ gap: 8 }}>
-              <button aria-label="آموزش تصویری" style={pillBtn} onClick={() => setShowGallery(true)}>
+              <button aria-label="آموزش تصویری" className="zd-press" style={pillBtn} onClick={() => setShowGallery(true)}>
                 <VideoIcon size={18} color="#fff" />
               </button>
-              <button aria-label="تنظیمات" style={pillBtn} onClick={onOpenSettings}>
+              <button aria-label="تنظیمات" className="zd-press" style={pillBtn} onClick={onOpenSettings}>
                 <SettingsIcon size={18} color="#fff" />
               </button>
             </div>
