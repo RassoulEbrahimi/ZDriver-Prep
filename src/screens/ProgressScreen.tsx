@@ -42,7 +42,9 @@ function WeekBarChart({ days }: { days: { label: string; pct: number }[] }) {
               opacity: d.pct > 0 ? 1 : 0.6,
             }} />
           </div>
-          <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{d.label}</div>
+          {/* 10px matched the tab-bar label size flagged and bumped to 11px
+              in #150; the single weekday letters here read the same way. */}
+          <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{d.label}</div>
         </div>
       ))}
     </div>
@@ -79,7 +81,14 @@ export function ProgressScreen({
   const readyLabel = !examStats
     ? 'هنوز آزمونی ثبت نشده'
     : readiness >= 75 ? 'آمادهٔ آزمون' : readiness >= 50 ? 'مسیر خوبی داری' : 'هنوز نیاز به تمرین داری'
+  // readyColor drives the ring stroke (a graphic fill — raw brand colors are
+  // fine there, same as chart bars elsewhere in this screen). The eyebrow
+  // TEXT needs its own ink-safe color: raw --success/--accent fail AA in
+  // light mode (3.2:1 / 2.2:1), and there's no --warn text-ink token, so the
+  // low band falls back to neutral ink — the ring + wording already carry
+  // the signal, so losing the amber tint on the label isn't a regression.
   const readyColor = readiness >= 75 ? 'var(--success)' : readiness >= 50 ? 'var(--accent)' : 'var(--warn)'
+  const readyTextColor = readiness >= 75 ? 'var(--success-ink)' : readiness >= 50 ? 'var(--accent-deep-text)' : 'var(--ink-2)'
 
   // ── Last 7 days of exam scores (best score % per day, real dates) ──
   const week = useMemo(() => {
@@ -103,12 +112,12 @@ export function ProgressScreen({
   const badges = useMemo(() => {
     const a = attempts ?? []
     return [
-      { icon: FlagIcon,    label: 'اولین آزمون',  got: a.length >= 1,                                  color: 'var(--primary)' },
-      { icon: AwardIcon,   label: 'قبولی اول',    got: a.some(x => x.passed),                          color: 'var(--success)' },
-      { icon: ShieldIcon,  label: 'نمرهٔ کامل',    got: a.some(x => x.score === x.totalQuestions),      color: 'var(--accent-deep)' },
-      { icon: TargetIcon,  label: '۵ آزمون',      got: a.length >= 5,                                  color: 'var(--accent)' },
-      { icon: TrophyIcon,  label: '۱۰ آزمون',     got: a.length >= 10,                                 color: 'var(--primary)' },
-      { icon: RefreshIcon, label: 'مرور فعال',    got: wrongCount > 0 || bookmarkCount > 0,            color: 'var(--danger)' },
+      { icon: FlagIcon,    label: 'اولین آزمون',  got: a.length >= 1,                                  color: 'var(--chip-info-ink)' },
+      { icon: AwardIcon,   label: 'قبولی اول',    got: a.some(x => x.passed),                          color: 'var(--success-ink)' },
+      { icon: ShieldIcon,  label: 'نمرهٔ کامل',    got: a.some(x => x.score === x.totalQuestions),      color: 'var(--accent-deep-text)' },
+      { icon: TargetIcon,  label: '۵ آزمون',      got: a.length >= 5,                                  color: 'var(--accent-deep-text)' },
+      { icon: TrophyIcon,  label: '۱۰ آزمون',     got: a.length >= 10,                                 color: 'var(--chip-info-ink)' },
+      { icon: RefreshIcon, label: 'مرور فعال',    got: wrongCount > 0 || bookmarkCount > 0,            color: 'var(--danger-ink)' },
     ]
   }, [attempts, wrongCount, bookmarkCount])
 
@@ -156,7 +165,7 @@ export function ProgressScreen({
               <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>آمادگی</div>
             </ProgressRing>
             <div className="flex-1">
-              <div className="zd-eyebrow" style={{ color: readyColor, fontWeight: 700 }}>وضعیت آزمون</div>
+              <div className="zd-eyebrow" style={{ color: readyTextColor, fontWeight: 700 }}>وضعیت آزمون</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)', marginTop: 4, lineHeight: 1.3 }}>
                 {readyLabel}
               </div>
@@ -216,14 +225,14 @@ export function ProgressScreen({
               <StatCard
                 label="آزمون‌های انجام‌شده"
                 value={fa(examStats.count)}
-                color="var(--primary)"
+                color="var(--chip-info-ink)"
                 icon={TargetIcon}
               />
               <StatCard
                 label="آخرین نمره"
                 value={`${fa(examStats.latest.score)} از ${fa(examStats.latest.totalQuestions)}`}
                 sub={examStats.latest.passed ? 'قبول' : 'مردود'}
-                color={examStats.latest.passed ? 'var(--success)' : 'var(--danger)'}
+                color={examStats.latest.passed ? 'var(--success-ink)' : 'var(--danger-ink)'}
                 icon={examStats.latest.passed ? CheckIcon : CloseIcon}
               />
             </div>
@@ -232,14 +241,14 @@ export function ProgressScreen({
                 label="بهترین نمره"
                 value={`${fa(examStats.best.score)} از ${fa(examStats.best.totalQuestions)}`}
                 sub={examStats.best.passed ? 'قبول' : 'مردود'}
-                color={examStats.best.passed ? 'var(--success)' : 'var(--accent)'}
+                color={examStats.best.passed ? 'var(--success-ink)' : 'var(--accent-deep-text)'}
                 icon={TrophyIcon}
               />
               <StatCard
                 label="میانگین نمره‌ها"
                 value={fa(examStats.avg)}
                 sub={`در ${fa(examStats.count)} آزمون`}
-                color="var(--accent)"
+                color="var(--accent-deep-text)"
                 icon={AwardIcon}
               />
             </div>
@@ -288,14 +297,14 @@ export function ProgressScreen({
                 label="سؤال‌های اشتباه"
                 value={fa(wrongCount)}
                 sub="برای مرور"
-                color="var(--danger)"
+                color="var(--danger-ink)"
                 icon={CloseIcon}
               />
               <StatCard
                 label="نشان‌شده"
                 value={fa(bookmarkCount)}
                 sub="برای مرور بعدی"
-                color="var(--primary)"
+                color="var(--chip-info-ink)"
                 icon={BookmarkFilledIcon}
               />
             </div>
@@ -352,10 +361,14 @@ export function ProgressScreen({
                 border: '1px solid var(--line)',
                 opacity: got ? 1 : 0.55,
               }}>
+                {/* Locked-badge lock glyph was --ink-4 on --line: 1.65:1 light /
+                    2.09:1 dark, below even the 3:1 icon bar — most badges sit
+                    locked for a new user, so this was the default first
+                    impression. --ink-3 clears 4.98/5.06:1 in both themes. */}
                 <div style={{
                   width: 44, height: 44, borderRadius: 14, margin: '0 auto',
                   background: got ? `color-mix(in oklab, ${color} 16%, transparent)` : 'var(--line)',
-                  color: got ? color : 'var(--ink-4)',
+                  color: got ? color : 'var(--ink-3)',
                   display: 'grid', placeItems: 'center', marginBottom: 6,
                 }}>
                   {got ? <Icon size={22} /> : <LockIcon size={18} />}
