@@ -209,6 +209,15 @@ body {
 }
 .zd-scroll::-webkit-scrollbar { display: none; }
 
+/* ── Press feedback utility ──────────────────────────────────── */
+/* Tap acknowledgement for custom-styled tappables (hero pills, video cards)
+   that don't use .zd-btn/.zd-icon-btn — same scale language as those. */
+.zd-press {
+  transition: transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.zd-press:active { transform: scale(0.96); }
+
 /* ── Card ────────────────────────────────────────────────────── */
 .zd-card {
   background: var(--card);
@@ -355,16 +364,17 @@ body {
   align-items: center; justify-content: center;
   gap: 2px;
   color: var(--ink-3);
-  font-size: 10px;
+  font-size: 11px; /* 10px Persian labels were below comfortable legibility */
   font-weight: 600;
   cursor: pointer;
   border-radius: 18px;
-  transition: color .15s, background .15s;
+  transition: color .15s, background .15s, transform .12s;
   -webkit-tap-highlight-color: transparent;
   font-family: var(--font);
   border: none;
   background: transparent;
 }
+.zd-tab:active { transform: scale(0.94); }
 .zd-tab.is-active { color: var(--primary-ink); }
 [data-theme="dark"] .zd-tab.is-active { color: var(--accent); }
 
