@@ -60,7 +60,7 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
           }}>
             {passed ? <AwardIcon size={56} stroke={1.8} /> : <CloseIcon size={48} stroke={2.4} />}
           </div>
-          <div className="zd-eyebrow" style={{ color: passed ? 'var(--success)' : 'var(--danger)', fontWeight: 700, fontSize: 13 }}>
+          <div className="zd-eyebrow" style={{ color: passed ? 'var(--success-ink)' : 'var(--danger-ink)', fontWeight: 700, fontSize: 13 }}>
             {official ? `${title} تمام شد` : `${title} — تمام شد`}
           </div>
           <div className="zd-h1" style={{ marginTop: 6 }}>
@@ -79,13 +79,14 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
         <div className="zd-card" style={{ padding: 18 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <div className="zd-eyebrow">{passed ? 'وضعیت: قبول' : 'وضعیت: قبول نشدی'}</div>
+              {/* «مردود» matches the exam-catalog chips and real exam-sheet wording. */}
+              <div className="zd-eyebrow">{passed ? 'وضعیت: قبول' : 'وضعیت: مردود'}</div>
               <div className="zd-num" style={{ fontSize: 28, fontWeight: 800, marginTop: 4, color: 'var(--ink)' }}>
                 {fa(pct)}<span style={{ fontSize: 16 }}>٪</span>
               </div>
             </div>
             <ProgressRing value={pct} size={70} stroke={6} color={passed ? 'var(--success)' : 'var(--danger)'} bg="var(--line)">
-              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{passed ? 'قبول' : 'رد'}</div>
+              <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>{passed ? 'قبول' : 'مردود'}</div>
             </ProgressRing>
           </div>
           <div className="zd-bar" style={{ marginTop: 14 }}>
@@ -100,8 +101,8 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
 
         {/* Correct / wrong */}
         <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
-          <StatCard label="پاسخ درست" value={fa(correct)} color="var(--success)" icon={CheckIcon} />
-          <StatCard label="پاسخ اشتباه" value={fa(wrong)} color="var(--danger)" icon={CloseIcon} />
+          <StatCard label="پاسخ درست" value={fa(correct)} color="var(--success-ink)" icon={CheckIcon} />
+          <StatCard label="پاسخ اشتباه" value={fa(wrong)} color="var(--danger-ink)" icon={CloseIcon} />
         </div>
 
         {/* Answer sheet — one square per question; tap to review (read-only) */}
@@ -124,7 +125,12 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
                     position: 'relative',
                     aspectRatio: '1', borderRadius: 10, border: 'none', cursor: 'pointer',
                     fontFamily: 'var(--font)', fontWeight: 800, fontSize: 14, color: '#fff',
-                    background: ok ? 'var(--success)' : 'var(--danger)',
+                    // Fills darkened 25% toward #1F1A36 (same treatment as the
+                    // .zd-opt-letter reveal states) so the white numbers read
+                    // ≥4.5:1; raw --success/--danger gave only 3.2/3.4.
+                    background: ok
+                      ? 'color-mix(in oklab, var(--success) 75%, #1F1A36)'
+                      : 'color-mix(in oklab, var(--danger) 75%, #1F1A36)',
                     display: 'grid', placeItems: 'center',
                   }}
                 >
@@ -148,19 +154,23 @@ export function ExamRunnerResultScreen({ result, onReviewWrong, onRetry, onBackT
           </div>
           <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 11.5, color: 'var(--ink-3)', justifyContent: 'center' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--success)' }} /> درست
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'color-mix(in oklab, var(--success) 75%, #1F1A36)' }} /> درست
             </span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'var(--danger)' }} /> نادرست یا بی‌پاسخ
+              <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: 'color-mix(in oklab, var(--danger) 75%, #1F1A36)' }} /> نادرست یا بی‌پاسخ
             </span>
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Actions — the review CTA renders only when there is something to
+            review (a perfect sheet showed a pointless primary button). Pure
+            conditional rendering; onReviewWrong itself is unchanged. */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
-          <button onClick={onReviewWrong} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 52 }}>
-            <FlagIcon size={18} stroke={2.1} /> مرور اشتباهات
-          </button>
+          {wrong > 0 && (
+            <button onClick={onReviewWrong} className="zd-btn zd-btn-primary zd-btn-block" style={{ height: 52 }}>
+              <FlagIcon size={18} stroke={2.1} /> مرور اشتباهات
+            </button>
+          )}
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onRetry} className="zd-btn zd-btn-outline" style={{ flex: 1, height: 48 }}>
               <RefreshIcon size={17} stroke={2.1} /> تلاش دوباره
@@ -212,7 +222,7 @@ function ExamAnswerReview({ result, index, onBack }: { result: SourceExamResult;
         <div style={{ marginTop: 12 }}>
           <span className="zd-chip" style={{
             background: isCorrect ? 'var(--success-soft)' : 'var(--danger-soft)',
-            color: isCorrect ? 'var(--success)' : 'var(--danger)',
+            color: isCorrect ? 'var(--success-ink)' : 'var(--danger-ink)',
           }}>
             {isCorrect
               ? (<><CheckIcon size={13} stroke={2.4} /> پاسخ تو درست بود</>)
