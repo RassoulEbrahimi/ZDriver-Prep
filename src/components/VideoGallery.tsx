@@ -38,8 +38,9 @@ export function VideoGallery({ videos, onSelect, onClose }: Props) {
       </div>
 
       {/* 2-column grid — 3 columns squeezed 9:16 cards to ~103px on a 375px
-          screen (unreadable titles, oversized play overlay); 2 gives ~157px. */}
-      <div style={{
+          screen (unreadable titles, oversized play overlay); 2 gives ~157px.
+          .zd-video-grid centers a trailing odd card (see index.css). */}
+      <div className="zd-video-grid" style={{
         padding: '16px 20px 32px',
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
