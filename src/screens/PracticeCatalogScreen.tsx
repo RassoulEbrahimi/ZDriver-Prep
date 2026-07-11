@@ -50,7 +50,10 @@ function PracticeCard({ exam, answeredCount, locked, free, onOpen }: { exam: Exa
   return (
     <button
       onClick={() => onOpen(exam.id)}
-      className="zd-card"
+      // zd-press: this card had no tap feedback at all (.zd-card has no
+      // :active state); the video gallery / hero pills already use this same
+      // utility (#150/#151) for exactly this kind of tappable surface.
+      className="zd-card zd-press"
       style={{
         // minWidth 0 lets the card shrink inside its grid column (grid items
         // default to min-width:auto, so long chip text would widen the column).
