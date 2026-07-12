@@ -49,7 +49,9 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
   return (
     <button
       onClick={() => onOpen(exam.id)}
-      className="zd-card"
+      // zd-press: this card had no tap feedback at all (.zd-card has no
+      // :active state) — same gap fixed on the Practice catalog cards (#154).
+      className="zd-card zd-press"
       style={{
         // minWidth 0 lets the card shrink inside its grid column (grid items
         // default to min-width:auto, so a nowrap badge would otherwise widen it).
@@ -89,7 +91,10 @@ function ExamCard({ exam, status, locked, free, onOpen }: { exam: ExamMeta; stat
           </span>
         ) : free ? (
           <span className="zd-chip" style={{
-            background: 'var(--success-soft)', color: 'var(--success)', whiteSpace: 'nowrap',
+            // Raw --success on --success-soft is ~2.7:1 light / 3.8:1 dark —
+            // the same bug already fixed on the identical Practice-catalog
+            // free chip; this one was missed in that sweep.
+            background: 'var(--success-soft)', color: 'var(--success-ink)', whiteSpace: 'nowrap',
           }}>رایگان</span>
         ) : supplementary ? (
           <span className="zd-chip" style={{
@@ -208,7 +213,10 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
             <ChevRightIcon size={18} />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 700, color: 'var(--ink-2)' }}>
-            <TrophyIcon size={16} color="var(--accent)" stroke={2} />
+            {/* Raw --accent directly on the page bg is ~2.2:1 light — every
+                other accent-family foreground in this file already uses
+                --accent-deep-text; this icon was the one exception. */}
+            <TrophyIcon size={16} color="var(--accent-deep-text)" stroke={2} />
             <span className="zd-num">{fa(exams.length)} آزمون</span>
           </div>
           <div style={{ width: 40 }} />
@@ -319,7 +327,9 @@ export function ExamCatalogScreen({ exams, attempts, onOpenExam, isLocked, onExi
           <div style={{
             width: 30, height: 30, borderRadius: 10, flexShrink: 0,
             background: 'color-mix(in oklab, var(--accent) 16%, transparent)',
-            color: 'var(--accent-deep)', display: 'grid', placeItems: 'center',
+            // Same inconsistency as the trophy icon above: every other
+            // accent-tint icon in this file uses --accent-deep-text.
+            color: 'var(--accent-deep-text)', display: 'grid', placeItems: 'center',
           }}>
             <BulbIcon size={16} />
           </div>
