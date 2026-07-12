@@ -160,7 +160,7 @@ export const exam13: SourceExamData = {
       options: ["گزینه ۱", "گزینه ۲", "گزینه ۳", "گزینه ۴"],
       correctAnswerIndex: 1,
       category: "signs",
-      explanation: "گزینهٔ ۲ رنگ سبز را نشان می‌دهد که در علائم عبور و مرور به معنای حرکات مجاز و راهنمای مسیر است.",
+      explanation: "گزینهٔ ۲ رنگ آبی را نشان می‌دهد که در علائم عبور و مرور به معنای حرکات مجاز و راهنمای مسیر است.",
       source: "aeinname_asli.pdf exam 13 q13",
       image: { path: "exam-13/q13.webp", alt: "چهار گزینه رنگ در علائم عبور و مرور" },
     },
