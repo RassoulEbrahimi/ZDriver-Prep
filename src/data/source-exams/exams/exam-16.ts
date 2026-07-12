@@ -1,8 +1,19 @@
 // Phase 4D-3-17 — Real Exam 16 (آزمون 16) imported from aeinname_asli.pdf.
 // Text/options/answers decoded from the PDF font layer (cmap) and verified;
 // correct answers confirmed by the red-color signal.
-// Image-dependent: Q6, Q15, Q23, Q27
-// Assets wired: Q1, Q4, Q15, Q17, Q27, Q29, Q30. Q6 and Q23 confirmed non-image; imagePending removed.
+//
+// Content audit (2026-07-12, pdf pages 31-33 re-verified pixel-by-pixel against
+// _local/drafts/_full_p31/32/33.png): the original cmap decode corrupted several
+// numeric options (digit-glyph misdecode) and the original asset-wiring pass
+// assumed `order === PDF-printed question number`, which is false for this exam
+// — several questions' real PDF position differs from their stored `order`, so
+// images ended up wired to the wrong order-slot. Fixed by re-pointing existing
+// assets to their correct slot (no new extraction needed) and correcting the
+// corrupted digit options against the PDF's red-marked answer key.
+// Image-dependent: Q6, Q14, Q15, Q23, Q27, Q29 (+ Q4)
+// Assets wired: Q4→q04.webp, Q6→q06.webp, Q14→q14.webp, Q15→q15.webp,
+// Q23→q23.webp, Q27→q27.webp, Q29→q29.webp. Q1, Q17, Q30 confirmed non-image
+// (the PDF shows no figure for these three) — image field removed.
 
 import type { SourceExamData } from '../types'
 
@@ -14,12 +25,11 @@ export const exam16: SourceExamData = {
       examNo: 16,
       order: 1,
       text: "دور زدن از چند متری پیچ ها ممنوع است؟",
-      options: ["۲۲۰ متری", "۲۲۲ متری", "۲۰۲ متری", "۲۰۱ متری"],
+      options: ["۵۰۰ متری", "۲۰۰ متری", "۲۵۰ متری", "۱۵۰ متری"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "دور زدن در نزدیکی پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد و خطر تصادف را بالا می‌برد.",
+      explanation: "دور زدن در فاصلهٔ ۱۵۰ متری پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد و خطر تصادف را بالا می‌برد.",
       source: "aeinname_asli.pdf exam 16 q1",
-      image: { path: "exam-16/q01.webp", alt: "نمودار ممنوعیت دور زدن در نزدیکی پیچ‌ها" },
     },
     {
       id: "se-16-02",
@@ -60,7 +70,7 @@ export const exam16: SourceExamData = {
       examNo: 16,
       order: 5,
       text: "ایستادن یا توقف وسایل نقلیه در کدام یک از محل های زیر ممنوع است؟",
-      options: ["در فاصله ۲۲ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "پیاده رو و گذرگاه پیاده", "از ۲۰ متری ورودی مراکز آتش نشانی", "از ۲۰ متری ورودی مراکز فوریت های پزشکی"],
+      options: ["در فاصله ۲۰ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "پیاده رو و گذرگاه پیاده", "از ۵۰ متری ورودی مراکز آتش نشانی", "از ۵۰ متری ورودی مراکز فوریت های پزشکی"],
       correctAnswerIndex: 1,
       category: "rules",
       explanation: "ایستادن یا توقف روی پیاده‌رو و گذرگاه پیاده ممنوع است، زیرا مسیر تردد عابران پیاده را مسدود می‌کند.",
@@ -76,6 +86,7 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این تقاطع هم‌عرض، حق تقدم با وسیله‌ای است که به سمت راست گردش می‌کند.",
       source: "aeinname_asli.pdf exam 16 q6",
+      image: { path: "exam-16/q06.webp", alt: "نمودار تقاطع هم‌عرض با دو خودرو برای تعیین حق تقدم گردش به راست" },
     },
     {
       id: "se-16-07",
@@ -148,10 +159,10 @@ export const exam16: SourceExamData = {
       examNo: 16,
       order: 13,
       text: "از چند متری پیچ ها سبقت گرفتن ممنوع است؟",
-      options: ["۲۰ متری", "۲۳ متری", "۲۴ متری", "سبقت گرفتن محدودیت ندارد."],
+      options: ["۵۰ متری", "۳۰ متری", "۴۰ متری", "سبقت گرفتن محدودیت ندارد."],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "سبقت گرفتن در نزدیکی پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد.",
+      explanation: "سبقت گرفتن در فاصلهٔ ۵۰ متری پیچ‌ها ممنوع است، زیرا محدودیت دید در پیچ امکان مشاهدهٔ خودروی مقابل را از بین می‌برد.",
       source: "aeinname_asli.pdf exam 16 q13",
     },
     {
@@ -161,9 +172,10 @@ export const exam16: SourceExamData = {
       text: "وظیفه ترموستات در خودرو چیست؟",
       options: ["قطع و وصل کردن مدار آب از موتور به رادیاتور", "خنک کردن آب داخل لوله های رادیاتور", "به گردش در آوردن آب داخل پوسته موتور و اطراف سیلندر ها", "تصفیه آب رادیاتور"],
       correctAnswerIndex: 0,
-      category: "rules",
+      category: "vehicle",
       explanation: "ترموستات با حس کردن دمای موتور، مدار آب میان موتور و رادیاتور را قطع و وصل می‌کند تا موتور سریع‌تر به دمای کاری برسد و از گرمای بیش از حد جلوگیری شود.",
       source: "aeinname_asli.pdf exam 16 q14",
+      image: { path: "exam-16/q14.webp", alt: "نمودار مدار خنک‌کنندهٔ موتور شامل ترموستات، رادیاتور و پمپ آب" },
     },
     {
       id: "se-16-15",
@@ -175,17 +187,17 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "بر پایهٔ موقعیت خودروها در این شکل، حق تقدم عبور با خودرویی است که با دایره مشخص شده است.",
       source: "aeinname_asli.pdf exam 16 q15",
-      image: { path: "exam-16/q15.webp", alt: "نمودار تقاطع برای تشخیص حق تقدم خودروی مشخص‌شده با دایره" },
+      image: { path: "exam-16/q15.webp", alt: "نمودار میدان (دوربرگردان) با خودروی مشخص‌شده با دایره برای تعیین حق تقدم" },
     },
     {
       id: "se-16-16",
       examNo: 16,
       order: 16,
       text: "حداکثر سرعت در آزاد راه های بیرون شهر و مناطق غیر مسکونی برای انواع وانت بارها چند کیلومتر در ساعت است؟",
-      options: ["۲۲۱", "۰۲۱", "۲۰", "۰۵"],
+      options: ["۱۲۰", "۱۲۵", "۷۰", "۹۵"],
       correctAnswerIndex: 0,
       category: "rules",
-      explanation: "حداکثر سرعت مجاز برای وانت‌بارها در آزادراه‌های برون‌شهری و مناطق غیرمسکونی مقدار معینی است که گزینهٔ مشخص‌شده آن را بیان می‌کند.",
+      explanation: "حداکثر سرعت مجاز برای وانت‌بارها در آزادراه‌های برون‌شهری و مناطق غیرمسکونی ۱۲۰ کیلومتر در ساعت است.",
       source: "aeinname_asli.pdf exam 16 q16",
     },
     {
@@ -193,12 +205,11 @@ export const exam16: SourceExamData = {
       examNo: 16,
       order: 17,
       text: "در صورت خرابی وسیله نقلیه و میسر نبودن انتقال به محل مناسب ، چراغ الکتریکی را برای آگاه سازی دیگران باید در چه فاصله ای از وسیله نقلیه قرار داد؟",
-      options: ["۲۲۱ متری", "۲۲۲ متری", "۲۰۱ متری", "۲۰ متری"],
+      options: ["۱۰۰ متری", "۲۰۰ متری", "۱۵۰ متری", "۷۰ متری"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "هنگام خرابی خودرو و نبود امکان انتقال آن، باید چراغ الکتریکی هشدار را در فاصلهٔ مناسبی پشت خودرو قرار داد تا رانندگان دیگر به‌موقع از خطر آگاه شوند.",
+      explanation: "هنگام خرابی خودرو و نبود امکان انتقال آن، باید چراغ الکتریکی هشدار را در فاصلهٔ ۷۰ متری پشت خودرو قرار داد تا رانندگان دیگر به‌موقع از خطر آگاه شوند.",
       source: "aeinname_asli.pdf exam 16 q17",
-      image: { path: "exam-16/q17.webp", alt: "نمودار فاصله قرار دادن چراغ الکتریکی اخطار پشت خودرو خراب" },
     },
     {
       id: "se-16-18",
@@ -227,10 +238,10 @@ export const exam16: SourceExamData = {
       examNo: 16,
       order: 20,
       text: "در کدامیک از موارد زیر باید نور بالا را به نور پایین تبدیل نماییم؟",
-      options: ["زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۲۰۱ متر یا بیشتر باشد.", "زمانی که فاصله شما با خودرویی که از مقابل به شما نزدیک می شود ۲۰۱ متر یا کمتر باشد.", "زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۲۲۲ متر یا کمتر باشد.", "نیازی به تغییر نور بالا به نور پایین به جز در جاده های پر رفت و آمد"],
+      options: ["زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۱۵۰ متر یا بیشتر باشد.", "زمانی که فاصله شما با خودرویی که از مقابل به شما نزدیک می شود ۱۵۰ متر یا کمتر باشد.", "زمانی که فاصله شما با خودرویی که در جلوی شما حرکت می کند ۲۰۰ متر یا کمتر باشد.", "نیازی به تغییر نور بالا به نور پایین به جز در جاده های پر رفت و آمد"],
       correctAnswerIndex: 1,
       category: "rules",
-      explanation: "هنگام نزدیک شدن خودرویی از روبرو باید نور بالا را به نور پایین تبدیل کرد تا نور چراغ باعث خیرگی رانندهٔ مقابل نشود.",
+      explanation: "هنگام نزدیک شدن خودرویی از روبرو در فاصلهٔ ۱۵۰ متر یا کمتر، باید نور بالا را به نور پایین تبدیل کرد تا نور چراغ باعث خیرگی رانندهٔ مقابل نشود.",
       source: "aeinname_asli.pdf exam 16 q20",
     },
     {
@@ -265,16 +276,17 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "هر سه مورد درست است؛ خطوط هاشور مخصوص عبور اضطراری وسایل امدادی است، معمولاً در کناره آزادراه‌ها، بزرگراه‌ها و تونل‌ها کشیده می‌شود و حرکت روی آن‌ها ممنوع است.",
       source: "aeinname_asli.pdf exam 16 q23",
+      image: { path: "exam-16/q23.webp", alt: "نمودار خطوط هاشور کنار جاده با علامت ممنوعیت تردد" },
     },
     {
       id: "se-16-24",
       examNo: 16,
       order: 24,
       text: "ایستادن یا توقف وسایل نقلیه در کدام یک از محل های زیر ممنوع است؟",
-      options: ["پیاده رو و گذرگاه پیاده", "در فاصله ۰۱ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "از ابتدا تا انتهای پیچ ها", "تمام موارد"],
+      options: ["پیاده رو و گذرگاه پیاده", "در فاصله ۱۵ متری میدان یا تقاطع یا سه راه ها یا تقاطع راه آهن", "از ابتدا تا انتهای پیچ ها", "تمام موارد"],
       correctAnswerIndex: 3,
       category: "rules",
-      explanation: "ایستادن یا توقف روی پیاده‌رو و گذرگاه پیاده، نزدیک میدان و تقاطع و از ابتدا تا انتهای پیچ‌ها همگی ممنوع است؛ بنابراین «تمام موارد» درست است.",
+      explanation: "ایستادن یا توقف روی پیاده‌رو و گذرگاه پیاده، در فاصلهٔ ۱۵ متری میدان و تقاطع و از ابتدا تا انتهای پیچ‌ها همگی ممنوع است؛ بنابراین «تمام موارد» درست است.",
       source: "aeinname_asli.pdf exam 16 q24",
     },
     {
@@ -344,7 +356,6 @@ export const exam16: SourceExamData = {
       category: "signs",
       explanation: "برای آگاه‌سازی جهت سبقت گرفتن در روز از بوق کوتاه همراه با چراغ راهنما استفاده می‌شود تا رانندهٔ جلویی از قصد سبقت آگاه شود.",
       source: "aeinname_asli.pdf exam 16 q30",
-      image: { path: "exam-16/q30.webp", alt: "تصویر علامت آگاه‌سازی برای سبقت گرفتن در روز" },
     },
   ],
 }
