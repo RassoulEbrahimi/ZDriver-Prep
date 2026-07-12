@@ -27,7 +27,7 @@ import { ManualSubscriptionSheet } from './components/ManualSubscriptionSheet'
 import { SignupPromptSheet }       from './components/SignupPromptSheet'
 import { useAuth }            from './auth/useAuth'
 import { useEntitlement }     from './auth/useEntitlement'
-import { canAccessExam }      from './config/access'
+import { canAccessExam, canAccessOfficialExam } from './config/access'
 import {
   writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
   readBookmarks, writeBookmarks,
@@ -92,6 +92,7 @@ export default function App() {
   // unavailable → not active → only free exams). ──
   const { entitlement } = useEntitlement()
   const isActiveSub = entitlement.active && entitlement.status === 'active'
+  const isAuthed = status === 'authed'
 
   // ── Recent exam attempts (Phase 7J) — in-memory only, never persisted.
   // null = not loaded / unavailable / read failed; [] = loaded, no attempts yet.
@@ -439,7 +440,9 @@ export default function App() {
   // ── Exam-flow handlers (آزمون tab; registry-driven timed simulation) ──
   function openExam(id: number) {
     // Soft gate (S4B): locked exam → guest-signup or purchase sheet, never start.
-    if (!canAccessExam(isActiveSub, id)) { promptForLockedExam(); return }
+    // Official exams use the authed-preview tier (canAccessOfficialExam); Practice
+    // keeps the plain canAccessExam gate below, unaffected by this tier.
+    if (!canAccessOfficialExam(isAuthed, isActiveSub, id)) { promptForLockedExam(); return }
     setExamFlowId(id)
     setExamFlowResult(null)
     setExamView('active')
@@ -750,7 +753,7 @@ export default function App() {
           exams={EXAM_REGISTRY}
           attempts={recentAttempts}
           onOpenExam={openExam}
-          isLocked={(id) => !canAccessExam(isActiveSub, id)}
+          isLocked={(id) => !canAccessOfficialExam(isAuthed, isActiveSub, id)}
           onExitToHome={goHome}
         />
       )
