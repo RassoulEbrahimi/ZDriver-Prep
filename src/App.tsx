@@ -27,7 +27,7 @@ import { ManualSubscriptionSheet } from './components/ManualSubscriptionSheet'
 import { SignupPromptSheet }       from './components/SignupPromptSheet'
 import { useAuth }            from './auth/useAuth'
 import { useEntitlement }     from './auth/useEntitlement'
-import { canAccessExam, canAccessOfficialExam } from './config/access'
+import { canAccessOfficialExam } from './config/access'
 import {
   writeExamProgress, appendExamAttempt, readAllExamProgress, readRecentExamAttempts,
   readBookmarks, writeBookmarks,
@@ -431,7 +431,7 @@ export default function App() {
   // Locked-exam gate (UI polish): a signed-out user is encouraged to create an
   // account (no payment details shown); an authenticated non-subscriber / expired
   // user gets the manual purchase sheet. Active subscribers never reach here
-  // because canAccessExam() returns true for them at the call sites below.
+  // because canAccessOfficialExam() returns true for them at the call sites below.
   function promptForLockedExam() {
     if (status === 'authed') setPurchaseSheetOpen(true)
     else setSignupPromptOpen(true)
@@ -441,7 +441,7 @@ export default function App() {
   function openExam(id: number) {
     // Soft gate (S4B): locked exam → guest-signup or purchase sheet, never start.
     // Official exams use the authed-preview tier (canAccessOfficialExam); Practice
-    // keeps the plain canAccessExam gate below, unaffected by this tier.
+    // uses the same tier below so the two flows stay consistent.
     if (!canAccessOfficialExam(isAuthed, isActiveSub, id)) { promptForLockedExam(); return }
     setExamFlowId(id)
     setExamFlowResult(null)
@@ -558,7 +558,9 @@ export default function App() {
   // ── Practice-flow handlers (تمرین tab; do not touch exam/source state) ──
   function openPracticeExam(id: number) {
     // Soft gate (S4B): locked exam → guest-signup or purchase sheet, never start.
-    if (!canAccessExam(isActiveSub, id)) { promptForLockedExam(); return }
+    // Uses the same authed-preview tier as the Exam tab (canAccessOfficialExam)
+    // so Practice and Exam stay consistent for official exams.
+    if (!canAccessOfficialExam(isAuthed, isActiveSub, id)) { promptForLockedExam(); return }
     setPracticeExamId(id)
     setPracticeView('active')
   }
@@ -720,7 +722,7 @@ export default function App() {
           exams={EXAM_REGISTRY}
           coverage={examCoverage}
           onOpenExam={openPracticeExam}
-          isLocked={(id) => !canAccessExam(isActiveSub, id)}
+          isLocked={(id) => !canAccessOfficialExam(isAuthed, isActiveSub, id)}
           onExitToHome={goHome}
         />
       )

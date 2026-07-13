@@ -18,8 +18,8 @@ export function isExamFree(examId: number): boolean {
 /**
  * Whether the user may open the given exam. When the paywall is OFF, everything
  * is accessible. When ON, active subscribers get everything; everyone else gets
- * only the free exams. Used by Practice — unaffected by the official-exam
- * preview tier below.
+ * only the free exams. Superseded by canAccessOfficialExam below for both the
+ * Exam and Practice flows; kept as the base gate used internally by isExamLocked.
  */
 export function canAccessExam(isActiveSubscriber: boolean, examId: number): boolean {
   if (!PAYWALL_ENABLED) return true
@@ -38,10 +38,11 @@ export function isExamLocked(isActiveSubscriber: boolean, examId: number): boole
 export const AUTHED_PREVIEW_EXAM_IDS = new Set<number>([2, 3, 4, 5])
 
 /**
- * Official-exam gate (آزمون tab only). When the paywall is OFF, everything is
- * accessible — same as canAccessExam. When ON: active subscribers get
- * everything; any authenticated user gets Exams 1-5; everyone else (guests)
- * gets only the universally-free exams (1, 18).
+ * Official-exam gate — shared by both the آزمون (Exam) and تمرین (Practice)
+ * tabs, so the two flows always agree on access. When the paywall is OFF,
+ * everything is accessible — same as canAccessExam. When ON: active
+ * subscribers get everything; any authenticated user gets Exams 1-5;
+ * everyone else (guests) gets only the universally-free exams (1, 18).
  */
 export function canAccessOfficialExam(isAuthed: boolean, isActiveSubscriber: boolean, examId: number): boolean {
   if (!PAYWALL_ENABLED) return true
